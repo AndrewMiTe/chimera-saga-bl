@@ -25,10 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package Combat;
+package combat;
 
 /**
- * A Condition or state applied to Unit objects on a Battlefield.
+ * A state applied to Unit objects on a Battlefield.
  * @author Andrew M. Teller (andrew.m.teller@gmail.com)
  */
 public class Status {
