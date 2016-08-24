@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package combat;
+package battle;
 
 /**
  * A state applied to Unit objects on a Battlefield.

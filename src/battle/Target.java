@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package Battle;
+package battle;
 
 /**
  * Enumerates the finite ways in which a skill can Target Unit objects on a
