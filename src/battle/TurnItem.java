@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,7 +30,7 @@ package battle;
  * sorts from earliest to latest in time.
  * @author Andrew M. Teller (andrew.m.teller@gmail.com)
  */
-public class TurnItem implements Comparable {
+public class TurnItem implements Comparable<TurnItem> {
 
   /**
    * Reference to the Unit at a particular time in the TurnOrder.
@@ -59,14 +59,9 @@ public class TurnItem implements Comparable {
     this.stunnable = stunnable;
   }
 
-  @Override public int compareTo(Object object) {
-    //Check to see if the object is an instance of a TurnItem.
-    if (object instanceof TurnItem) {
-      //Return the comparision of the time values.
-      return timeOfTurn.compareTo(((TurnItem)object).getTime());
-    }
-    //Return the comparision of the object cast as an Integer.
-    return timeOfTurn.compareTo((Integer)object);
+  @Override
+  public int compareTo(TurnItem other) {
+    return timeOfTurn.compareTo(other.getTime());
   }
 
   /**
