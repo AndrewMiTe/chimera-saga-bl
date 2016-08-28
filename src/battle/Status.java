@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,9 +24,11 @@
 
 package battle;
 
+import java.time.Duration;
+
 /**
  * A state applied to Unit objects on a Battlefield.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Status {
   
@@ -41,11 +43,11 @@ public class Status {
    */
   private final String description;
   /**
-   * The time before this status expires. Duration of the status in milliseconds.
-   * Zero means no duration. Less then zero means duration is infinite. This is
-   * a required field. No default value is available.
+   * The time before this status expires. Zero means the Status has an instant
+   * duration. Less then zero means duration is infinite. This is a required
+   * field. No default value is available.
    */
-  private int duration;
+  private Duration duration;
   /**
    * The number of stacks this status is currently up to. Statuses with a
    * duration greater then 0 do not stack in magnitude, rather they stack
@@ -76,7 +78,7 @@ public class Status {
    * @param  description simple text-based description of the Status.
    * @param  duration time before this Status expires.
    */
-  public Status(String name, String description, int duration) {
+  public Status(String name, String description, Duration duration) {
     this(name, description, duration, 1, false, false, false);
   }
   
@@ -87,7 +89,8 @@ public class Status {
    * @param  duration time before this Status expires.
    * @param  stacks number of stacks this Status is currently up to.
    */
-  public Status(String name, String description, int duration, int stacks) {
+  public Status(String name, String description, Duration duration,
+      int stacks) {
     this(name, description, duration, stacks, false, false, false);
   }
   
@@ -98,7 +101,8 @@ public class Status {
    * @param  duration time before this Status expires.
    * @param  stuns true if the Status stuns the target.
    */
-  public Status(String name, String description, int duration, boolean stuns) {
+  public Status(String name, String description, Duration duration,
+      boolean stuns) {
     this(name, description, duration, 1, stuns, false, false);
   }
   
@@ -110,7 +114,8 @@ public class Status {
    * @param  stacks number of stacks this Status is currently up to.
    * @param  stuns true if the Status stuns the target.
    */
-  public Status(String name, String description, int duration, int stacks, boolean stuns) {
+  public Status(String name, String description, Duration duration, int stacks,
+      boolean stuns) {
     this(name, description, duration, stacks, stuns, false, false);
   }
   
@@ -122,7 +127,8 @@ public class Status {
    * @param  stuns true if the Status stuns the target.
    * @param  defeats true if the Status defeats the Unit.
    */
-  public Status(String name, String description, int duration, boolean stuns, boolean defeats) {
+  public Status(String name, String description, Duration duration,
+      boolean stuns, boolean defeats) {
     this(name, description, duration, 1, stuns, defeats, false);
   }
   
@@ -135,7 +141,8 @@ public class Status {
    * @param  stuns true if the Status stuns the target.
    * @param  defeats true if the Status defeats the Unit.
    */
-  public Status(String name, String description, int duration, int stacks, boolean stuns, boolean defeats) {
+  public Status(String name, String description, Duration duration, int stacks,
+      boolean stuns, boolean defeats) {
     this(name, description, duration, stacks, stuns, defeats, false);
   }
   
@@ -148,7 +155,8 @@ public class Status {
    * @param  defeats true if the Status defeats the Unit.
    * @param  hidden true if the Status should be hidden from the client user.
    */
-  public Status(String name, String description, int duration, boolean stuns, boolean defeats, boolean hidden) {
+  public Status(String name, String description, Duration duration,
+      boolean stuns, boolean defeats, boolean hidden) {
     this(name, description, duration, 1, stuns, defeats, hidden);
   }
   
@@ -162,7 +170,8 @@ public class Status {
    * @param  defeats true if the Status defeats the Unit.
    * @param  hidden true if the Status should be hidden from the client user.
    */
-  public Status(String name, String description, int duration, int stacks, boolean stuns, boolean defeats, boolean hidden) {
+  public Status(String name, String description, Duration duration, int stacks,
+      boolean stuns, boolean defeats, boolean hidden) {
     this.name = name;
     this.description = description;
     this.duration = duration;
@@ -181,13 +190,13 @@ public class Status {
    * @param copyOf is the object of Status which we make our copy from.
    */
   public Status(Status copyOf) {
-    name = copyOf.getName();
-    description = copyOf.getDescription();
-    duration = copyOf.getDuration();
-    stacks = copyOf.getStacks();
-    stuns = copyOf.isStunning();
-    defeats = copyOf.isDefeating();
-    hidden = copyOf.isHidden();
+    this.name = copyOf.getName();
+    this.description = copyOf.getDescription();
+    this.duration = copyOf.duration;
+    this.stacks = copyOf.getStacks();
+    this.stuns = copyOf.isStunning();
+    this.defeats = copyOf.isDefeating();
+    this.hidden = copyOf.isHidden();
   }
   
   /**
@@ -203,7 +212,7 @@ public class Status {
    * @return time before this Status expires.
    */
   public int getDuration() {
-    return duration;
+    return (int)duration.toMillis();
   }
 
   /**
@@ -243,7 +252,7 @@ public class Status {
    * @return true if this Status can have stacks.
    */
   public boolean isStackable() {
-    return (duration <= 0);
+    return (duration.isNegative() || duration.isZero());
   }
   
   /**
@@ -279,7 +288,7 @@ public class Status {
    * @param duration time before this Status expires.
    */
   public void setDuration(int duration) {
-    this.duration = duration;
+    this.duration = Duration.ofMillis(duration);
   }
   
   
@@ -294,7 +303,8 @@ public class Status {
     }
   }
   
-  @Override public String toString() {
+  @Override
+  public String toString() {
     return name;
   }
 
