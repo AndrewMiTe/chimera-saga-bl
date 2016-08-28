@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,6 +24,8 @@
 
 package battle;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -32,15 +34,20 @@ import java.util.Iterator;
  * both the unit who has a turn and the time their turn is due. Units can be in
  * the turn order multiple times. Multiple units can have their turn due at the
  * same time, yet only one unit will be returned per request.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class TurnOrder {
 
+    
   /**
-   * Keeps track of the current time. The clock starts at zero and only
-   * increments from there. Time is measured in milliseconds.
+   * The date and time at the start of the battle. 
    */
-  private Integer clock;
+  private final LocalDateTime startTime;
+  /**
+   * Keeps track of the current date and time. The clock starts at the local
+   * date and time and increments from there.
+   */
+  private LocalDateTime currentTime;
   /**
    * List of Subscriber objects who request to be updated when the TurnOrder
    * advances to the next Turn.
@@ -55,9 +62,10 @@ public class TurnOrder {
    * Basic constructor.
    */
   protected TurnOrder() {
-    clock = 0;
-    subscribers = new ArrayList<>();
-    turnList = new ArrayList<>();
+    this.startTime = LocalDateTime.now();
+    this.currentTime = this.startTime;
+    this.subscribers = new ArrayList<>();
+    this.turnList = new ArrayList<>();
   }
 
   /**
@@ -69,10 +77,8 @@ public class TurnOrder {
    * @return true if the addition was successful.
    */
   protected TurnItem addAfterNext(Unit unit, boolean stunnable) {
-    //Sort the list. Default sorting is by time value.
     turnList.sort(null);
-    //Add the TurnItem using the time of the first item in the order.
-    int time = turnList.get(0).getTime();
+    LocalDateTime time = turnList.get(0).getTime();
     return addTurnItem(unit, time, stunnable);
   }
   
@@ -81,7 +87,6 @@ public class TurnOrder {
    * @param newItem new TurnItem to be added. Value is allowed to be null.
    */
   protected void addTurnItem(TurnItem newItem) {
-      //Add the the new Turn the list of TurnItem objects.
       turnList.add(newItem);
   }
   
@@ -94,12 +99,25 @@ public class TurnOrder {
    *         turn is stunned.
    * @return true when the addition of the turn information succeeds.
    */
-  protected TurnItem addTurnItem(Unit unit, int time, boolean stunnable) {
-      //Create the new TurnItem.
+  protected TurnItem addTurnItem(Unit unit, LocalDateTime time, boolean stunnable) {
       TurnItem newItem = new TurnItem(unit, time, stunnable);
-      //Add the the new Turn the list of TurnItem objects.
       turnList.add(newItem);
-      //Sort the list. Default sorting is by time value.
+      return newItem;
+  }
+
+  /**
+   * Takes a Unit and time paring and sorts it into the TurnOrder.
+   * @param  unit Unit object to be called when the turn is due.
+   * @param  time time from the start of the TurnOrder when the turn is due.
+   *         Measured in milliseconds.
+   * @param  stunnable true if the turn is delayed when the Unit called by the
+   *         turn is stunned.
+   * @return true when the addition of the turn information succeeds.
+   */
+  protected TurnItem addTurnItem(Unit unit, int time, boolean stunnable) {
+      LocalDateTime dateTime = currentTime.plus(Duration.ofMillis(time));
+      TurnItem newItem = new TurnItem(unit, dateTime, stunnable);
+      turnList.add(newItem);
       return newItem;
   }
 
@@ -108,7 +126,7 @@ public class TurnOrder {
    * @return time value of the clock.
    */
   protected Integer getClock() {
-    return clock;
+    return (int)Duration.between(startTime, currentTime).toMillis();
   }
   
   /**
@@ -117,30 +135,20 @@ public class TurnOrder {
    * @return the Unit who's turn is now due.
    */
   protected Unit next() {
-    //Sort the list before using. Default sorting is by time value.
     turnList.sort(null);
-    //Only iterate through the list of turns while it is not empty.
     while (turnList.size() > 0) {
-      //Removes the TurnItem with the lowest time value.
       TurnItem nextTurn = turnList.remove(0);
-      //Increment the clock.
-      if (clock < nextTurn.getTime()) {
-        clock = nextTurn.getTime();
-        //Update all Subscriber objects.
+      if (currentTime.isBefore(nextTurn.getTime())) {
+        currentTime = nextTurn.getTime();
         for (Subscriber sub :  subscribers) {
           sub.update();
         }
       }
-      //Check to see is the TurnItem has a Unit attached.
       if (nextTurn.getUnit() != null) {
-        //Removes the TurnItem from the unit if it has it.
         nextTurn.getUnit().removeTurnItem(nextTurn);
-        //Returns the unit to the caller.
         return nextTurn.getUnit();
       }
-      //Continue the search for the next Unit in the TurnOrder.
     }
-    //Returns null if their were no TurnItems with Unit obejcts left.
     return null;
   }
 
@@ -150,20 +158,15 @@ public class TurnOrder {
    * @return true if a match to the given Unit was found and removed. 
    */
   protected boolean removeUnit(Unit oldUnit) {
-    //Assume a return value of false until the Unit is found.
     boolean returnValue = false;
-    //Iterate through the TurnItem objects.
     Iterator<TurnItem> iterateTurns = turnList.iterator();
     while (iterateTurns.hasNext()) {
       TurnItem nextTurn = iterateTurns.next();
-      //Check to see if the next TurnItem is of the Unit we are searching for.
       if (nextTurn.getUnit() == oldUnit) {
-        //Remove the TurnItem, return value set to true.
         iterateTurns.remove();
         returnValue = true;
       }
     }
-    //Return true if Unit was found.
     return returnValue;
   }
   
@@ -174,9 +177,7 @@ public class TurnOrder {
    * @return true if the Subscriber was successfully added.
    */
   protected boolean subscribe(Subscriber newSubscriber) {
-    //Check to see if the Subcriber is not null and not already subscribed.
     if ((newSubscriber != null) && (!subscribers.contains(newSubscriber))) {
-      //Add the Subscriber to the List of those seeking updates.
       return subscribers.add(newSubscriber);
     }
     return false;
@@ -190,7 +191,6 @@ public class TurnOrder {
    * @return true if the Subscriber was successfully removed.
    */
   protected boolean unsubscribe(Subscriber oldSubscriber) {
-    //Return the success of removing the old Subscriber from the List.
     return subscribers.remove(oldSubscriber);
   }
   
