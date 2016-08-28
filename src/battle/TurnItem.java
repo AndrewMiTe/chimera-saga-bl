@@ -24,11 +24,13 @@
 
 package battle;
 
+import java.time.LocalDateTime;
+
 /**
  * A point in time within a TurnOrder that a Unit object can be called in order
  * to perform an action. This class implements the Comparable interface and
  * sorts from earliest to latest in time.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class TurnItem implements Comparable<TurnItem> {
 
@@ -39,7 +41,7 @@ public class TurnItem implements Comparable<TurnItem> {
   /**
    * The particular time in the TurnOrder that the Unit is in.
    */
-  private Integer timeOfTurn;
+  private LocalDateTime timeOfTurn;
   /**
    * True if the TurnItem is affected by stuns made to the assigned Unit.
    */
@@ -53,9 +55,9 @@ public class TurnItem implements Comparable<TurnItem> {
    * @param stunnable true if the TurnItem is affected when the owning Unit has
    *        a Status that stuns.
    */
-  protected TurnItem(Unit unit, int time, boolean stunnable) {
+  protected TurnItem(Unit unit, LocalDateTime time, boolean stunnable) {
     this.unit = unit;
-    timeOfTurn = time;
+    this.timeOfTurn = time;
     this.stunnable = stunnable;
   }
 
@@ -68,7 +70,7 @@ public class TurnItem implements Comparable<TurnItem> {
    * Getter for when the time occurs.
    * @return time of the turn.
    */
-  protected int getTime() {
+  protected LocalDateTime getTime() {
     return timeOfTurn;
   }
 
@@ -93,7 +95,7 @@ public class TurnItem implements Comparable<TurnItem> {
    * Setter for the time when the turn occurs.
    * @param time time of the turn.
    */
-  protected void setTime(int time) {
+  protected void setTime(LocalDateTime time) {
     this.timeOfTurn = time;
   }
   
