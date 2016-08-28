@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,13 +24,14 @@
 
 package battle;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 /**
  * Participant in battles that take place on BattleFields.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Unit implements Subscriber {
   
@@ -92,61 +93,42 @@ public class Unit implements Subscriber {
    * @return true if the addition was successful.
    */
   public boolean addStatus(Status newStatus) {
-    //Check to see if the Status is not null and succeeds to apply itself.
     if ((newStatus != null) && newStatus.onApply(this)) {
-      //Store the Unit object's stun duration.
       int oldStunDuration = getStunDuration();
-      //Check to make sure the Status has a non-zero duration value.
       if (newStatus.getDuration() != 0) {
-        //Search this Unit for a matching Status and store it.
         Status match = getStatus(newStatus.getName());
-        //Check to see if a match was found.
         if (match != null) {
           if (match.isStackable() && newStatus.isStackable()) {
-            //That new Status stacks with the old, combine the stacks.
             match.setStacks(match.getStacks() + newStatus.getStacks());
           }
-          //Otherwise make sure both Status objects have a positive value.
           else if ((match.getDuration() > 0) && (newStatus.getDuration() > 0)) {
-            //Calculate the new duration by combining the old ones.
             int newDuration = match.getDuration() + newStatus.getDuration();
-            //Modify the old Status with the new duration.
             match.setDuration(newDuration);
-            //Add a new TurnItem to the TurnOrder for when the Status ends.
             turnItems.add(turnOrder.addTurnItem(this, newDuration, false));
           }
         }
         else {
-          //The Status is unique to the Unit, add it.
           statusList.add(newStatus);
-          //Check to see if the Status has a finite duration.
           if (newStatus.getDuration() > 0) {
-            //Add a new TurnItem to the TurnOrder for when the Status ends.
             turnItems.add(turnOrder.addTurnItem(this, newStatus.getDuration(), false));
           }
         }
       }
-      //Get the current stun duration and store it.
       int stunDurationChange = getStunDuration() - oldStunDuration;
-      //Check to see if the stun duration has changed.
       if (stunDurationChange != 0) {
-        //Add the change to stun duration to all stunnable TurnItem objects.
         for (TurnItem nextItem : turnItems) {
           if (nextItem.isStunnable()) {
-            nextItem.setTime(nextItem.getTime() + stunDurationChange);
+            nextItem.setTime(nextItem.getTime().plus(Duration.ofMillis(stunDurationChange)));
           }
         }
-        //Add the change to stun duration to all stunnable Skills objects.
         for (Skill nextSkill : skillList) {
           if (nextSkill.getMaxCooldown() > 0) {
             nextSkill.setCooldown(nextSkill.getCooldown() + stunDurationChange);
           }
         }
       }    
-      //Applied successfully, return true.
       return true;
     }
-    //Application failed, return false.
     return false;
   }
 
@@ -155,19 +137,13 @@ public class Unit implements Subscriber {
    * Clears all battle related values.
    */
   protected void clearBattleState() {
-    //Remove any Status objects.
     clearStatus();
-    //Check to make sure the TurnOrder is not null.
     if (turnOrder != null) {
-      //Remove all TurnItem objects from the TrunOrder and unsubscribe.
       turnOrder.removeUnit(this);
       turnOrder.unsubscribe(this);
-      //Set the TurnOrder to null.
       turnOrder = null;
     }
-    //Remove all TurnItem objects from this Unit.
     turnItems.removeAll(turnItems);
-    //Reset all cooldowns on skills.
     for (Skill nextSkill : skillList) {
       nextSkill.setCooldown(nextSkill.getMaxCooldown());
     }
@@ -223,11 +199,9 @@ public class Unit implements Subscriber {
    *         was found.
    */
   public Status getStatus(String statusName) {
-    //Iterate through all of this unit'nextStatus statuses.
     Iterator<Status> iterateStatus = getStatuses();
     while (iterateStatus.hasNext()) {
       Status nextStatus = iterateStatus.next();
-      //Stop iteration if you find a match and return the Status object.
       if (nextStatus.getName().equals(statusName)) {
         return nextStatus;
       }
@@ -273,14 +247,11 @@ public class Unit implements Subscriber {
    * @return true when the Unit is removed from combat.
    */
   public boolean isDefeated() {
-    //Iterate through all the Status objects.
     for (Status nextStatus : statusList) {
-      //If the Status defeats, return true.
       if (nextStatus.isDefeating()) {
         return true;
       }
     }
-    //Unit is not defeated, return false.
     return false;
   }
 
@@ -289,14 +260,11 @@ public class Unit implements Subscriber {
    * @return true when the Unit is stunned.
    */
   public boolean isStunned() {
-    //Iterate through all the Status objects.
     for (Status nextStatus : statusList) {
-      //If the Status stuns, return true.
       if (nextStatus.isStunning()) {
         return true;
       }
     }
-    //Unit is not stunned, return false.
     return false;
   }
   
@@ -306,19 +274,14 @@ public class Unit implements Subscriber {
    * @return duration the Unit is stunned.
    */
   private int getStunDuration() {
-    //Assume the stun duration to be zero unless proven otherwise.
     int stunTime = 0;
-    //Iterate through all the statuses for this unit.
     for (Status nextStatus : statusList) {
-      //If this status stuns, set the stun time to the statuses duration if it
-      //is higher then the current stun time.
       if (nextStatus.isStunning()) {
         if (stunTime < nextStatus.getDuration()) {
           stunTime = nextStatus.getDuration();
         }
       }
     }
-    //Return to caller the truth.
     return stunTime;
   }
 
@@ -329,20 +292,15 @@ public class Unit implements Subscriber {
    *         available.
    */
   protected Skill nextSkill() {
-    //If the unit it stunned, no skills are to be used.
     if (!isStunned()) {
-      //Iterate through all the skills of this unit.
       Iterator<Skill> iterateSkills = skillList.iterator();
       while (iterateSkills.hasNext()) {
         Skill nextSkill = iterateSkills.next();
-        //Check to see if Skill is not a pre-battle Skill and is off cooldown.
         if ((nextSkill.getMaxCooldown() > 0) && (nextSkill.getCooldown() <= 0)) {
-          //Return this Skill.
           return nextSkill;
         }
       }
     }
-    //No Skill ready, return null.
     return null;
   }
 
@@ -354,12 +312,9 @@ public class Unit implements Subscriber {
    * @return true if the Status was successfully removed.
    */
   protected boolean removeStatus(Status oldStatus) {
-    //Check that the status belong to this unit and that removal is successful.
     if (statusList.contains(oldStatus) && oldStatus.onRemove(this)) {
-      //Return final success of removal.
       return statusList.remove(oldStatus);
     }
-    //Removal failed, return false.
     return false;
   }
 
@@ -372,12 +327,9 @@ public class Unit implements Subscriber {
    */
   public boolean removeStatus(String oldStatus) {
     Status match = getStatus(oldStatus);
-    //Check that the status belong to this unit and that removal is successful.
     if ((match != null) && match.onRemove(this)) {
-      //Return final success of removal.
       return statusList.remove(match);
     }
-    //Removal failed, return false.
     return false;
   }
 
@@ -393,22 +345,16 @@ public class Unit implements Subscriber {
    * @return true if the status was successfully removed.
    */
   public boolean removeStatus(String oldStatus, int stacks) {
-    //Search for matching Status object.
     Status match = getStatus(oldStatus);
-    //Continue if the parameters are valid and if the Status is removable.
     if ((stacks > 0) && (match != null) && match.onRemove(this)) {
-      //Remove status if it no longer has positive stacks.
       if (match.getStacks() <= stacks) {
         statusList.remove(match);
       }
       else {
-        //Decrement that statuses stack size.
         match.setStacks(match.getStacks() - stacks);
       }
-      //Return successful operation.
       return true;
     }
-    //Return failed operation.
     return false;
   }
 
@@ -419,7 +365,6 @@ public class Unit implements Subscriber {
    * @return true if removal of the skill is successful.
    */
   public boolean removeSkill(Skill oldSkill) {
-    //Remove and return the result of the removals success.
     return skillList.remove(oldSkill);
   }
   
@@ -440,15 +385,11 @@ public class Unit implements Subscriber {
    * @return true if the Skill belongs to the Unit.
    */
   protected boolean resetSkill(Skill skill) {
-    //Check that the skill is not null and that it belongs to this Unit.
     if ((skill != null) && (skillList.contains(skill))) {
-      //Reset the cooldown and place the Unit into the TurnOrder.
       skill.setCooldown(skill.getMaxCooldown());
-      turnItems.add(turnOrder.addTurnItem(this, turnOrder.getClock() + skill.getCooldown(), true));
-      //Skill reset successful, return true.
+      turnItems.add(turnOrder.addTurnItem(this, skill.getCooldown(), true));
       return true;
     }
-    //Skill not null or not found, return false.
     return false;
   }
   
@@ -459,15 +400,11 @@ public class Unit implements Subscriber {
    * @param  turnOrder the object that the Unit uses to submit its TurnItems to.
    */
   protected void setBattleState(TurnOrder turnOrder) {
-    //Be sure to remove the Unit from any privious battle.
     clearBattleState();
-    //Store the TurnOrder for this Unit to submit TurnItems to and subscribe.
     this.turnOrder = turnOrder;
     this.turnOrder.subscribe(this);
-    //Iterate through all of the Skill objects.
     for (Skill nextSkill : skillList) {
       if (nextSkill.getCooldown() > 0) {
-        //Add the cooldown of all eligiable Skill objects to the TurnOrder.
         turnItems.add(turnOrder.addTurnItem(this, nextSkill.getCooldown(), true));
       }
     }
@@ -489,23 +426,16 @@ public class Unit implements Subscriber {
   @Override public void update() {
     int timeChange = turnOrder.getClock() - lastUpdated;
     lastUpdated = turnOrder.getClock();
-    //Iterates through all of the Unit object's statuses.
     Iterator<Status> iterateStatuses = statusList.iterator();
     while (iterateStatuses.hasNext()) {
       Status nextStatus = iterateStatuses.next();
-      //Check for statuses with a finite duration.
       if (nextStatus.getDuration() >= 0) {
-        //Decrement the duration by the incremented time parameter.
         nextStatus.setDuration(nextStatus.getDuration() - timeChange);
         if (nextStatus.getDuration() <= 0) {
-          //Triggers the onRemove event for this status.
           if (nextStatus.onRemove(this)) {
-            //If removal is successful, remove the status from the Unit.
             iterateStatuses.remove();
           }
           else {
-            //If removal failed, set the status duration to zero (might
-            //currently be negative), marking it for removal in the future.
             nextStatus.setDuration(0);
           }
         }
@@ -514,7 +444,6 @@ public class Unit implements Subscriber {
     Iterator<Skill> iterateSkills = skillList.iterator();
     while (iterateSkills.hasNext()) {
       Skill s = iterateSkills.next();
-      //Decrement the cooldown by the incremented time parameter.
       s.setCooldown(s.getCooldown() - timeChange);
     }
   }
