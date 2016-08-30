@@ -122,6 +122,21 @@ public class TurnOrder {
   }
 
   /**
+   * Takes a Unit and time paring and sorts it into the TurnOrder.
+   * @param  unit Unit object to be called when the turn is due.
+   * @param  time time from the start of the TurnOrder when the turn is due.
+   *         Measured in milliseconds.
+   * @param  stunnable true if the turn is delayed when the Unit called by the
+   *         turn is stunned.
+   * @return true when the addition of the turn information succeeds.
+   */
+  protected TurnItem addTurnItem(Unit unit, Duration time, boolean stunnable) {
+      TurnItem newItem = new TurnItem(unit, currentTime.plus(time), stunnable);
+      turnList.add(newItem);
+      return newItem;
+  }
+
+  /**
    * Getter for the time value of the clock. Measured in milliseconds.
    * @return time value of the clock.
    */
