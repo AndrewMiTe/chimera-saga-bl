@@ -28,7 +28,7 @@ package battle;
  * Enumerates the finite ways in which a skill can Target Unit objects on a
  * BattleField. Returns a Iterator object of valid targets when given a list of
  * Unit objects mapped upon a BattleField.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public enum Target {
   
