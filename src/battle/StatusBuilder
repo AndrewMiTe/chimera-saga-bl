@@ -1,0 +1,141 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016 Andrew Michael Teller(https://github.com/AndrewMiTe)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package battle;
+
+import java.time.Duration;
+
+/**
+ * Constructs Status objects using a builder pattern. All setter methods return
+ * the instance of the object it is called upon. The build method returns a new
+ * Status object using the information obtained through setters.
+ */
+public class StatusBuilder {
+
+  /**
+   * Name of the Status. Identifies the Status from unrelated Status objects.
+   * This is a required field. No default value is available.
+   */
+  private String name;
+  /**
+   * Simple text-based explanation of the Status. This is a required field. The
+   * default value is an empty String.
+   */
+  private String description;
+  /**
+   * The time before this status expires. Zero means the Status has an instant
+   * duration. Less then zero means duration is infinite. This is a required
+   * field. No default value is available.
+   */
+  private Duration duration;
+  /**
+   * The number of stacks this status is currently up to. Statuses with a
+   * duration greater then 0 do not stack in magnitude, rather they stack
+   * duration. The default for this is 1.
+   */
+  private int stacks;
+  /**
+   * States whether or not this status stuns the unit. Stunned units do not
+   * decrement their skill cooldowns and perform skills while true. The default
+   * for this is false.
+   */
+  private boolean stuns;
+  /**
+   * States whether or not the Status defeats the Unit. Defeated Unit objects
+   * allow their Team to lose a battle if all other ally Unit object's are also
+   * defeated.
+   */
+  private boolean defeats;
+  /**
+   * States whether or not the status is visible to the user of the client. The
+   * default for this is false.
+   */
+  private boolean hidden;
+
+  /**
+   * Basic constructor.
+   */
+  public StatusBuilder() {
+    this.name = null;
+    this.description = "";
+    this.duration = null;
+    this.stacks = 1;
+    this.stuns = false;
+    this.defeats = false;
+    this.hidden = false;
+  }
+
+  public Status build() {
+    return new Status(name, description, duration, stacks, stuns, defeats,
+        hidden);
+  }
+
+  public StatusBuilder setName(String name) {
+    if (name == null) {
+      throw new IllegalArgumentException("name cannot be null");
+    }
+    this.name = name;
+    return this;
+  }
+
+  public StatusBuilder setDescription(String description) {
+    if (description == null) {
+      throw new IllegalArgumentException("description cannot be null");
+    }
+    this.description = description;
+    return this;
+  }
+
+  public StatusBuilder setDuration(Duration duration) {
+    if (duration == null) {
+      throw new IllegalArgumentException("duration cannot be null");
+    }
+    this.duration = duration;
+    return this;
+  }
+
+  public StatusBuilder setStacks(int stacks) {
+    if (stacks < 1) {
+      throw new IllegalArgumentException("stacks cannot be less then 1");
+    }
+    this.stacks = stacks;
+    return this;
+  }
+
+  public StatusBuilder setStuns(boolean stuns) {
+    this.stuns = stuns;
+    return this;
+  }
+
+  public StatusBuilder setDefeats(boolean defeats) {
+    this.defeats = defeats;
+    return this;
+  }
+
+  public StatusBuilder setHidden(boolean hidden) {
+    this.hidden = hidden;
+    return this;
+  }
+  
+}
