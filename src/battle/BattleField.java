@@ -30,13 +30,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import javafx.scene.layout.Pane;
 
-/**
- * @todo Reorder the time component to use a date and time class rather then an integer.
- * @todo Allow battlefield more flexibility in how Units are spaced.
+//TODO Reorder the time component to use a date and time class rather then an integer.
+//TODO Allow battlefield more flexibility in how Units are spaced.
+ /**
  * Takes the units of a battle and orders them. The class allows the calling
  * object to obtain the battling units as a whole, as a team, or as a set of
  * units that match a target when given the targeting unit.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class BattleField {
 
@@ -168,12 +168,18 @@ public class BattleField {
    *    true, this Skill succeeds and applies its actions to all or one of the
    *    valid targets, depending on the enumerated Target value of the Skill. 
    *    This method would then return true. 
+   * Note that valid targets that meet the requirements are checked both before
+   * and after sub-Skills are executed. It is possible to create a Skill that
+   * can never apply its actions. This will be so if your sub-Skills apply
+   * Status objects that remove any of the Status objects that the primary skill
+   * requires, or if it applies a Status that defeats.
    * @param  unit the assumed Unit to be targeting the Skill
    * @param  skill the Skill attempting to be executed.
    * @return true if the Skill or any sub-Skill successfully executed.
    */
   private boolean executeSkill(Unit unit, Skill skill) {  
     if ((unit != null) && (skill != null) && (skill.getMaxCooldown() >= 0)){
+      // 1. Checking for valid targets w/ required Status objects applied.
       Iterator<Unit> targets = getTarget(unit, skill.getTarget());
       if (!targets.hasNext()) {
         return false;
@@ -193,6 +199,7 @@ public class BattleField {
       if (!match) {
         return false;
       }
+      // 2. Execute sub-Skills and track success.
       boolean partialSuccess = false;
       boolean completeSuccess = true;
       Iterator<Skill> subSkillList = skill.getSubSkills();
@@ -202,6 +209,7 @@ public class BattleField {
         partialSuccess = partialSuccess || subSkillSuccess;
         completeSuccess = completeSuccess && subSkillSuccess;
       }
+      // 3. Check again for valid targets and apply actions.
       if (completeSuccess) {
         targets = getTarget(unit, skill.getTarget());
         while (targets.hasNext()) {
