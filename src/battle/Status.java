@@ -38,8 +38,9 @@ public class Status {
    */
   private final String name;
   /**
-   * Simple text-based explanation of the Status. This is a required field. No
-   * default value is available.
+   * description of the Status and how it is intended to interact with
+   * the Unit it is applied to, as well as its interactions with other Status
+   * objects on the same Unit.
    */
   private final String description;
   /**
@@ -73,150 +74,83 @@ public class Status {
   private final boolean hidden;
   
   /**
-   * Basic constructor.
+   * Initializes the object so that all internal field variables that can be
+   * explicitly set are done so through the given parameters. See the
+   * StatusBuilder class, found in the same package, in order to set the
+   * parameters with default values and/or set them incrementally.
    * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
-   */
-  public Status(String name, String description, Duration duration) {
-    this(name, description, duration, 1, false, false, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
+   * @param  description A non-null String value that describes the Status.
+   * @param  duration time (in milliseconds) before this Status expires. 
    * @param  stacks number of stacks this Status is currently up to.
-   */
-  public Status(String name, String description, Duration duration,
-      int stacks) {
-    this(name, description, duration, stacks, false, false, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
-   * @param  stuns true if the Status stuns the target.
-   */
-  public Status(String name, String description, Duration duration,
-      boolean stuns) {
-    this(name, description, duration, 1, stuns, false, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
-   * @param  stacks number of stacks this Status is currently up to.
-   * @param  stuns true if the Status stuns the target.
-   */
-  public Status(String name, String description, Duration duration, int stacks,
-      boolean stuns) {
-    this(name, description, duration, stacks, stuns, false, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
-   * @param  stuns true if the Status stuns the target.
-   * @param  defeats true if the Status defeats the Unit.
-   */
-  public Status(String name, String description, Duration duration,
-      boolean stuns, boolean defeats) {
-    this(name, description, duration, 1, stuns, defeats, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires.
-   * @param  stacks number of stacks this Status is currently up to.
-   * @param  stuns true if the Status stuns the target.
-   * @param  defeats true if the Status defeats the Unit.
-   */
-  public Status(String name, String description, Duration duration, int stacks,
-      boolean stuns, boolean defeats) {
-    this(name, description, duration, stacks, stuns, defeats, false);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires. 
-   * @param  stuns true if the Status stuns the target.
-   * @param  defeats true if the Status defeats the Unit.
-   * @param  hidden true if the Status should be hidden from the client user.
-   */
-  public Status(String name, String description, Duration duration,
-      boolean stuns, boolean defeats, boolean hidden) {
-    this(name, description, duration, 1, stuns, defeats, hidden);
-  }
-  
-  /**
-   * Basic constructor.
-   * @param  name name of the Status.
-   * @param  description simple text-based description of the Status.
-   * @param  duration time before this Status expires. 
-   * @param  stacks number of stacks this Status is currently up to.
-   * @param  stuns true if the Status stuns the target.
-   * @param  defeats true if the Status defeats the Unit.
-   * @param  hidden true if the Status should be hidden from the client user.
+   * @param  stuns true if the Status stuns the Unit it is applied to.
+   * @param  defeats true if the Status defeats the Unit it is applied to.
+   * @param  hidden true if the Status should be hidden from client users.
    */
   public Status(String name, String description, Duration duration, int stacks,
       boolean stuns, boolean defeats, boolean hidden) {
-    this.name = name;
-    this.description = description;
-    this.duration = duration;
-    if (stacks > 0) {
-      this.stacks = stacks;
+    if (name == null) {
+      throw new IllegalArgumentException("name cannot be null");
     }
-    else
-      this.stacks = 1;
+    this.name = name;
+    if (description == null) {
+      throw new IllegalArgumentException("description cannot be null");
+    }
+    this.description = description;
+    if (duration == null) {
+      throw new IllegalArgumentException("duration cannot be null");
+    }
+    this.duration = duration;
+    if (stacks < 0) {
+      throw new IllegalArgumentException("stacks cannot be negative");
+    }
+    if (!duration.isNegative() && !duration.isZero() && (stacks > 1)) {
+      throw new IllegalArgumentException("stacks cannot be above 1 when the "
+          + "duration is a positive non-zero value");
+    }
+    this.stacks = stacks;
     this.stuns = stuns;
     this.defeats = defeats;
     this.hidden = hidden;
   }
   
   /**
-   * Copy constructor.
+   * Initializes a copy of the given Status object such that changes to the
+   * state of the copy have no affect on the original.
    * @param copyOf is the object of Status which we make our copy from.
    */
   public Status(Status copyOf) {
-    this.name = copyOf.getName();
-    this.description = copyOf.getDescription();
+    this.name = copyOf.name;
+    this.description = copyOf.description;
     this.duration = copyOf.duration;
-    this.stacks = copyOf.getStacks();
-    this.stuns = copyOf.isStunning();
-    this.defeats = copyOf.isDefeating();
-    this.hidden = copyOf.isHidden();
+    this.stacks = copyOf.stacks;
+    this.stuns = copyOf.stuns;
+    this.defeats = copyOf.defeats;
+    this.hidden = copyOf.hidden;
   }
   
   /**
-   * Getter for the description of the Status.
-   * @return simple text-based description of the Status.
+   * Returns a description of the Status and how it is intended to interact with
+   * the Unit it is applied to, as well as its interactions with other Status
+   * objects on the same Unit.
+   * @return A non-null String value that describes the Status.
    */
   public String getDescription() {
     return description;
   }
 
   /**
-   * Getter for the duration of the Status.
-   * @return time before this Status expires.
+   * Returns the time before the Status expires (in milliseconds). A duration of
+   * zero means that the Status is due to expire. A duration less then zero
+   * indicates that the Status has an infinite duration and cannot expire.
+   * @return time (in milliseconds) before the Status expires.
    */
   public int getDuration() {
     return (int)duration.toMillis();
   }
 
   /**
-   * Getter for the name of the Status.
+   * Returns a String value that identifies it as stackable (either in stack
+   * size or in duration) with those Status objects with the same name value.
    * @return name of the Status.
    */
   public String getName() {
@@ -224,7 +158,10 @@ public class Status {
   }
 
   /**
-   * Getter for the stacks of the Status.
+   * Returns a numeric value that indicates the magnitude or height of the
+   * Status. This value should always be a positive value greater then zero.
+   * This value can also not be above one if the duration of the Status is a
+   * positive non-zero value.
    * @return number of stacks this Status has.
    */
   public int getStacks() {
@@ -232,32 +169,38 @@ public class Status {
   }
 
   /**
-   * Returns true if the Status defeats the Unit.
-   * @return true if the Status defeats the Unit.
+   * Returns a boolean value that, if true, defeats any Unit it is applied to.
+   * Defeated Unit objects allows opposing teams to be victorious within a
+   * battle.
+   * @return true if the Status defeats the Unit it is applied to.
    */
   public boolean isDefeating() {
     return defeats;
   }
   
   /**
-   * Returns true if the Status should be hidden from the client user.
-   * @return true if the Status should be hidden from the client user.
+   * Returns a boolean value that, if true, indicates that the Status should be
+   * hidden from users of the client.
+   * @return true if the Status should be hidden from client users.
    */
   public boolean isHidden() {
     return hidden;
   }
 
   /**
-   * Returns true if this Status can have stacks (duration is not 0).
-   * @return true if this Status can have stacks.
+   * Returns a boolean value that, if true, indicates that the Status can be
+   * stacked and that its stack value can be greater then one.
+   * @return true if this Status is stackable.
    */
   public boolean isStackable() {
     return (duration.isNegative() || duration.isZero());
   }
   
   /**
-   * Returns true if the Status stuns the Unit.
-   * @return true if the Status stuns the Unit.
+   * Returns a boolean value that, if true, stuns the Unit it is applied to.
+   * Stunned Unit objects cannot perform actions and do not decrement the
+   * cooldown on their skills.
+   * @return true if the Status stuns the Unit it is applied to.
    */
   public boolean isStunning() {
     return stuns;
@@ -284,7 +227,7 @@ public class Status {
   }
 
   /**
-   * Setter for the duration of the status.
+   * 
    * @param duration time before this Status expires.
    */
   public void setDuration(int duration) {
@@ -293,7 +236,7 @@ public class Status {
   
   
   /**
-   * Setter for the stacks the unit has.
+   * 
    * @param stacks number of stacks this Status is set to. Stack size cannot be
    *        0 or less.
    */
@@ -307,5 +250,5 @@ public class Status {
   public String toString() {
     return name;
   }
-
+  
 }
