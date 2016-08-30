@@ -34,7 +34,6 @@ public class Status {
   
   /**
    * Name of the Status. Identifies the Status from unrelated Status objects.
-   * This is a required field. No default value is available.
    */
   private final String name;
   /**
@@ -45,14 +44,13 @@ public class Status {
   private final String description;
   /**
    * The time before this status expires. Zero means the Status has an instant
-   * duration. Less then zero means duration is infinite. This is a required
-   * field. No default value is available.
+   * duration. Less then zero means duration is infinite.
    */
   private Duration duration;
   /**
    * The number of stacks this status is currently up to. Statuses with a
    * duration greater then 0 do not stack in magnitude, rather they stack
-   * duration. The default for this is 1.
+   * duration.
    */
   private int stacks;
   /**
@@ -80,8 +78,8 @@ public class Status {
    * parameters with default values and/or set them incrementally.
    * @param  name name of the Status.
    * @param  description A non-null String value that describes the Status.
-   * @param  duration time (in milliseconds) before this Status expires. 
-   * @param  stacks number of stacks this Status is currently up to.
+   * @param  duration time before this Status expires. 
+   * @param  stacks the current stack size.
    * @param  stuns true if the Status stuns the Unit it is applied to.
    * @param  defeats true if the Status defeats the Unit it is applied to.
    * @param  hidden true if the Status should be hidden from client users.
@@ -144,8 +142,8 @@ public class Status {
    * indicates that the Status has an infinite duration and cannot expire.
    * @return time (in milliseconds) before the Status expires.
    */
-  public int getDuration() {
-    return (int)duration.toMillis();
+  public Duration getDuration() {
+    return duration;
   }
 
   /**
@@ -162,7 +160,7 @@ public class Status {
    * Status. This value should always be a positive value greater then zero.
    * This value can also not be above one if the duration of the Status is a
    * positive non-zero value.
-   * @return number of stacks this Status has.
+   * @return stack size.
    */
   public int getStacks() {
     return stacks;
@@ -227,23 +225,32 @@ public class Status {
   }
 
   /**
-   * 
+   * Sets the time before the Status expires. If set to zero, the Status is
+   * considered to have an instant duration. If set to a negative value, the
+   * duration is considered infinite.
    * @param duration time before this Status expires.
    */
-  public void setDuration(int duration) {
-    this.duration = Duration.ofMillis(duration);
+  public void setDuration(Duration duration) {
+    this.duration = duration;
   }
   
   
   /**
-   * 
-   * @param stacks number of stacks this Status is set to. Stack size cannot be
-   *        0 or less.
+   * Sets the stack size of the Status. Attempting to set this value below zero
+   * will throw an IllegalArgumentException. Attempting to set this value to
+   * anything other then 1 while the duration is a positive non-zero value will
+   * also throw a IllegalArgumentException.
+   * @param stacks stack size.
    */
   public void setStacks(int stacks) {
-    if (stacks > 0) {
-      this.stacks = stacks;
+    if (stacks < 0) {
+      throw new IllegalArgumentException("stacks cannot be negative");
     }
+    if (!duration.isNegative() && !duration.isZero() && (stacks > 1)) {
+      throw new IllegalArgumentException("stacks cannot be above 1 when the "
+          + "duration is a positive non-zero value");
+    }
+    this.stacks = stacks;
   }
   
   @Override

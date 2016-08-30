@@ -95,21 +95,22 @@ public class Unit implements Subscriber {
   public boolean addStatus(Status newStatus) {
     if ((newStatus != null) && newStatus.onApply(this)) {
       int oldStunDuration = getStunDuration();
-      if (newStatus.getDuration() != 0) {
+      if (!newStatus.getDuration().isZero()) {
         Status match = getStatus(newStatus.getName());
         if (match != null) {
           if (match.isStackable() && newStatus.isStackable()) {
             match.setStacks(match.getStacks() + newStatus.getStacks());
           }
-          else if ((match.getDuration() > 0) && (newStatus.getDuration() > 0)) {
-            int newDuration = match.getDuration() + newStatus.getDuration();
+          else if (!match.isStackable() && !newStatus.isStackable()) {
+            //int newDuration = match.getDuration() + newStatus.getDuration();
+            Duration newDuration = match.getDuration().plus(newStatus.getDuration());
             match.setDuration(newDuration);
             turnItems.add(turnOrder.addTurnItem(this, newDuration, false));
           }
         }
         else {
           statusList.add(newStatus);
-          if (newStatus.getDuration() > 0) {
+          if (!newStatus.isStackable()) {
             turnItems.add(turnOrder.addTurnItem(this, newStatus.getDuration(), false));
           }
         }
@@ -277,8 +278,8 @@ public class Unit implements Subscriber {
     int stunTime = 0;
     for (Status nextStatus : statusList) {
       if (nextStatus.isStunning()) {
-        if (stunTime < nextStatus.getDuration()) {
-          stunTime = nextStatus.getDuration();
+        if (stunTime < nextStatus.getDuration().toMillis()) {
+          stunTime = (int)nextStatus.getDuration().toMillis();
         }
       }
     }
@@ -429,14 +430,14 @@ public class Unit implements Subscriber {
     Iterator<Status> iterateStatuses = statusList.iterator();
     while (iterateStatuses.hasNext()) {
       Status nextStatus = iterateStatuses.next();
-      if (nextStatus.getDuration() >= 0) {
-        nextStatus.setDuration(nextStatus.getDuration() - timeChange);
-        if (nextStatus.getDuration() <= 0) {
+      if (!nextStatus.getDuration().isNegative()) {
+        nextStatus.setDuration(nextStatus.getDuration().minusMillis(timeChange));
+        if (nextStatus.isStackable()) {
           if (nextStatus.onRemove(this)) {
             iterateStatuses.remove();
           }
           else {
-            nextStatus.setDuration(0);
+            nextStatus.setDuration(Duration.ZERO);
           }
         }
       }
