@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -40,7 +40,7 @@ import java.util.Iterator;
  * by this Skill, will have all of this Skill object's actions applied to them,
  * if there are any. Actions are a separate list of Status objects contained
  * within this Skill.
- * @author Andrew M. Teller (andrew.m.teller@gmail.com)
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Skill {
   
