@@ -154,7 +154,7 @@ public class BattleLog extends VBox {
           }
           statusName.setFont(Font.font(null, FontWeight.BOLD, 10));
           statusBox.getChildren().add(statusName);
-          if (s.getDuration() > 0) {
+          if (!s.getDuration().isZero() && !s.getDuration().isNegative()) {
             Text statusDuration = new Text(" " + s.getDuration() + "ms");
             statusDuration.setFont(Font.font(null, FontWeight.NORMAL, 9));
             statusBox.getChildren().add(statusDuration);
