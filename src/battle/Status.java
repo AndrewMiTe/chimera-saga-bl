@@ -269,6 +269,7 @@ public class Status {
   
   @Override
   public String toString() {
+    if (name == null) return "";
     return name;
   }
   
