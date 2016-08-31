@@ -74,7 +74,7 @@ public class StatusBuilder {
    * Basic constructor.
    */
   public StatusBuilder() {
-    this.name = null;
+    this.name = "";
     this.description = "";
     this.duration = Duration.ZERO;
     this.stacks = 1;
@@ -83,6 +83,11 @@ public class StatusBuilder {
     this.hidden = false;
   }
 
+  /**
+   * Creates an instance of a Status object. The default Status object created
+   * has 
+   * @return 
+   */
   public Status build() {
     return new Status(name, description, duration, stacks, stuns, defeats,
         hidden);
@@ -94,6 +99,9 @@ public class StatusBuilder {
    * @see battle.Status Status.name
    */
   public StatusBuilder setName(String name) {
+    if (description == null) {
+      throw new IllegalArgumentException("name cannot be null");
+    }
     this.name = name;
     return this;
   }
