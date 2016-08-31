@@ -194,12 +194,14 @@ public class Unit implements Subscriber {
   
   /**
    * Checks to see if the unit has a status who's type matches the type passed
-   * by the caller and returns the first match.
+   * by the caller and returns the first match. Status objects with a null name
+   * value are all considered unique to each other and can never match.
    * @param  statusName the enumerated value of a Status being searched for.
    * @return the Status object matching value given. Returns null if no match
    *         was found.
    */
   public Status getStatus(String statusName) {
+    if (statusName == null) return null;
     Iterator<Status> iterateStatus = getStatuses();
     while (iterateStatus.hasNext()) {
       Status nextStatus = iterateStatus.next();

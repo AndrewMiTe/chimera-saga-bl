@@ -151,23 +151,23 @@ public class BattleField {
   /**
    * Attempts to execute a Skill cast by the given Unit. Returns true if the
    * Skill or any sub-Skill was successfully executed. The order in which the
-   * given skill is executed is as such:
-   * 1. The BattleField is checked for any valid targets for the Skill passed to
+   * given skill is executed is as such:<br><ol>
+   * <li>The BattleField is checked for any valid targets for the Skill passed to
    *    the method. Valid targets match the enumerated Target value of the Skill
    *    object and have all of the matching Status objects found in the Skill
    *    object's requirements. If no targets are found, then the Skill fails and
-   *    this method returns false.
-   * 2. All Skill objects found in the list of sub-skills is executed
+   *    this method returns false.</li>
+   * <li>All Skill objects found in the list of sub-skills is executed
    *    recursively using this method. If all calls return false, then the Skill
    *    fails and this method returns false. If there are no sub-skills, the
    *    passed Skill succeeds and applies its actions to all or one of the valid
    *    targets, depending on the enumerated Target value of the Skill. This
-   *    method would then return true.
-   * 3. If any but not all sub-skill executions return true, this Skill fails to
+   *    method would then return true.</li>
+   * <li>If any but not all sub-skill executions return true, this Skill fails to
    *    apply its actions but returns true. If all sub-skill executions return
    *    true, this Skill succeeds and applies its actions to all or one of the
    *    valid targets, depending on the enumerated Target value of the Skill. 
-   *    This method would then return true. 
+   *    This method would then return true. </li></ol>
    * Note that valid targets that meet the requirements are checked both before
    * and after sub-Skills are executed. It is possible to create a Skill that
    * can never apply its actions. This will be so if your sub-Skills apply
