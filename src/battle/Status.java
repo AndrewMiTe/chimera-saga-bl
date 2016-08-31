@@ -27,19 +27,35 @@ package battle;
 import java.time.Duration;
 
 /**
- * A state applied to Unit objects on a Battlefield.
+ * The representation of a state that can be applied to a {@link Unit} object
+ * through the execution of {@link Skill} objects. All Status objects have a 
+ * name field that is used to identify it. Status objects with the same name can
+ * be applied to the same Unit object so as to stack in magnitude, or to
+ * increment the duration of the first status to be applied. The {@link
+ * #onApply(battle.Unit) onApply} and {@link #onRemove(battle.Unit) onRemove}
+ * methods are default implementations that return true to indicate that the
+ * application and removal of the Status will always succeed and do nothing.
+ * These two methods can be overridden to allow interactions between Status
+ * objects or to allow one Status to chain into another after it expires, or is
+ * removed. Overriding onApply and onRemove is at the core of what gives the
+ * combat system its greatest complexity and power.
+ * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Status {
   
+  // TODO test to see if Status object with null name values work.
   /**
    * Name of the Status. Identifies the Status from unrelated Status objects.
+   * All Status object with a value of null are considered unique and each other
+   * and will not stack or enhance the other's duration.
    */
   private final String name;
   /**
-   * description of the Status and how it is intended to interact with
+   * Description of the Status and how it is intended to interact with
    * the Unit it is applied to, as well as its interactions with other Status
-   * objects on the same Unit.
+   * objects on the same Unit. Attempting to initiate the value as null will
+   * throw an {@link IllegalArgumentException}.
    */
   private final String description;
   /**
@@ -86,9 +102,6 @@ public class Status {
    */
   public Status(String name, String description, Duration duration, int stacks,
       boolean stuns, boolean defeats, boolean hidden) {
-    if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
-    }
     this.name = name;
     if (description == null) {
       throw new IllegalArgumentException("description cannot be null");
@@ -147,8 +160,9 @@ public class Status {
   }
 
   /**
-   * Returns a String value that identifies it as stackable (either in stack
-   * size or in duration) with those Status objects with the same name value.
+   * Returns a String value that Identifies the Status from unrelated Status
+   * objects. All Status object with a value of null are considered unique and
+   * each will not stack or enhance the other's duration.
    * @return name of the Status.
    */
   public String getName() {
