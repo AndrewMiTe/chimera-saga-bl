@@ -193,15 +193,20 @@ public class Unit implements Subscriber {
   }
   
   /**
-   * Checks to see if the unit has a status who's type matches the type passed
-   * by the caller and returns the first match. Status objects with a null name
-   * value are all considered unique to each other and can never match.
-   * @param  statusName the enumerated value of a Status being searched for.
-   * @return the Status object matching value given. Returns null if no match
-   *         was found.
+   * Returns a reference to a {@link Status} object with a matching name to the
+   * given {@link String} object. This method will always return {@code false}
+   * if the given parameter is an empty String. This is because all Status
+   * objects named with an empty String are considered unique and the name value
+   * of the Status is not enough to identify them from each other. Use the
+   * {@link #hasStatus(battle.Status) hasStatus} method to determine if the Unit
+   * has a Status when that Status object's name is an empty String.
+   * @param  statusName String value representing the name value of a {@link
+   *         Status} object.
+   * @return the {@link Status} object matching value given. Returns null if no
+   *         match was found.
    */
   public Status getStatus(String statusName) {
-    if (statusName == null) return null;
+    if (statusName.equals("")) return null;
     Iterator<Status> iterateStatus = getStatuses();
     while (iterateStatus.hasNext()) {
       Status nextStatus = iterateStatus.next();
@@ -209,7 +214,6 @@ public class Unit implements Subscriber {
         return nextStatus;
       }
     }
-    //Return null if the search failed to find a match.
     return null;
   }
   
@@ -223,14 +227,22 @@ public class Unit implements Subscriber {
   }
 
   /**
-   * Returns true if the Unit has a Status object with the matching
-   * StatusLibrary value as the status given.
-   * @param  status the object who's value matches the Status searched for.
+   * Returns {@code true} if the Unit has a reference to the same given {@link
+   * Status} object or if the Unit has a Status object with a matching non-empty
+   * {@link String} name value as the given Status object.
+   * @param  status reference to the search for Status.
    * @return true if a match was found.
    */
   public boolean hasStatus(Status status) {
     if (status != null) {
-      return getStatus(status.getName()) != null;
+      Iterator<Status> iterateStatus = getStatuses();
+      while (iterateStatus.hasNext()) {
+        Status nextStatus = iterateStatus.next();
+        if (status == nextStatus || (!status.getName().equals("") &&
+            status.getName().equals(nextStatus.getName()))) {
+          return true;
+        }
+      }
     }
     return false;
   }

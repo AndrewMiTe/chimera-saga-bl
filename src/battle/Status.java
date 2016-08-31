@@ -47,8 +47,10 @@ public class Status {
   // TODO test to see if Status object with null name values work.
   /**
    * Name of the Status. Identifies the Status from unrelated Status objects.
-   * All Status object with a value of null are considered unique and each other
-   * and will not stack or enhance the other's duration.
+   * All Status object with a value of an empty String are considered unique
+   * from each other and will not stack or increment the other's duration.
+   * Attempting to initiate the value as null will throw an {@link
+   * IllegalArgumentException}.
    */
   private final String name;
   /**
@@ -60,13 +62,16 @@ public class Status {
   private final String description;
   /**
    * The time before this status expires. Zero means the Status has an instant
-   * duration. Less then zero means duration is infinite.
+   * duration. Less then zero means duration is infinite.Attempting to initiate
+   * the value as null will throw an {@link IllegalArgumentException}.
    */
   private Duration duration;
   /**
-   * The number of stacks this status is currently up to. Statuses with a
-   * duration greater then 0 do not stack in magnitude, rather they stack
-   * duration.
+   * The current number of stacks. Statuses with a duration greater then 0 does
+   * not stack in magnitude, rather they increment the duration of the Status
+   * first applied. Attempting to initiate the value as less then 1, or with a
+   * value greater then 1 while the duration is greater then 0 will throw an
+   * {@link IllegalArgumentException}.
    */
   private int stacks;
   /**
@@ -102,6 +107,9 @@ public class Status {
    */
   public Status(String name, String description, Duration duration, int stacks,
       boolean stuns, boolean defeats, boolean hidden) {
+    if (name == null) {
+      throw new IllegalArgumentException("description cannot be null");
+    }
     this.name = name;
     if (description == null) {
       throw new IllegalArgumentException("description cannot be null");

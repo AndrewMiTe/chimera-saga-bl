@@ -39,7 +39,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-//@todo remove or replace.
+// TODO remove or replace.
 /**
  * A log of an ongoing battle. Elements of the current battle time, the state of
  * the units involved, and other details are appended to the bottom of the log
