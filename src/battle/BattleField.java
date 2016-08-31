@@ -26,7 +26,7 @@ package battle;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Iterator;
 import javafx.scene.layout.Pane;
 
@@ -89,7 +89,7 @@ public class BattleField {
    * Basic constructor.
    */
   public BattleField() {
-    locationList = new ArrayList();
+    locationList = new ArrayList<>();
     nextPosition = new int[Team.values().length][Row.values().length];
     battleLog = new BattleLog();
     turnOrder = new TurnOrder();
@@ -105,7 +105,7 @@ public class BattleField {
   public boolean addUnit(Unit newUnit, Team team) {
     if ((newUnit != null) && (team != null)) {
       Row row = newUnit.getStartingRow();
-      ArrayList<Location> openings = new ArrayList();
+      ArrayList<Location> openings = new ArrayList<>();
       for (Location locale : locationList) {
         if ((locale.getTeam() == team) && 
             (locale.getRow() == row) && 
@@ -265,7 +265,7 @@ public class BattleField {
    * @return Iterator containing all Unit objects on the Battlefield.
    */
   public Iterator<Unit> getAllUnits() {
-    ArrayList<Unit> allUnits = new ArrayList();
+    ArrayList<Unit> allUnits = new ArrayList<>();
     for (Location location : locationList) {
       if (location.getUnit() != null) {
         allUnits.add(location.getUnit());
@@ -330,11 +330,11 @@ public class BattleField {
       switch (target) {
         case SELF: {
           if (unit.isDefeated()) return null;
-          return (new ArrayList((Collection<? extends Unit>) unit)).iterator();
+            return (Iterator<Unit>)Arrays.asList(unit).iterator();
         }
         case CLOSE_ALLY: {
-          ArrayList<Location> builderList = new ArrayList();
-          ArrayList<Unit> returnList = new ArrayList();
+          ArrayList<Location> builderList = new ArrayList<>();
+          ArrayList<Unit> returnList = new ArrayList<>();
           double shortestDistance = -1;
           for (Location next : locationList) {
             if ((next.getUnit() != null) &&
@@ -366,8 +366,8 @@ public class BattleField {
           return returnList.iterator();
         }
         case CLOSE_ENEMY: {
-          ArrayList<Location> builderList = new ArrayList();
-          ArrayList<Unit> returnList = new ArrayList();
+          ArrayList<Location> builderList = new ArrayList<>();
+          ArrayList<Unit> returnList = new ArrayList<>();
           double shortestDistance = -1;
           for (Location next : locationList) {
             if ((next.getUnit() != null) &&
@@ -401,7 +401,7 @@ public class BattleField {
           }
         }
         case ANYONE: case EVERYONE: {
-          ArrayList<Unit> allUnits = new ArrayList();
+          ArrayList<Unit> allUnits = new ArrayList<>();
           for (Location location : locationList) {
             if ((location.getUnit() != null) && 
                 (!location.getUnit().isDefeated())) {
@@ -411,7 +411,7 @@ public class BattleField {
           return allUnits.iterator();
         }
         case ANYONE_ELSE: case EVERYONE_ELSE: {
-          ArrayList<Unit> returnList = new ArrayList();
+          ArrayList<Unit> returnList = new ArrayList<>();
           for (Location location : locationList) {
             if ((location.getUnit() != null) && 
                 (location.getUnit() != unit) &&
@@ -446,7 +446,7 @@ public class BattleField {
    * @return Iterator of Unit objects who share the same Team value.
    */
   private ArrayList<Unit> getTargetTeam(Team team) {
-    ArrayList<Unit> allUnits = new ArrayList();
+    ArrayList<Unit> allUnits = new ArrayList<>();
     for (Location location : locationList) {
       if ((location.getUnit() != null) && (location.getTeam() == team)) {
         if (!location.getUnit().isDefeated()) {
