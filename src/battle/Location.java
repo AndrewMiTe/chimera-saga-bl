@@ -32,7 +32,7 @@ import java.util.Comparator;
  * BattleField.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Location implements Comparator {
+public class Location implements Comparator<Location> {
 
   /**
    * The Unit that occupies the Location. Value can be null to signify an
@@ -83,16 +83,19 @@ public class Location implements Comparator {
    * Allows other Location objects to be compared based on their distance away
    * from this Location.
    * @param  localOne first Location to have its distance from this Location
-   *         compared to the second Location's distance from this Location.
+   *         compared to the second Location object's distance from this
+   *         Location.
    * @param  localTwo second Location to have its distance from this Location
-   *         compared to the first Location's distance from this Location.
+   *         compared to the first Location object's distance from this
+   *         Location.
    * @return 1 if the distance calculated for the first Location is greater then
    *         the second Location, -1 if the first is less then the second, and 0
    *         if the first and second are equal in distance to this Location.
    */
-  @Override public int compare(Object localOne, Object localTwo) {
-    double distanceOne = getDistance(this, (Location) localOne);
-    double distanceTwo = getDistance(this, (Location) localTwo);
+  @Override
+  public int compare(Location localOne, Location localTwo) {
+    double distanceOne = getDistance(this, localOne);
+    double distanceTwo = getDistance(this, localTwo);
     if (distanceOne > distanceTwo) {
       return 1;
     }
