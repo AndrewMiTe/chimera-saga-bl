@@ -27,49 +27,46 @@ package battle;
 import java.time.Duration;
 
 /**
- * Constructs Status objects using a builder pattern. All setter methods return
- * the instance of the object it is called upon. The build method returns a new
- * Status object using the information obtained through setters.
+ * Constructs {@link Status} objects using a builder pattern. All setter methods
+ * return the instance of the object it is called upon. The build method returns
+ * a new Status object using the information obtained through setters.
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class StatusBuilder {
 
   /**
-   * Name of the Status. Identifies the Status from unrelated Status objects.
-   * This is a required field. No default value is available.
+   * Stores the name value for producing a Status object.
+   * @see battle.Status Status.name
    */
   private String name;
   /**
-   * Simple text-based explanation of the Status. This is a required field. The
-   * default value is an empty String.
+   * Stores the description value for producing a Status object.
+   * @see battle.Status Status.description
    */
   private String description;
   /**
-   * The time before this status expires. Zero means the Status has an instant
-   * duration. Less then zero means duration is infinite. This is a required
-   * field. No default value is available.
+   * Stores the duration value for producing a Status object.
+   * @see battle.Status Status.duration
    */
   private Duration duration;
   /**
-   * The number of stacks this status is currently up to. Statuses with a
-   * duration greater then 0 do not stack in magnitude, rather they stack
-   * duration. The default for this is 1.
+   * Stores the stacks value for producing a Status object.
+   * @see battle.Status Status.stacks
    */
   private int stacks;
   /**
-   * States whether or not this status stuns the unit. Stunned units do not
-   * decrement their skill cooldowns and perform skills while true. The default
-   * for this is false.
+   * Stores the stuns value for producing a Status object.
+   * @see battle.Status Status.stuns
    */
   private boolean stuns;
   /**
-   * States whether or not the Status defeats the Unit. Defeated Unit objects
-   * allow their Team to lose a battle if all other ally Unit object's are also
-   * defeated.
+   * Stores the defeats value for producing a Status object.
+   * @see battle.Status Status.defeats
    */
   private boolean defeats;
   /**
-   * States whether or not the status is visible to the user of the client. The
-   * default for this is false.
+   * Stores the hidden value for producing a Status object.
+   * @see battle.Status Status.hidden
    */
   private boolean hidden;
 
@@ -79,7 +76,7 @@ public class StatusBuilder {
   public StatusBuilder() {
     this.name = null;
     this.description = "";
-    this.duration = null;
+    this.duration = Duration.ZERO;
     this.stacks = 1;
     this.stuns = false;
     this.defeats = false;
@@ -91,14 +88,21 @@ public class StatusBuilder {
         hidden);
   }
 
+  /**
+   * @param name name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.name
+   */
   public StatusBuilder setName(String name) {
-    if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
-    }
     this.name = name;
     return this;
   }
 
+  /**
+   * @param description name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.description
+   */
   public StatusBuilder setDescription(String description) {
     if (description == null) {
       throw new IllegalArgumentException("description cannot be null");
@@ -107,6 +111,11 @@ public class StatusBuilder {
     return this;
   }
 
+    /**
+   * @param duration name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.duration
+   */
   public StatusBuilder setDuration(Duration duration) {
     if (duration == null) {
       throw new IllegalArgumentException("duration cannot be null");
@@ -115,6 +124,11 @@ public class StatusBuilder {
     return this;
   }
 
+  /**
+   * @param stacks name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.stacks
+   */
   public StatusBuilder setStacks(int stacks) {
     if (stacks < 1) {
       throw new IllegalArgumentException("stacks cannot be less then 1");
@@ -123,16 +137,31 @@ public class StatusBuilder {
     return this;
   }
 
+  /**
+   * @param stuns name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.stuns
+   */
   public StatusBuilder setStuns(boolean stuns) {
     this.stuns = stuns;
     return this;
   }
 
+  /**
+   * @param defeats name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.defeats
+   */
   public StatusBuilder setDefeats(boolean defeats) {
     this.defeats = defeats;
     return this;
   }
 
+  /**
+   * @param hidden name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.hidden
+   */
   public StatusBuilder setHidden(boolean hidden) {
     this.hidden = hidden;
     return this;
