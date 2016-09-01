@@ -27,12 +27,11 @@ package battle;
 import java.time.LocalDateTime;
 
 /**
- * A non-concrete class for describing an event. Instantiation of concrete
+ * A abstract class for describing an event. Instantiation of concrete
  * subclasses requires the super class to be instantiated with the time of the
- * event. Concrete implementations must also override the {@link #toString()
- * toString} in order to avoid throwing an {@link
- * UnsupportedOperationException}. The toString method should output a {@link
- * String} that describes the event in a manner that is readable to the user.
+ * event. The {@link #toString() toString} method has been overridden as an 
+ * abstraction. This is to force concrete subclasses to create the output as a
+ * {@link String} that is readable to the user.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public abstract class LogEntry {
@@ -45,7 +44,7 @@ public abstract class LogEntry {
   /**
    * Initiates the object with the time at which the event occurred. A null time
    * value will throw an {@link IllegalArgumentException}.
-   * @param timeStamp the time of the event that precipitated the entry.
+   * @param timeStamp the time of the event.
    */
   public LogEntry(LocalDateTime timeStamp) {
     if (timeStamp == null) throw new IllegalArgumentException();
@@ -60,17 +59,13 @@ public abstract class LogEntry {
   }
 
   /**
-   * The {@link LogEntry} class overrides this method so that concrete
-   * implementation are required to output a {@link String} that correctly
-   * describes the log entry that is readable to the user. Failure to override
-   * the method will result in the likely event that an {@link 
-   * UnsupportedOperationException} will be thrown.
+   * The {@link LogEntry} class overrides this method with an abstraction. This
+   * is so that concrete implementation are required to output a {@link String}
+   * that correctly describes the log entry that is readable to the user.
    * @return String that describes the event in a manner that is readable to the
    *         user.
    */
   @Override
-  public String toString() {
-    throw new UnsupportedOperationException();
-  }
+  public abstract String toString();
 
 }
