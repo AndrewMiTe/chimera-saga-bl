@@ -24,39 +24,48 @@
 
 package battle;
 
+import java.time.LocalDateTime;
+
 /**
- *
+ * Concrete implementation of a {@link LogEntry} that requires an enumerated
+ * Team value of the team defeated in battle. Overrides the {@link #toString()
+ * toString} method so as to describe the event in a user readable manner.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public enum LogEntryType {
+public class TeamDefeatEntry extends LogEntry {
   
   /**
-   * LogEntry contains the Skill object executed and the Unit object executing
-   * the skill, in that order.
+   * Enumerated team value of the team that was defeated.
    */
-  SKILL_EXECUTED,
+  private final Team team;
   
   /**
-   * LogEntry contains the Status object applied and the Unit object it was
-   * applied to, in that order.
+   * Initiates the entry with the time of the skill execution and the enumerated
+   * team value of the team that was defeated. Deep copies of the all objects
+   * are made to preserve the information they contained at the time of the
+   * event.
+   * @param timeStamp time of the defeat.
+   * @param team the team that was defeated.
    */
-  STATUS_APPLIED,
-  
+  public TeamDefeatEntry(LocalDateTime timeStamp, Team team) {
+    super(timeStamp);
+    this.team = team;
+  }
+
   /**
-   * LogEntry contains the Status object removed, the Unit object it was removed
-   * from, and a Boolean value of true if Status expired before it was removed,
-   * in that order.
+   * @return enumerated Team value of the team that was defeated.
    */
-  STATUS_REMOVED,
-  
+  public Team getLosingTeam() {
+    return this.team;
+  }
+
   /**
-   * LogEntry contains the enumerated Team value that has been defeated.
+   * {@inheritDoc}
    */
-  TEAM_DEFEAT,
-  
-  /**
-   * LogEntry contains the enumerated Team value that has claimed victory.
-   */
-  TEAM_VICTORY
+  @Override
+  public String toString() {
+    return "@" + getTimeStamp() + " " + team.toString() + " team is "
+        + "defeated!";
+  }
   
 }

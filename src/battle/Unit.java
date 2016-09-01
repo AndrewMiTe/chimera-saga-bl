@@ -26,8 +26,8 @@ package battle;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Participant in battles that take place on BattleFields.
@@ -46,15 +46,15 @@ public class Unit implements Subscriber {
   /**
    * The list of all the Skill objects the Unit can execute in battle.
    */
-  private final Collection<Skill> skillList;
+  private final List<Skill> skillList;
   /**
    * The list of all the Status objects the Unit has.
    */
-  private final Collection<Status> statusList;
+  private final List<Status> statusList;
   /** 
    * The list of TurnItem objects the Unit has inserted into the TurnOrder.
    */
-  private final Collection<TurnItem> turnItems;
+  private final List<TurnItem> turnItems;
   /**
    * The TurnOrder that the Unit subscribes to for updates and that the Unit
    * submits its TurnItems to.
@@ -80,6 +80,29 @@ public class Unit implements Subscriber {
   }
 
   /**
+   * Initializes a deep copy of the given Unit such that changes to the state of
+   * the copy have no affect on the original, and vica versa.
+   * @param copyOf object which the copy is made from.
+*/
+  public Unit(Unit copyOf) {
+    this.name = copyOf.name;
+    this.battleRow = copyOf.battleRow;
+    this.skillList = new ArrayList<>(copyOf.skillList.size());
+    for (Skill next : copyOf.skillList) {
+      this.skillList.add(new Skill(next));
+    }
+    this.statusList = new ArrayList<>(copyOf.statusList.size());
+    for (Status next : copyOf.statusList) {
+      this.statusList.add(new Status(next));
+    }
+    this.turnItems = new ArrayList<>(copyOf.turnItems.size());
+    for (TurnItem next : copyOf.turnItems) {
+      this.turnItems.add(new TurnItem(next));
+    }
+    this.lastUpdated = copyOf.lastUpdated;
+  }
+
+   /**
    * Adds a new Skill to the Unit object's list of Skill objects.
    * @param  newSkill Skill to be added to the Unit.
    */
@@ -433,12 +456,9 @@ public class Unit implements Subscriber {
   public void setStartingRow(Row battleRow) {
     this.battleRow = battleRow;
   }
-
-  @Override public String toString() {
-    return name;
-  }
   
-  @Override public void update() {
+  @Override
+  public void update() {
     int timeChange = turnOrder.getClock() - lastUpdated;
     lastUpdated = turnOrder.getClock();
     Iterator<Status> iterateStatuses = statusList.iterator();

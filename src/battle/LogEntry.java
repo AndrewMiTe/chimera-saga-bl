@@ -24,56 +24,48 @@
 
 package battle;
 
+import java.time.LocalDateTime;
+
 /**
- * Describes a BattleFeild event and provides references to the various objects
- * involved in the event.
+ * A abstract class for describing an event. Instantiation of concrete
+ * subclasses requires the super class to be instantiated with the time of the
+ * event. The {@link #toString() toString} method has been overridden as an 
+ * abstraction. This is to force concrete subclasses to create the output as a
+ * {@link String} that is readable to the user.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class LogEntry {
+public abstract class LogEntry {
+  
+  /**
+   * The time when the event described in the LogEntry occurred.
+   */
+  private final LocalDateTime timeStamp;
+  
+  /**
+   * Initiates the object with the time at which the event occurred. A null time
+   * value will throw an {@link IllegalArgumentException}.
+   * @param timeStamp the time of the event.
+   */
+  public LogEntry(LocalDateTime timeStamp) {
+    if (timeStamp == null) throw new IllegalArgumentException();
+    this.timeStamp = timeStamp;
+  }
 
   /**
-   * An enumerated type to specify what information is contained in the LogEntry
-   * and how the eventItems should be organized.
+   * @return the time when the event described in the LogEntry occurred.
    */
-  private LogEntryType logEntryType;
-  
-  /**
-   * The time since the start of the battle when the LogEntry occurred. Measured
-   * in milliseconds.
-   */
-  private int timeStamp;
-  
-  /**
-   * References to the various objects involved in the event that generated the
-   * LogEntry.
-   */
-  private Object[] eventItems;
-    
-  @Override public String toString() {
-    switch (logEntryType) {
-      case SKILL_EXECUTED:
-        return eventItems[1].toString() + " executed the "
-          + eventItems[0].toString() + " skill.";
-      case STATUS_APPLIED:
-        return "The " + eventItems[0].toString() + " status was applied to "
-          + eventItems[1].toString() + " with a duration of "
-          + ((Status)eventItems[0]).getDuration();
-      case STATUS_REMOVED:
-        if (eventItems[2].toString().equals("true")) {
-          return "The " + eventItems[0].toString() + " status has expired from "
-            + eventItems[1].toString();
-        }
-        else {
-          return "The " + eventItems[0].toString() + " status was forcfully"
-            + " removed from " + eventItems[1].toString();
-        }
-      case TEAM_DEFEAT:
-        return eventItems[0].toString() + " team defeated!";
-      case TEAM_VICTORY:
-        return eventItems[0].toString() + " team is Victorious!";
-      default:
-        throw new AssertionError(logEntryType.name());
-    }
+  public LocalDateTime getTimeStamp() {
+    return timeStamp;
   }
-  
+
+  /**
+   * The {@link LogEntry} class overrides this method with an abstraction. This
+   * is so that concrete implementation are required to output a {@link String}
+   * that correctly describes the log entry that is readable to the user.
+   * @return String that describes the event in a manner that is readable to the
+   *         user.
+   */
+  @Override
+  public abstract String toString();
+
 }

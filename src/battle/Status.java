@@ -132,9 +132,9 @@ public class Status {
   }
   
   /**
-   * Initializes a copy of the given Status object such that changes to the
-   * state of the copy have no affect on the original.
-   * @param copyOf is the object of Status which we make our copy from.
+   * Initializes a deep copy of the given Status object such that changes to the
+   * state of the copy have no affect on the original, and vica versa.
+   * @param copyOf object which the copy is made from.
    */
   public Status(Status copyOf) {
     this.name = copyOf.name;
@@ -272,12 +272,6 @@ public class Status {
           + "duration is a positive non-zero value");
     }
     this.stacks = stacks;
-  }
-  
-  @Override
-  public String toString() {
-    if (name == null) return "";
-    return name;
   }
   
 }

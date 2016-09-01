@@ -61,6 +61,17 @@ public class TurnItem implements Comparable<TurnItem> {
     this.stunnable = stunnable;
   }
 
+  /**
+   * Initializes a deep copy of the given TurnItem such that changes to the
+   * state of the copy have no affect on the original, and vica versa.
+   * @param copyOf object which the copy is made from.
+   */
+  public TurnItem(TurnItem copyOf) {
+    this.unit = copyOf.unit;
+    this.timeOfTurn = copyOf.timeOfTurn;
+    this.stunnable = copyOf.stunnable;
+  }
+
   @Override
   public int compareTo(TurnItem other) {
     return timeOfTurn.compareTo(other.getTime());
