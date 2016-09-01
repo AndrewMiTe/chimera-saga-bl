@@ -26,6 +26,7 @@ package battle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Contains the instructions for a interaction between its owner, a Unit object,
@@ -74,17 +75,17 @@ public class Skill {
   /**
    * List of Status objects to apply to the Target of the Skill.
    */
-  private final ArrayList<Status> actions;
+  private final List<Status> actions;
   /**
    * List of Status objects that the Target of the Skill must have in order to
    * continue Skill execution.
    */
-  private final ArrayList<String> requires;
+  private final List<String> requires;
   /**
    * List of Skill objects that must be successfully executed in order for this
    * Skill to apply its actions to its Target(s).
    */
-  private final ArrayList<Skill> subSkills;
+  private final List<Skill> subSkills;
 
   /**
    * Basic constructor.
@@ -106,6 +107,32 @@ public class Skill {
     this.requires = new ArrayList<>();
     this.actions = new ArrayList<>();
     this.subSkills = new ArrayList<>();
+  }
+
+  /**
+   * Initializes a deep copy of the given Skill object such that changes to the
+   * state of the copy have no affect on the original, and vica versa.
+   * @param copyOf object which the copy is made from.
+   */
+  public Skill(Skill copyOf) {
+    this.name = copyOf.name;
+    this.description = copyOf.description;
+    this.rowUse = copyOf.rowUse;
+    this.target = copyOf.target;
+    this.maxCooldown = copyOf.maxCooldown;
+    this.cooldown = copyOf.cooldown;
+    this.requires = new ArrayList<>(copyOf.requires.size());
+    for (String next : copyOf.requires) {
+      this.requires.add(next);
+    }
+    this.actions = new ArrayList<>(copyOf.actions.size());
+    for (Status next : copyOf.actions) {
+      this.actions.add(new Status(next));
+    }
+    this.subSkills = new ArrayList<>(copyOf.subSkills.size());
+    for (Skill next : copyOf.subSkills) {
+      this.subSkills.add(new Skill(next));
+    }
   }
 
   /**
@@ -264,10 +291,6 @@ public class Skill {
    */
   public void setTarget(Target target) {
     this.target = target;
-  }
-
-  @Override public String toString() {
-    return name;
   }
   
 }
