@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  * object and {@link Status} object to initiate and describe an event where the
  * status was removed from the unit. Overrides the {@link #toString() toString}
  * method so as to describe the event in a user readable manner.
- * @author Andrew M. Teller
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class StatusRemovedEntry extends LogEntry {
   
