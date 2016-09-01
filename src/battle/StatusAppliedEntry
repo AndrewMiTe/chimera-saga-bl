@@ -47,12 +47,12 @@ public class StatusAppliedEntry extends LogEntry {
   
   /**
    * Initiates the entry with the time of the status application, the {@link
-   * Unit} object the {@link Status} object was applied to. Deep copies of the
-   * Unit and Status objects are made to preserve the information they contained
-   * at the time of the event.
-   * @param timeStamp time of the skill execution event.
-   * @param unit Unit object executing the skill.
-   * @param status Skill object that was executed.
+   * Unit} object affected, and the {@link Status} object that was applied. Deep
+   * copies of the Unit and Status objects are made to preserve the information
+   * they contained at the time of the event.
+   * @param timeStamp time of the status application.
+   * @param unit Unit object that the status was applied to.
+   * @param status Status object that was applied.
    */
   public StatusAppliedEntry(LocalDateTime timeStamp, Unit unit, Status status ) {
     super(timeStamp);
