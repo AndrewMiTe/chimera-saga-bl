@@ -65,8 +65,8 @@ public class TeamVictoryEntry extends LogEntry {
    */
   @Override
   public String toString() {
-    return "@" + getTimeStamp() + " " + team.toString() + " team has achieved"
-        + " victory";
+    return "@" + getTimeStamp() + " " + team.toString() + " team is "
+        + "Victorious!";
   }
   
 }
