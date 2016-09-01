@@ -1,0 +1,87 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016 Andrew Michael Teller(https://github.com/AndrewMiTe)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package battle;
+
+import java.time.LocalDateTime;
+
+/**
+ * Concrete implementation of a {@link LogEntry} that requires the {@link Unit}
+ * object and {@link Status} object to initiate and describe an event where the
+ * status was applied to the unit. Overrides the {@link #toString() toString}
+ * method so as to describe the event in a user readable manner.
+ * @author Andrew M. Teller
+ */
+public class StatusAppliedEntry extends LogEntry {
+  
+  /**
+   * Copy of Unit object the status was applied to.
+   */
+  private final Unit unit;
+  
+  /**
+   * Copy of Skill object that was applied.
+   */
+  private final Status status;
+  
+  /**
+   * Initiates the entry with the time of the status application, the {@link
+   * Unit} object the {@link Status} object was applied to. Deep copies of the
+   * Unit and Status objects are made to preserve the information they contained
+   * at the time of the event.
+   * @param timeStamp time of the skill execution event.
+   * @param unit Unit object executing the skill.
+   * @param status Skill object that was executed.
+   */
+  public StatusAppliedEntry(LocalDateTime timeStamp, Unit unit, Status status ) {
+    super(timeStamp);
+    this.unit = new Unit(unit);
+    this.status = new Status(status);
+  }
+
+  /**
+   * @return a copy of the Unit object the status was applied to.
+   */
+  public Unit getAffectedUnit() {
+    return this.unit;
+  }
+
+  /**
+   * @return a copy of the Status object that was applied.
+   */
+  public Status getAppliedStatus() {
+    return this.status;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "@" + getTimeStamp() + " the " + status.getName() + " status was " + 
+        "applied to " + unit.getName() + " with a duration of " +
+        status.getDuration();
+  }
+  
+}
