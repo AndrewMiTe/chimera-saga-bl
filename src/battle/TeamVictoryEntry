@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
 public class TeamVictoryEntry extends LogEntry {
   
   /**
-   * Enumerated team value that achieved victory.
+   * Enumerated team value of the team that achieved victory.
    */
   private final Team team;
   
@@ -45,7 +45,7 @@ public class TeamVictoryEntry extends LogEntry {
    * team value of the team that achieved victory. Deep copies of the all
    * objects are made to preserve the information they contained at the time of
    * the event.
-   * @param timeStamp time of the skill execution event.
+   * @param timeStamp time of the victory.
    * @param team the team that achieved victory.
    */
   public TeamVictoryEntry(LocalDateTime timeStamp, Team team) {
@@ -66,7 +66,7 @@ public class TeamVictoryEntry extends LogEntry {
   @Override
   public String toString() {
     return "@" + getTimeStamp() + " " + team.toString() + " team is "
-        + "Victorious!";
+        + "victorious!";
   }
   
 }
