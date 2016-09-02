@@ -71,10 +71,16 @@ public class StatusBuilder {
   private boolean hidden;
 
   /**
-   * Basic constructor.
+   * Instantiates the object with the name of the {@link Status} to be built.
+   * Passing a {@code null} value to the constructor will throw an {@link
+   * IllegalArgumentException}.
+   * @param name name value for producing a Status object.
    */
-  public StatusBuilder() {
-    this.name = "";
+  public StatusBuilder(String name) {
+    if (name == null) {
+      throw new IllegalArgumentException("name cannot be null");
+    }
+    this.name = name;
     this.description = "";
     this.duration = Duration.ZERO;
     this.stacks = 1;
@@ -84,9 +90,11 @@ public class StatusBuilder {
   }
 
   /**
-   * Creates an instance of a Status object. The default Status object created
-   * has 
-   * @return 
+   * Creates a new {@link Status} object built with the values set by this
+   * builder object. Default values for all parameters, if not explicitely set,
+   * are used with exception to the name parameter, which is set when the
+   * StatusBuilder is initiated.
+   * @return new Status object built with the values set by this builder object.
    */
   public Status build() {
     return new Status(name, description, duration, stacks, stuns, defeats,
@@ -99,7 +107,7 @@ public class StatusBuilder {
    * @see battle.Status Status.name
    */
   public StatusBuilder setName(String name) {
-    if (description == null) {
+    if (name == null) {
       throw new IllegalArgumentException("name cannot be null");
     }
     this.name = name;
