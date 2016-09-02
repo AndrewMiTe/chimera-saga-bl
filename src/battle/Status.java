@@ -46,8 +46,6 @@ public class Status {
   
   /**
    * Name of the Status. Identifies the Status from unrelated Status objects.
-   * All Status object with a value of an empty String are considered unique
-   * from each other and will not stack or increment the other's duration.
    * Attempting to initiate the value as null will throw an {@link
    * IllegalArgumentException}.
    */
