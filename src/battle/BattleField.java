@@ -139,7 +139,7 @@ public class BattleField {
       Iterator<Skill> skills = unit.getSkills();
       while (skills.hasNext()) {
         Skill s = skills.next();
-        if ((s.getMaxCooldown() < 0) && (s.getTarget() == Target.SELF)) {
+        if ((s.getMaxCooldown().isNegative()) && (s.getTarget() == Target.SELF)) {
           for (Iterator<Status> actions = s.getActions(); actions.hasNext();) {
             unit.addStatus(new Status(actions.next()));
           }
@@ -178,7 +178,7 @@ public class BattleField {
    * @return true if the Skill or any sub-Skill successfully executed.
    */
   private boolean executeSkill(Unit unit, Skill skill) {  
-    if ((unit != null) && (skill != null) && (skill.getMaxCooldown() >= 0)){
+    if ((unit != null) && (skill != null) && (!skill.getMaxCooldown().isNegative())){
       // 1. Checking for valid targets w/ required Status objects applied.
       Iterator<Unit> targets = getTarget(unit, skill.getTarget());
       if (!targets.hasNext()) {
