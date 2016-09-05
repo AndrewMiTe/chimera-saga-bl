@@ -137,11 +137,19 @@ public class TurnOrder {
   }
 
   /**
-   * Getter for the time value of the clock. Measured in milliseconds.
-   * @return time value of the clock.
+   * Getter for the current time of the battle.
+   * @return date and time value.
    */
-  protected Integer getClock() {
-    return (int)Duration.between(startTime, currentTime).toMillis();
+  protected LocalDateTime getCurrentTime() {
+    return currentTime;
+  }
+
+  /**
+   * Getter for the start time of the battle.
+   * @return date and time value.
+   */
+  protected LocalDateTime getStartTime() {
+    return startTime;
   }
   
   /**
