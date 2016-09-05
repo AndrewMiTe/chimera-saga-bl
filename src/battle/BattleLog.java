@@ -24,6 +24,8 @@
 
 package battle;
 
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Border;
@@ -86,7 +88,10 @@ public class BattleLog extends VBox {
     clockBox.setStyle("-fx-background-color: #000000;");
     titleBox.getChildren().add(clockBox);
     //The actual clock time.
-    Text clockTime = new Text("" + turnOrder.getClock() + "ms Into battle.");
+    DateTimeFormatter formatTime = DateTimeFormatter.ISO_LOCAL_TIME;
+    Text clockTime = new Text("@" + formatTime.format(turnOrder.
+        getCurrentTime()) + " (" + Duration.between(turnOrder.getStartTime(),
+        turnOrder.getCurrentTime()).toMillis() + "ms into battle)");
     clockTime.setFont(Font.font(null, FontWeight.BOLD, 16));
     clockTime.setFill(Paint.valueOf("#ffffff"));
     clockBox.getChildren().add(clockTime);
