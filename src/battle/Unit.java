@@ -25,6 +25,7 @@
 package battle;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +65,7 @@ public class Unit implements Subscriber {
    * The time value representing the last time the Unit received a request to
    * update.
    */
-  private int lastUpdated;
+  private LocalDateTime lastUpdated;
 
   /**
    * Basic constructor.
@@ -76,7 +77,7 @@ public class Unit implements Subscriber {
     this.skillList = new ArrayList<>();
     this.statusList = new ArrayList<>();
     this.turnItems = new ArrayList<>();
-    this.lastUpdated = 0;
+    this.lastUpdated = LocalDateTime.now();
   }
 
   /**
@@ -117,7 +118,7 @@ public class Unit implements Subscriber {
    */
   public boolean addStatus(Status newStatus) {
     if ((newStatus != null) && newStatus.onApply(this)) {
-      int oldStunDuration = getStunDuration();
+      Duration oldStunDuration = getStunDuration();
       if (!newStatus.getDuration().isZero()) {
         Status match = getStatus(newStatus.getName());
         if (match != null) {
@@ -138,16 +139,17 @@ public class Unit implements Subscriber {
           }
         }
       }
-      int stunDurationChange = getStunDuration() - oldStunDuration;
-      if (stunDurationChange != 0) {
+      Duration stunDurationChange = getStunDuration().minus(oldStunDuration);
+      if (!stunDurationChange.isZero()) {
         for (TurnItem nextItem : turnItems) {
           if (nextItem.isStunnable()) {
-            nextItem.setTime(nextItem.getTime().plus(Duration.ofMillis(stunDurationChange)));
+            nextItem.setTime(nextItem.getTime().plus(stunDurationChange));
           }
         }
         for (Skill nextSkill : skillList) {
-          if (nextSkill.getMaxCooldown() > 0) {
-            nextSkill.setCooldown(nextSkill.getCooldown() + stunDurationChange);
+          if (!nextSkill.getMaxCooldown().isNegative() &&
+              !nextSkill.getMaxCooldown().isZero()) {
+            nextSkill.setCooldown(nextSkill.getCooldown().plus(stunDurationChange));
           }
         }
       }    
@@ -294,12 +296,12 @@ public class Unit implements Subscriber {
    * the longest Status that stuns.
    * @return duration the Unit is stunned.
    */
-  private int getStunDuration() {
-    int stunTime = 0;
+  private Duration getStunDuration() {
+    Duration stunTime = Duration.ZERO;
     for (Status nextStatus : statusList) {
       if (nextStatus.isStunning()) {
-        if (stunTime < nextStatus.getDuration().toMillis()) {
-          stunTime = (int)nextStatus.getDuration().toMillis();
+        if (stunTime.compareTo(nextStatus.getDuration()) < 0) {
+          stunTime = nextStatus.getDuration();
         }
       }
     }
@@ -317,7 +319,10 @@ public class Unit implements Subscriber {
       Iterator<Skill> iterateSkills = skillList.iterator();
       while (iterateSkills.hasNext()) {
         Skill nextSkill = iterateSkills.next();
-        if ((nextSkill.getMaxCooldown() > 0) && (nextSkill.getCooldown() <= 0)) {
+        if ((!nextSkill.getMaxCooldown().isNegative() &&
+            !nextSkill.getMaxCooldown().isZero()) && 
+            (nextSkill.getCooldown().isNegative() ||
+            nextSkill.getCooldown().isZero())) {
           return nextSkill;
         }
       }
@@ -425,11 +430,12 @@ public class Unit implements Subscriber {
     this.turnOrder = turnOrder;
     this.turnOrder.subscribe(this);
     for (Skill nextSkill : skillList) {
-      if (nextSkill.getCooldown() > 0) {
+      if (!nextSkill.getCooldown().isNegative() &&
+          !nextSkill.getCooldown().isZero()) {
         turnItems.add(turnOrder.addTurnItem(this, nextSkill.getCooldown(), true));
       }
     }
-    lastUpdated = turnOrder.getClock();
+    lastUpdated = turnOrder.getCurrentTime();
   }
 
   /**
@@ -442,13 +448,13 @@ public class Unit implements Subscriber {
   
   @Override
   public void update() {
-    int timeChange = turnOrder.getClock() - lastUpdated;
-    lastUpdated = turnOrder.getClock();
+    Duration timeChange = Duration.between(lastUpdated, turnOrder.getCurrentTime());
+    lastUpdated = turnOrder.getCurrentTime();
     Iterator<Status> iterateStatuses = statusList.iterator();
     while (iterateStatuses.hasNext()) {
       Status nextStatus = iterateStatuses.next();
       if (!nextStatus.getDuration().isNegative()) {
-        nextStatus.setDuration(nextStatus.getDuration().minusMillis(timeChange));
+        nextStatus.setDuration(nextStatus.getDuration().minus(timeChange));
         if (nextStatus.isStackable()) {
           if (nextStatus.onRemove(this)) {
             iterateStatuses.remove();
@@ -462,7 +468,7 @@ public class Unit implements Subscriber {
     Iterator<Skill> iterateSkills = skillList.iterator();
     while (iterateSkills.hasNext()) {
       Skill s = iterateSkills.next();
-      s.setCooldown(s.getCooldown() - timeChange);
+      s.setCooldown(s.getCooldown().minus(timeChange));
     }
   }
 
