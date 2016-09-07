@@ -24,6 +24,7 @@
 
 package battle;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,12 +62,12 @@ public class Skill {
    * The default amount of time until the Skill can be used after execution.
    * Measured in milliseconds.
    */
-  private int maxCooldown;
+  private Duration maxCooldown;
   /**
    * The current amount of time until the skill can be used. Measured in
    * milliseconds.
    */
-  private int cooldown;
+  private Duration cooldown;
   /**
    * Enumerated Target value for determining valid Unit objects this Skill
    * applies its action to.
@@ -97,7 +98,8 @@ public class Skill {
    * @param  maxCooldown The default amount of time until the Skill can be used
    *         after execution. Measured in milliseconds.
    */
-  public Skill(String name, String description, Row rowUse, Target target, int maxCooldown) {
+  public Skill(String name, String description, Row rowUse, Target target,
+      Duration maxCooldown) {
     this.name = name;
     this.description = description;
     this.rowUse = rowUse;
@@ -184,7 +186,7 @@ public class Skill {
    * executed. Measured in milliseconds.
    * @return current time value needed to pass until the Skill can be executed.
    */
-  public int getCooldown() {
+  public Duration getCooldown() {
     return cooldown;
   }
 
@@ -193,7 +195,7 @@ public class Skill {
    * executed. Measured in milliseconds.
    * @return default time value needed to pass until the Skill can be executed.
    */
-  public int getMaxCooldown() {
+  public Duration getMaxCooldown() {
     return maxCooldown;
   }
 
@@ -254,7 +256,7 @@ public class Skill {
    * Measured in milliseconds.
    * @param  cooldown time value that must pass until the Skill is usable.
    */
-  public void setCooldown(int cooldown) {
+  public void setCooldown(Duration cooldown) {
     this.cooldown = cooldown;
   }
 
@@ -264,7 +266,7 @@ public class Skill {
    * @param  cooldown default time value that must pass until the Skill is
    *         usable.
    */
-  public void setMaxCooldown(int cooldown) {
+  public void setMaxCooldown(Duration cooldown) {
     this.maxCooldown = cooldown;
   }
 
@@ -291,6 +293,11 @@ public class Skill {
    */
   public void setTarget(Target target) {
     this.target = target;
+  }
+  
+  @Override
+  public String toString() {
+    return this.name;
   }
   
 }
