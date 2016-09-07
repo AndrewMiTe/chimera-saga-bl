@@ -253,7 +253,6 @@ public class Status {
     this.duration = duration;
   }
   
-  
   /**
    * Sets the stack size of the Status. Attempting to set this value below zero
    * will throw an IllegalArgumentException. Attempting to set this value to
@@ -270,6 +269,11 @@ public class Status {
           + "duration is a positive non-zero value");
     }
     this.stacks = stacks;
+  }
+  
+  @Override
+  public String toString() {
+    return this.name;
   }
   
 }
