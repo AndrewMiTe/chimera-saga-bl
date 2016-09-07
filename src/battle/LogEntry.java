@@ -25,6 +25,7 @@
 package battle;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A abstract class for describing an event. Instantiation of concrete
@@ -34,21 +35,26 @@ import java.time.LocalDateTime;
  * {@link String} that is readable to the user.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public abstract class LogEntry {
+public class LogEntry {
   
   /**
    * The time when the event described in the LogEntry occurred.
    */
   private final LocalDateTime timeStamp;
   
+  private final Object[] entries;
+  
   /**
    * Initiates the object with the time at which the event occurred. A null time
    * value will throw an {@link IllegalArgumentException}.
    * @param timeStamp the time of the event.
+   * @param entries list of objects that sum up the log entry when printed in
+   *        order.
    */
-  public LogEntry(LocalDateTime timeStamp) {
+  public LogEntry(LocalDateTime timeStamp, Object... entries) {
     if (timeStamp == null) throw new IllegalArgumentException();
     this.timeStamp = timeStamp;
+    this.entries = entries;
   }
 
   /**
@@ -66,6 +72,16 @@ public abstract class LogEntry {
    *         user.
    */
   @Override
-  public abstract String toString();
+  public String toString() {
+    DateTimeFormatter formatTime = DateTimeFormatter.ISO_LOCAL_TIME;
+    String returnValue = "@" + formatTime.format(timeStamp) + ": ";
+    for (Object s : entries) returnValue += s.toString();
+    return returnValue;
+  }
 
+  public String toStringNoTimeStamp() {
+    String returnValue = "";
+    for (Object s : entries) returnValue += s.toString();
+    return returnValue;
+  }
 }

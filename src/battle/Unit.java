@@ -447,6 +447,11 @@ public class Unit implements Subscriber {
   }
   
   @Override
+  public String toString() {
+    return this.name;
+  }
+  
+  @Override
   public void update() {
     Duration timeChange = Duration.between(lastUpdated, turnOrder.getCurrentTime());
     lastUpdated = turnOrder.getCurrentTime();

@@ -295,4 +295,9 @@ public class Skill {
     this.target = target;
   }
   
+  @Override
+  public String toString() {
+    return this.name;
+  }
+  
 }
