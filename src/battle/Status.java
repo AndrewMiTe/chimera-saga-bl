@@ -30,37 +30,31 @@ import java.time.Duration;
  * A state that can be applied to {@link Fighter} objects through the execution of
  * {@link Skill} objects. All Status objects have a  name field that is used to
  * identify it. Status objects with the same name can be applied to the same
- * Unit object so as to stack in magnitude, or to increment the duration of the
- * first status to be applied. The {@link #onApply(battle.Unit) onApply} and
- * {@link #onRemove() onRemove} methods are default implementations
- * that return true to indicate that the application and removal of the Status
- * will always succeed and do nothing. These two methods can be overridden to
- * allow interactions between Status objects or to allow one Status to chain
- * into another after it expires, or is removed. Overriding {@code onApply} and
- * {@code onRemove} is at the core of what gives the combat system its greatest
- * complexity and power.
+ * Fighter object so as to stack in magnitude, or to increment the duration of
+ * the first status to be applied.
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Status {
   
   /**
-   * Name of the Status. Identifies the Status from unrelated Status objects.
+   * Name of the status. Identifies the status from unrelated Status objects.
    * Attempting to initiate the value as null will throw an {@link
    * IllegalArgumentException}.
    */
   private final String name;
   /**
-   * Description of the Status and how it is intended to interact with
-   * the Unit it is applied to, as well as its interactions with other Status
-   * objects on the same Unit. Attempting to initiate the value as null will
-   * throw an {@link IllegalArgumentException}.
+   * Description of the status and how it is intended to interact with
+   * Fighter objects it is applied to, as well as its interactions with other
+   * Status objects on the same fighter. Attempting to initiate the value as
+   * {@code null} will throw an {@link IllegalArgumentException}.
    */
   private final String description;
   /**
    * The time before this status expires. Zero means the Status has an instant
-   * duration. Less then zero means duration is infinite.Attempting to initiate
-   * the value as null will throw an {@link IllegalArgumentException}.
+   * duration and should expire as soon as it is applied. Less then zero means
+   * duration is infinite. Attempting to initiate the value as {@code null} will
+   * throw an {@link IllegalArgumentException}.
    */
   private Duration duration;
   /**
