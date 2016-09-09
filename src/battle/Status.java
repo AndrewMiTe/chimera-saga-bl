@@ -27,40 +27,34 @@ package battle;
 import java.time.Duration;
 
 /**
- * The representation of a state that can be applied to a {@link Unit} object
- * through the execution of {@link Skill} objects. All Status objects have a 
- * name field that is used to identify it. Status objects with the same name can
- * be applied to the same Unit object so as to stack in magnitude, or to
- * increment the duration of the first status to be applied. The {@link
- * #onApply(battle.Unit) onApply} and {@link #onRemove(battle.Unit) onRemove}
- * methods are default implementations that return true to indicate that the
- * application and removal of the Status will always succeed and do nothing.
- * These two methods can be overridden to allow interactions between Status
- * objects or to allow one Status to chain into another after it expires, or is
- * removed. Overriding onApply and onRemove is at the core of what gives the
- * combat system its greatest complexity and power.
+ * A state that can be applied to {@link Fighter} objects through the execution of
+ * {@link Skill} objects. All Status objects have a  name field that is used to
+ * identify it. Status objects with the same name can be applied to the same
+ * Fighter object so as to stack in magnitude, or to increment the duration of
+ * the first status to be applied.
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Status {
   
   /**
-   * Name of the Status. Identifies the Status from unrelated Status objects.
+   * Name of the status. Identifies the status from unrelated Status objects.
    * Attempting to initiate the value as null will throw an {@link
    * IllegalArgumentException}.
    */
   private final String name;
   /**
-   * Description of the Status and how it is intended to interact with
-   * the Unit it is applied to, as well as its interactions with other Status
-   * objects on the same Unit. Attempting to initiate the value as null will
-   * throw an {@link IllegalArgumentException}.
+   * Description of the status and how it is intended to interact with
+   * Fighter objects it is applied to, as well as its interactions with other
+   * Status objects on the same fighter. Attempting to initiate the value as
+   * {@code null} will throw an {@link IllegalArgumentException}.
    */
   private final String description;
   /**
    * The time before this status expires. Zero means the Status has an instant
-   * duration. Less then zero means duration is infinite.Attempting to initiate
-   * the value as null will throw an {@link IllegalArgumentException}.
+   * duration and should expire as soon as it is applied. Less then zero means
+   * duration is infinite. Attempting to initiate the value as {@code null} will
+   * throw an {@link IllegalArgumentException}.
    */
   private Duration duration;
   /**
@@ -83,11 +77,16 @@ public class Status {
    * defeated.
    */
   private final boolean defeats;
-    /**
+  /**
    * States whether or not the status is visible to the user of the client. The
    * default for this is false.
    */
   private final boolean hidden;
+  /**
+   * The Unit object that the status belongs to. Value is assumed to be null
+   * until the status has been applied.+
+   */
+  private Fighter owner;
   
   /**
    * Initializes the object so that all internal field variables that can be
@@ -127,6 +126,7 @@ public class Status {
     this.stuns = stuns;
     this.defeats = defeats;
     this.hidden = hidden;
+    this.owner = null;
   }
   
   /**
@@ -142,6 +142,15 @@ public class Status {
     this.stuns = copyOf.stuns;
     this.defeats = copyOf.defeats;
     this.hidden = copyOf.hidden;
+    this.owner = copyOf.owner;
+  }
+  
+  /**
+   * 
+   * @param action
+   */
+  public void addStatusHandler(StatusHandler action) {
+    
   }
   
   /**
@@ -174,6 +183,15 @@ public class Status {
     return name;
   }
 
+  /**
+   * Returns the reference to the Unit object that this status has most recently
+   * been applied to.
+   * @return the owner of the status.
+   */
+  public Fighter getOwner() {
+    return owner;
+  }
+  
   /**
    * Returns a numeric value that indicates the magnitude or height of the
    * Status. This value should always be a positive value greater then zero.
@@ -226,20 +244,20 @@ public class Status {
   /**
    * Event method for when this Status is applied. This method is meant to be
    * overidden in order to have any effect.
-   * @param  thisUnit the Unit the Status is being applied to.
+   * @param  owner the Unit the Status is being applied to.
    * @return true if the Status allows itself to be applied.
    */
-  protected boolean onApply(Unit thisUnit) {
+  protected boolean onApply(Fighter owner) {
+    this.owner = owner;
     return true;
   }
 
   /**
    * Event method for when this status is removed. This method is meant to be
    * overridden in order to have any effect.
-   * @param  thisUnit the Unit who owns the Status.
    * @return true if the Status allows itself to be removed.
    */
-  protected boolean onRemove(Unit thisUnit) {
+  protected boolean onRemove() {
     return true;
   }
 
