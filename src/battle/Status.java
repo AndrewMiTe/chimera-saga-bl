@@ -25,6 +25,8 @@
 package battle;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A state that can be applied to {@link Fighter} objects through the execution of
@@ -83,8 +85,13 @@ public class Status {
    */
   private final boolean hidden;
   /**
-   * The Unit object that the status belongs to. Value is assumed to be null
-   * until the status has been applied.+
+   * List of handler objects that instantiate methods that the Status object
+   * calls on during appropriate state changes in itself.
+   */
+  private final List<StatusHandler> handlers;
+  /**
+   * The Fighter object that the status belongs to. Value should remain null
+   * until the status has been applied using the {@code apply} method.
    */
   private Fighter owner;
   
@@ -126,12 +133,13 @@ public class Status {
     this.stuns = stuns;
     this.defeats = defeats;
     this.hidden = hidden;
+    this.handlers = new ArrayList<>();
     this.owner = null;
   }
   
   /**
    * Initializes a deep copy of the given Status object such that changes to the
-   * state of the copy have no affect on the original, and vica versa.
+   * state of either the original or the copy have no affect on the other.
    * @param copyOf object which the copy is made from.
    */
   public Status(Status copyOf) {
@@ -142,21 +150,27 @@ public class Status {
     this.stuns = copyOf.stuns;
     this.defeats = copyOf.defeats;
     this.hidden = copyOf.hidden;
-    this.owner = copyOf.owner;
+    this.handlers = copyOf.handlers;
+    this.owner = null;
   }
   
   /**
-   * 
+   * Adds a new StatusHandler object to the status. StatusHandler objects can
+   * execute code whenever important state changes occur the the status, such as
+   * when it is applied or removed from a fighter.
    * @param action
    */
   public void addStatusHandler(StatusHandler action) {
-    
+    if (action == null) {
+      throw new IllegalArgumentException("StatusHandler cannot be null");
+    }
+    handlers.add(action);
   }
   
   /**
-   * Returns a description of the Status and how it is intended to interact with
-   * the Unit it is applied to, as well as its interactions with other Status
-   * objects on the same Unit.
+   * Returns a description of the status and how it is intended to interact with
+   * the fighter it is applied to, as well as its interactions with other status
+   * objects on the same fighter.
    * @return A non-null String value that describes the Status.
    */
   public String getDescription() {
@@ -164,10 +178,10 @@ public class Status {
   }
 
   /**
-   * Returns the time before the Status expires (in milliseconds). A duration of
-   * zero means that the Status is due to expire. A duration less then zero
-   * indicates that the Status has an infinite duration and cannot expire.
-   * @return time (in milliseconds) before the Status expires.
+   * Returns the time before the status expires. A duration of zero means that
+   * the status is instant and immediately due to expire. A duration less then
+   * zero indicates that the status has an infinite duration and cannot expire.
+   * @return time before the status expires.
    */
   public Duration getDuration() {
     return duration;
@@ -242,23 +256,23 @@ public class Status {
   }
 
   /**
-   * Event method for when this Status is applied. This method is meant to be
-   * overidden in order to have any effect.
+   * Event method for when this Status is applied.
    * @param  owner the Unit the Status is being applied to.
-   * @return true if the Status allows itself to be applied.
    */
-  protected boolean onApply(Fighter owner) {
+  public void applyStatus(Fighter owner) {
     this.owner = owner;
-    return true;
+    for (StatusHandler handler : handlers) {
+      handler.onStatusApplication(owner);
+    }
   }
 
   /**
-   * Event method for when this status is removed. This method is meant to be
-   * overridden in order to have any effect.
-   * @return true if the Status allows itself to be removed.
+   * Event method for when this status is removed.
    */
-  protected boolean onRemove() {
-    return true;
+  public void removeStatus() {
+    for (StatusHandler handler : handlers) {
+      handler.onStatusApplication(this.owner);
+    }
   }
 
   /**
