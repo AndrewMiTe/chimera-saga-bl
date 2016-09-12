@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A state that can be applied to {@link Fighter} objects through the execution of
- * {@link Skill} objects. All Status objects have a  name field that is used to
- * identify it. Status objects with the same name can be applied to the same
- * Fighter object so as to stack in magnitude, or to increment the duration of
- * the first status to be applied.
+ * A state that can be applied to {@link Fighter} objects through the execution
+ * of {@link Skill} objects. All Status objects have a name field that is used
+ * to identify its equivalence. Status objects with the same name can be applied
+ * to the same fighter so as to stack, either in magnitude or duration.
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
@@ -41,7 +40,7 @@ public class Status {
   
   /**
    * Name of the status. Identifies the status from unrelated Status objects.
-   * Attempting to initiate the value as null will throw an {@link
+   * Attempting to initiate the value as {@code null} will throw an {@link
    * IllegalArgumentException}.
    */
   private final String name;
@@ -60,56 +59,60 @@ public class Status {
    */
   private Duration duration;
   /**
-   * The current number of stacks. Statuses with a duration greater then 0 does
-   * not stack in magnitude, rather they increment the duration of the Status
-   * first applied. Attempting to initiate the value as less then 1, or with a
-   * value greater then 1 while the duration is greater then 0 will throw an
-   * {@link IllegalArgumentException}.
+   * The current number of stacks. Attempting to initiate the value as less then
+   * 1 will throw an {@link IllegalArgumentException}.
    */
-  private int stacks;
+  private int stackSize;
   /**
-   * States whether or not this status stuns the unit. Stunned units do not
-   * decrement their skill cooldowns and perform skills while true. The default
-   * for this is false.
+   * States whether the status increases in stack size when equivalent Status
+   * objects are added to it.
+   */
+  private final boolean stacks;
+  /**
+   * States whether or not this status stuns the fighter. Stunned fighters do
+   * not decrement their skill cooldowns and cannot execute skills.
    */
   private final boolean stuns;
   /**
-   * States whether or not the Status defeats the Unit. Defeated Unit objects
-   * allow their Team to lose a battle if all other ally Unit object's are also
-   * defeated.
+   * States whether or not the Status object defeats the fighter. Defeated
+   * Fighter objects allow their team to lose a battle if all other ally
+   * fighters are also defeated.
    */
   private final boolean defeats;
   /**
-   * States whether or not the status is visible to the user of the client. The
-   * default for this is false.
+   * States whether or not the status should be visible to the user of the
+   * client.
    */
   private final boolean hidden;
   /**
-   * List of handler objects that instantiate methods that the Status object
-   * calls on during appropriate state changes in itself.
+   * List of handler objects that who's methods are called during appropriate
+   * state changes in the Status object.
    */
   private final List<StatusHandler> handlers;
   /**
    * The Fighter object that the status belongs to. Value should remain null
-   * until the status has been applied using the {@code apply} method.
+   * until the status has been applied using the {@link #onApply(battle.Fighter)
+   * onApply} method.
    */
   private Fighter owner;
   
   /**
    * Initializes the object so that all internal field variables that can be
-   * explicitly set are done so through the given parameters. See the
-   * StatusBuilder class, found in the same package, in order to set the
-   * parameters with default values and/or set them incrementally.
-   * @param  name name of the Status.
-   * @param  description A non-null String value that describes the Status.
-   * @param  duration time before this Status expires. 
-   * @param  stacks the current stack size.
-   * @param  stuns true if the Status stuns the Unit it is applied to.
-   * @param  defeats true if the Status defeats the Unit it is applied to.
-   * @param  hidden true if the Status should be hidden from client users.
+   * explicitly set are done so through the given parameters. See the {@link 
+   * StatusBuilder} class which allows you to create Status object using the
+   * builder pattern.
+   * @param name {@see #name}
+   * @param description {@see #description}
+   * @param duration {@see #duration}
+   * @param stackSize {@see #stackSize}
+   * @param stacks {@see #stacks}
+   * @param stuns {@see #stuns}
+   * @param defeats {@see #defeats}
+   * @param hidden {@see #hidden}
    */
-  public Status(String name, String description, Duration duration, int stacks,
-      boolean stuns, boolean defeats, boolean hidden) {
+  public Status(String name, String description, Duration duration,
+      int stackSize, boolean stacks, boolean stuns, boolean defeats,
+      boolean hidden) {
     if (name == null) {
       throw new IllegalArgumentException("description cannot be null");
     }
@@ -122,13 +125,10 @@ public class Status {
       throw new IllegalArgumentException("duration cannot be null");
     }
     this.duration = duration;
-    if (stacks < 0) {
+    if (stackSize < 0) {
       throw new IllegalArgumentException("stacks cannot be negative");
     }
-    if (!duration.isNegative() && !duration.isZero() && (stacks > 1)) {
-      throw new IllegalArgumentException("stacks cannot be above 1 when the "
-          + "duration is a positive non-zero value");
-    }
+    this.stackSize = stackSize;
     this.stacks = stacks;
     this.stuns = stuns;
     this.defeats = defeats;
@@ -146,41 +146,41 @@ public class Status {
     this.name = copyOf.name;
     this.description = copyOf.description;
     this.duration = copyOf.duration;
+    this.stackSize = copyOf.stackSize;
     this.stacks = copyOf.stacks;
     this.stuns = copyOf.stuns;
     this.defeats = copyOf.defeats;
     this.hidden = copyOf.hidden;
-    this.handlers = copyOf.handlers;
+    this.handlers = new ArrayList<>(copyOf.handlers);
     this.owner = null;
   }
   
   /**
-   * Adds a new StatusHandler object to the status. StatusHandler objects can
-   * execute code whenever important state changes occur the the status, such as
-   * when it is applied or removed from a fighter.
-   * @param action
+   * List of handler objects that who's methods are called during appropriate
+   * state changes in the Status object.
+   * @param handler object to handle state changes.
    */
-  public void addStatusHandler(StatusHandler action) {
-    if (action == null) {
+  public void addStatusHandler(StatusHandler handler) {
+    if (handler == null) {
       throw new IllegalArgumentException("StatusHandler cannot be null");
     }
-    handlers.add(action);
+    handlers.add(handler);
   }
   
   /**
    * Returns a description of the status and how it is intended to interact with
-   * the fighter it is applied to, as well as its interactions with other status
-   * objects on the same fighter.
-   * @return A non-null String value that describes the Status.
+   * Fighter objects it is applied to, as well as its interactions with other
+   * Status objects on the same fighter.
+   * @return description of the status
    */
   public String getDescription() {
     return description;
   }
 
   /**
-   * Returns the time before the status expires. A duration of zero means that
-   * the status is instant and immediately due to expire. A duration less then
-   * zero indicates that the status has an infinite duration and cannot expire.
+   * The time before this status expires. Zero means the Status has an instant
+   * duration and should expire as soon as it is applied. Less then zero means
+   * duration is infinite.
    * @return time before the status expires.
    */
   public Duration getDuration() {
@@ -188,9 +188,7 @@ public class Status {
   }
 
   /**
-   * Returns a String value that Identifies the Status from unrelated Status
-   * objects. All Status object with a value of null are considered unique and
-   * each will not stack or enhance the other's duration.
+   * Name of the status. Identifies the status from unrelated Status objects.
    * @return name of the Status.
    */
   public String getName() {
@@ -198,8 +196,7 @@ public class Status {
   }
 
   /**
-   * Returns the reference to the Unit object that this status has most recently
-   * been applied to.
+   * The Fighter object that the status belongs to.
    * @return the owner of the status.
    */
   public Fighter getOwner() {
@@ -207,48 +204,43 @@ public class Status {
   }
   
   /**
-   * Returns a numeric value that indicates the magnitude or height of the
-   * Status. This value should always be a positive value greater then zero.
-   * This value can also not be above one if the duration of the Status is a
-   * positive non-zero value.
+   * The current number of stacks.
    * @return stack size.
    */
-  public int getStacks() {
-    return stacks;
+  public int getStackSize() {
+    return stackSize;
   }
 
   /**
-   * Returns a boolean value that, if true, defeats any Unit it is applied to.
-   * Defeated Unit objects allows opposing teams to be victorious within a
-   * battle.
-   * @return true if the Status defeats the Unit it is applied to.
+   * Returns true if the Status object defeats the fighter. Defeated Fighter
+   * objects allow their team to lose a battle if all other ally fighters are
+   * also defeated.
+   * @return true if this defeats the fighter it is applied to.
    */
   public boolean isDefeating() {
     return defeats;
   }
   
   /**
-   * Returns a boolean value that, if true, indicates that the Status should be
-   * hidden from users of the client.
-   * @return true if the Status should be hidden from client users.
+   * Returns true is the status should be hidden from client users.
+   * @return true if this is hidden from user.
    */
   public boolean isHidden() {
     return hidden;
   }
 
   /**
-   * Returns a boolean value that, if true, indicates that the Status can be
-   * stacked and that its stack value can be greater then one.
-   * @return true if this Status is stackable.
+   * Returns true if the status increases in stack size when equivalent Status
+   * objects are added to it.
+   * @return true if this is stacks.
    */
   public boolean isStackable() {
-    return (duration.isNegative() || duration.isZero());
+    return stacks;
   }
   
   /**
-   * Returns a boolean value that, if true, stuns the Unit it is applied to.
-   * Stunned Unit objects cannot perform actions and do not decrement the
-   * cooldown on their skills.
+   * Returns true if this status stuns the fighter. Stunned fighters do not
+   * decrement their skill cooldowns and cannot execute skills.
    * @return true if the Status stuns the Unit it is applied to.
    */
   public boolean isStunning() {
@@ -257,9 +249,9 @@ public class Status {
 
   /**
    * Event method for when this Status is applied.
-   * @param  owner the Unit the Status is being applied to.
+   * @param owner the Unit the Status is being applied to.
    */
-  public void applyStatus(Fighter owner) {
+  public void onApply(Fighter owner) {
     this.owner = owner;
     for (StatusHandler handler : handlers) {
       handler.onStatusApplication(owner);
@@ -269,14 +261,15 @@ public class Status {
   /**
    * Event method for when this status is removed.
    */
-  public void removeStatus() {
+  public void onRemove() {
+    owner = null;
     for (StatusHandler handler : handlers) {
-      handler.onStatusApplication(this.owner);
+      handler.onStatusApplication(owner);
     }
   }
 
   /**
-   * Sets the time before the Status expires. If set to zero, the Status is
+   * Sets the time before the status expires. If set to zero, the status is
    * considered to have an instant duration. If set to a negative value, the
    * duration is considered infinite.
    * @param duration time before this Status expires.
@@ -300,12 +293,23 @@ public class Status {
       throw new IllegalArgumentException("stacks cannot be above 1 when the "
           + "duration is a positive non-zero value");
     }
-    this.stacks = stacks;
+    this.stackSize = stacks;
   }
   
   @Override
   public String toString() {
     return this.name;
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Status)) return false;
+    return this.name.equals(((Status)obj).getName());
+  }
+  
+  @Override
+  public int hashCode() {
+    return this.name.hashCode();
   }
   
 }
