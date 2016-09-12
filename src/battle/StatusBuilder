@@ -50,10 +50,15 @@ public class StatusBuilder {
    */
   private Duration duration;
   /**
+   * Stores the stackSize value for producing a Status object.
+   * @see battle.Status Status.stackSize
+   */
+  private int stackSize;
+  /**
    * Stores the stacks value for producing a Status object.
    * @see battle.Status Status.stacks
    */
-  private int stacks;
+  private boolean stacks;
   /**
    * Stores the stuns value for producing a Status object.
    * @see battle.Status Status.stuns
@@ -83,7 +88,8 @@ public class StatusBuilder {
     this.name = name;
     this.description = "";
     this.duration = Duration.ZERO;
-    this.stacks = 1;
+    this.stackSize = 1;
+    this.stacks = true;
     this.stuns = false;
     this.defeats = false;
     this.hidden = false;
@@ -97,7 +103,7 @@ public class StatusBuilder {
    * @return new Status object built with the values set by this builder object.
    */
   public Status build() {
-    return new Status(name, description, duration, stacks, stuns, defeats,
+    return new Status(name, description, duration, stackSize, stacks, stuns, defeats,
         hidden);
   }
 
@@ -141,14 +147,24 @@ public class StatusBuilder {
   }
 
   /**
+   * @param stackSize name value for producing a Status object.
+   * @return this StatusBuilder object.
+   * @see battle.Status Status.stackSize
+   */
+  public StatusBuilder setStackSize(int stackSize) {
+    if (stackSize < 1) {
+      throw new IllegalArgumentException("stacks cannot be less then 1");
+    }
+    this.stackSize = stackSize;
+    return this;
+  }
+
+  /**
    * @param stacks name value for producing a Status object.
    * @return this StatusBuilder object.
    * @see battle.Status Status.stacks
    */
-  public StatusBuilder setStacks(int stacks) {
-    if (stacks < 1) {
-      throw new IllegalArgumentException("stacks cannot be less then 1");
-    }
+  public StatusBuilder setStacks(boolean stacks) {
     this.stacks = stacks;
     return this;
   }
