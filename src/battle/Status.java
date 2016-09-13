@@ -27,6 +27,7 @@ package battle;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A state that can be applied to {@link Fighter} objects through the execution
@@ -85,10 +86,24 @@ public class Status {
    */
   private final boolean hidden;
   /**
+   * Test condition that returns true if the status can be successfully applied
+   * to the target owner of the status. Accepts the target owner of the status 
+   * as the given parameter. Attempting to initiate the value as {@code null}
+   * will throw an {@link IllegalArgumentException}.
+   */
+  private final Predicate<Fighter> applyCondition;
+  /**
+   * Test condition that returns true if the status can be successfully removed
+   * from the owner of the status. Accepts the owner of the status as the given
+   * parameter. Attempting to initiate the value as {@code null} will throw an
+   * {@link IllegalArgumentException}.
+   */
+  private final Predicate<Fighter> removeCondition;
+  /**
    * List of handler objects that who's methods are called during appropriate
    * state changes in the Status object.
    */
-  private final List<StatusHandler> handlers;
+  private final List<StatusHandler> listeners;
   /**
    * The Fighter object that the status belongs to. Value should remain null
    * until the status has been applied using the {@link #onApply(battle.Fighter)
@@ -99,7 +114,7 @@ public class Status {
   /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
-   * StatusBuilder} class which allows you to create Status object using the
+   * StatusBuilder} class which allows you to create Status object using a
    * builder pattern.
    * @param name {@see #name}
    * @param description {@see #description}
@@ -109,10 +124,14 @@ public class Status {
    * @param stuns {@see #stuns}
    * @param defeats {@see #defeats}
    * @param hidden {@see #hidden}
+   * @param applyCondition {@see #applyCondition}
+   * @param removeCondition {@see #removeCondition}
+   * @param listeners {@see #listeners}
    */
   public Status(String name, String description, Duration duration,
       int stackSize, boolean stacks, boolean stuns, boolean defeats,
-      boolean hidden) {
+      boolean hidden, Predicate<Fighter> applyCondition, Predicate<Fighter>
+      removeCondition, List<StatusHandler> listeners) {
     if (name == null) {
       throw new IllegalArgumentException("description cannot be null");
     }
@@ -133,13 +152,30 @@ public class Status {
     this.stuns = stuns;
     this.defeats = defeats;
     this.hidden = hidden;
-    this.handlers = new ArrayList<>();
+    if (applyCondition == null) {
+      throw new IllegalArgumentException("Condition for application cannot be"
+          + " null");
+    }
+    this.applyCondition = applyCondition;
+    if (removeCondition == null) {
+      throw new IllegalArgumentException("Condition for removal cannot be"
+          + " null");
+    }
+    this.removeCondition = removeCondition;
+    this.listeners = new ArrayList<>(listeners);
     this.owner = null;
   }
   
   /**
-   * Initializes a deep copy of the given Status object such that changes to the
-   * state of either the original or the copy have no affect on the other.
+   * Initializes a copy of the given Status object such that direct changes to
+   * the state of either the original or the copy have no affect on the other.
+   * Some copied parameters are purposefully not deep. It is assumed that all
+   * {@link StatusHandler} objects passed to handle events should be copied by
+   * reference so as not to duplicate potentially large listeners. {@link
+   * Predicate} objects passed to test various conditions are also copied by
+   * reference and therefore must be immutable in regards to its {@code test}
+   * method. Copies are always without an owner, even if the original has one,
+   * thus making the value always {@code null}.
    * @param copyOf object which the copy is made from.
    */
   public Status(Status copyOf) {
@@ -151,20 +187,22 @@ public class Status {
     this.stuns = copyOf.stuns;
     this.defeats = copyOf.defeats;
     this.hidden = copyOf.hidden;
-    this.handlers = new ArrayList<>(copyOf.handlers);
+    this.applyCondition = copyOf.applyCondition;
+    this.removeCondition = copyOf.removeCondition;
+    this.listeners = new ArrayList<>(copyOf.listeners);
     this.owner = null;
   }
   
   /**
-   * List of handler objects that who's methods are called during appropriate
-   * state changes in the Status object.
-   * @param handler object to handle state changes.
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes in the Status object.
+   * @param listener object to handle state changes.
    */
-  public void addStatusHandler(StatusHandler handler) {
-    if (handler == null) {
-      throw new IllegalArgumentException("StatusHandler cannot be null");
+  public void addListener(StatusHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
     }
-    handlers.add(handler);
+    listeners.add(listener);
   }
   
   /**
@@ -249,25 +287,41 @@ public class Status {
 
   /**
    * Event method for when this Status is applied.
-   * @param owner the Unit the Status is being applied to.
+   * @param  newOwner the Unit the Status is being applied to.
+   * @return true if status can be applied to the target owner.
    */
-  public void onApply(Fighter owner) {
-    this.owner = owner;
-    for (StatusHandler handler : handlers) {
-      handler.onStatusApplication(owner);
+  public boolean onApply(Fighter newOwner) {
+    if (!applyCondition.test(owner)) return false;
+    this.owner = newOwner;
+    for (StatusHandler handler : listeners) {
+      handler.onStatusApplication(this);
     }
+    return true;
   }
 
   /**
    * Event method for when this status is removed.
+   * @return true if the status can be removed from its owner.
    */
-  public void onRemove() {
+  public boolean onRemove() {
+    if (!removeCondition.test(owner)) return false;
     owner = null;
-    for (StatusHandler handler : handlers) {
-      handler.onStatusApplication(owner);
+    for (StatusHandler handler : listeners) {
+      handler.onStatusRemoval(this);
     }
+    return true;
   }
 
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes in the Status object.
+   * @param  listener the object to be removed.
+   * @return true if the object was successfully removed.
+   */
+  public boolean removeListener(StatusHandler listener) {
+    return this.listeners.remove(listener);
+  }
+  
   /**
    * Sets the time before the status expires. If set to zero, the status is
    * considered to have an instant duration. If set to a negative value, the
