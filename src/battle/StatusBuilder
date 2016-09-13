@@ -25,6 +25,9 @@
 package battle;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Constructs {@link Status} objects using a builder pattern. All setter methods
@@ -74,6 +77,21 @@ public class StatusBuilder {
    * @see battle.Status Status.hidden
    */
   private boolean hidden;
+  /**
+   * Stores the applyCondition value for producing a Status object.
+   * @see battle.Status Status.applyCondition
+   */
+  private Predicate<Fighter> applyCondition;
+  /**
+   * Stores the removeCondition value for producing a Status object.
+   * @see battle.Status Status.removeCondition
+   */
+  private Predicate<Fighter> removeCondition;
+  /**
+   * Stores the listeners value for producing a Status object.
+   * @see battle.Status Status.listeners
+   */
+  private final List<StatusHandler> listeners;
 
   /**
    * Instantiates the object with the name of the {@link Status} to be built.
@@ -93,6 +111,9 @@ public class StatusBuilder {
     this.stuns = false;
     this.defeats = false;
     this.hidden = false;
+    this.applyCondition = a -> true;
+    this.removeCondition = a -> true;
+    this.listeners = new ArrayList<>();
   }
 
   /**
@@ -103,13 +124,41 @@ public class StatusBuilder {
    * @return new Status object built with the values set by this builder object.
    */
   public Status build() {
-    return new Status(name, description, duration, stackSize, stacks, stuns, defeats,
-        hidden);
+    return new Status(name, description, duration, stackSize, stacks, stuns,
+        defeats, hidden, applyCondition, removeCondition, listeners);
   }
 
   /**
-   * @param name name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes in the Status object.
+   * @param  listener object to handle state changes.
+   * @return this.
+   * @see battle.Status Status.listeners
+   */
+  public StatusBuilder addListener(StatusHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
+    }
+    listeners.add(listener);
+    return this;
+  }
+  
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes in the Status object.
+   * @param  listener the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Status Status.listeners
+   */
+  public boolean removeListener(StatusHandler listener) {
+    return this.listeners.remove(listener);
+  }
+  
+/**
+   * @param name name value for producing a Status object. There is no default
+   * value. Initialization of the StatusBuilder object requires a non-null name
+   * value.
+   * @return this.
    * @see battle.Status Status.name
    */
   public StatusBuilder setName(String name) {
@@ -121,8 +170,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param description name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param description name value for producing a Status object. The default
+   * value is an empty string.
+   * @return this.
    * @see battle.Status Status.description
    */
   public StatusBuilder setDescription(String description) {
@@ -134,8 +184,9 @@ public class StatusBuilder {
   }
 
     /**
-   * @param duration name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param duration name value for producing a Status object. The default value
+   * is a Duration object of ZERO.
+   * @return this.
    * @see battle.Status Status.duration
    */
   public StatusBuilder setDuration(Duration duration) {
@@ -147,8 +198,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param stackSize name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param stackSize name value for producing a Status object. The default
+   * value is 1.
+   * @return this.
    * @see battle.Status Status.stackSize
    */
   public StatusBuilder setStackSize(int stackSize) {
@@ -160,8 +212,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param stacks name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param stacks name value for producing a Status object. The default value
+   * is {@code true}.
+   * @return this.
    * @see battle.Status Status.stacks
    */
   public StatusBuilder setStacks(boolean stacks) {
@@ -170,8 +223,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param stuns name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param stuns name value for producing a Status object. The default value
+   * is {@code false}.
+   * @return this.
    * @see battle.Status Status.stuns
    */
   public StatusBuilder setStuns(boolean stuns) {
@@ -180,8 +234,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param defeats name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param defeats name value for producing a Status object. The default value
+   * is {@code false}.
+   * @return this.
    * @see battle.Status Status.defeats
    */
   public StatusBuilder setDefeats(boolean defeats) {
@@ -190,8 +245,9 @@ public class StatusBuilder {
   }
 
   /**
-   * @param hidden name value for producing a Status object.
-   * @return this StatusBuilder object.
+   * @param hidden name value for producing a Status object. The default value
+   * is {@code false}.
+   * @return this.
    * @see battle.Status Status.hidden
    */
   public StatusBuilder setHidden(boolean hidden) {
@@ -199,4 +255,34 @@ public class StatusBuilder {
     return this;
   }
   
+  /**
+   * @param applyCondition name value for producing a Status object. The default
+   * value is a function that returns {@code true}.
+   * @return this.
+   * @see battle.Status Status.applyCondition
+   */
+  public StatusBuilder setApplyCondition(Predicate<Fighter> applyCondition) {
+    if (applyCondition == null) {
+      throw new IllegalArgumentException("Condition for application cannot be"
+          + " null");
+    }
+    this.applyCondition = applyCondition;
+    return this;
+  }
+
+  /**
+   * @param removeCondition name value for producing a Status object. The
+   * default value is a function that returns {@code true}.
+   * @return this.
+   * @see battle.Status Status.removeCondition
+   */
+  public StatusBuilder setRemoveCondition(Predicate<Fighter> removeCondition) {
+    if (removeCondition == null) {
+      throw new IllegalArgumentException("Condition for removal cannot be"
+          + " null");
+    }
+    this.removeCondition = removeCondition;
+    return this;
+  }
+
 }
