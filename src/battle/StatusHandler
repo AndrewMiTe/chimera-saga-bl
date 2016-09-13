@@ -30,11 +30,11 @@ package battle;
  */
 public interface StatusHandler {
   
-  public default boolean onStatusApplication(Fighter newOwner) {
+  public default boolean onStatusApplication(Status status) {
     return true;
   }
   
-  public default boolean onStatusRemoval(Fighter owner) {
+  public default boolean onStatusRemoval(Status status) {
     return true;
   }
   
