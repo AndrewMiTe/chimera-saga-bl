@@ -229,7 +229,15 @@ public class Status {
    * @return {@code true} if the given status can combine with this one.
    */
   public boolean canCombine(Status status) {
-    return false;
+    return (status != null) &&
+        status.name.equals(name) &&
+        (status.stacks == this.stacks) &&
+        (status.defeats == this.defeats) &&
+        (status.stuns == this.stuns) &&
+        (status.hidden == this.hidden) &&
+        ((status.isInstant() == status.isInstant()) ||
+        (status.isFinite() == this.isFinite()) ||
+        (status.isInfinite() == this.isInfinite()));
   }
   
   /**
@@ -323,6 +331,15 @@ public class Status {
   }
   
   /**
+   * Returns {@code true} if the status should be removed as soon as it is
+   * applied. This is indicated my setting the duration value to {@code ZERO}.
+   * @return true if this is an instant status.
+   */
+  public boolean isFinite() {
+    return !isInfinite() && !isInstant();
+  }
+  
+  /**
    * Returns true is the status should be hidden from client users.
    * @return true if this is hidden from user.
    */
@@ -330,6 +347,25 @@ public class Status {
     return hidden;
   }
 
+  /**
+   * Returns {@code true} if the status should be unable to expire due to
+   * passing time. This is indicated my setting the duration value to a
+   * negative value.
+   * @return true if this is an instant status.
+   */
+  public boolean isInfinite() {
+    return this.duration.isNegative();
+  }
+  
+  /**
+   * Returns {@code true} if the status should be removed as soon as it is
+   * applied. This is indicated my setting the duration value to {@code ZERO}.
+   * @return true if this is an instant status.
+   */
+  public boolean isInstant() {
+    return this.duration.isZero();
+  }
+  
   /**
    * Returns true if the status increases in stack size when equivalent Status
    * objects are added to it.
