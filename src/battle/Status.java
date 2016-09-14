@@ -41,6 +41,16 @@ import java.util.function.Predicate;
 public class Status {
   
   /**
+   * Used within this class to track when to decrement the stack size of the
+   * status when it combined with Status objects that have a finite in duration
+   * and are stackable.
+   */
+  private class Stack {
+    int stackSize;
+    Duration currentDuration;
+  }
+  
+  /**
    * Name of the status. Identifies the status from unrelated Status objects.
    * Attempting to initiate the value as {@code null} will throw an {@link
    * IllegalArgumentException}.
