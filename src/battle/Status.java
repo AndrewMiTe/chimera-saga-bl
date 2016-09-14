@@ -249,6 +249,20 @@ public class Status {
   }
   
   /**
+   * Returns {@code true} if the object is an instance of Status and the name
+   * value of this status and the assumed status are equal. This is to ensure
+   * that {@link Fighter} objects fail to apply a status with a duplicate name
+   * and attempt to combine them instead.
+   * @param obj the status to test equality with.
+   * @return {@code true} if the given status is equivalent.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Status)) return false;
+    return this.name.equals(((Status)obj).getName());
+  }
+  
+  /**
    * Returns a description of the status and how it is intended to interact with
    * Fighter objects it is applied to, as well as its interactions with other
    * Status objects on the same fighter.
@@ -292,6 +306,11 @@ public class Status {
     return stackSize;
   }
 
+  @Override
+  public int hashCode() {
+    return this.name.hashCode();
+  }
+  
   /**
    * Returns true if the Status object defeats the fighter. Defeated Fighter
    * objects allow their team to lose a battle if all other ally fighters are
@@ -396,17 +415,6 @@ public class Status {
   @Override
   public String toString() {
     return this.name;
-  }
-  
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Status)) return false;
-    return this.name.equals(((Status)obj).getName());
-  }
-  
-  @Override
-  public int hashCode() {
-    return this.name.hashCode();
   }
   
 }
