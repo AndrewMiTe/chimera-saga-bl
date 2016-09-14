@@ -25,8 +25,9 @@
 package battle;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -111,7 +112,7 @@ public class Status {
    * state changes in the Status object.
    */
   // @todo Listeners should be unique. Use a set.
-  private final List<StatusHandler> listeners;
+  private final Set<StatusHandler> listeners;
   /**
    * The Fighter object that the status belongs to. Value should remain null
    * until the status has been applied using the {@link #onApply(battle.Fighter)
@@ -171,7 +172,7 @@ public class Status {
           + " null");
     }
     this.removeCondition = removeCondition;
-    this.listeners = new ArrayList<>(listeners);
+    this.listeners = new HashSet<>(listeners);
     this.owner = null;
   }
   
@@ -199,7 +200,7 @@ public class Status {
     this.hidden = copyOf.hidden;
     this.applyCondition = copyOf.applyCondition;
     this.removeCondition = copyOf.removeCondition;
-    this.listeners = new ArrayList<>(copyOf.listeners);
+    this.listeners = new HashSet<>(copyOf.listeners);
     this.owner = null;
   }
   
