@@ -53,12 +53,19 @@ public class Status {
    */
   private final String description;
   /**
-   * The time before this status expires. Zero means the Status has an instant
-   * duration and should expire as soon as it is applied. Less then zero means
-   * duration is infinite. Attempting to initiate the value as {@code null} will
-   * throw an {@link IllegalArgumentException}.
+   * The time before this status expires once it is applied. Zero means the
+   * Status has an instant duration and should expire as soon as it is applied.
+   * Less then zero means duration is infinite. Attempting to initiate the value
+   * as {@code null} will throw an {@link IllegalArgumentException}.
    */
-  private Duration duration;
+  private final Duration duration;
+  /**
+   * The current time remaining before this status expires. This value is
+   * allowed to change where the duration value set during initialization must
+   * remain immutable for making new copies of this Status. This is the value
+   * returned by this object's accessor methods.
+   */
+  private Duration currentDuration;
   /**
    * The current number of stacks. Attempting to initiate the value as less then
    * 1 will throw an {@link IllegalArgumentException}.
@@ -66,7 +73,7 @@ public class Status {
   private int stackSize;
   /**
    * States whether the status increases in stack size when equivalent Status
-   * objects are added to it.
+   * objects are combined with it.
    */
   private final boolean stacks;
   /**
@@ -103,6 +110,7 @@ public class Status {
    * List of handler objects that who's methods are called during appropriate
    * state changes in the Status object.
    */
+  // @todo Listeners should be unique. Use a set.
   private final List<StatusHandler> listeners;
   /**
    * The Fighter object that the status belongs to. Value should remain null
@@ -144,6 +152,7 @@ public class Status {
       throw new IllegalArgumentException("duration cannot be null");
     }
     this.duration = duration;
+    this.currentDuration = this.duration;
     if (stackSize < 0) {
       throw new IllegalArgumentException("stacks cannot be negative");
     }
@@ -182,6 +191,7 @@ public class Status {
     this.name = copyOf.name;
     this.description = copyOf.description;
     this.duration = copyOf.duration;
+    this.currentDuration = copyOf.duration;
     this.stackSize = copyOf.stackSize;
     this.stacks = copyOf.stacks;
     this.stuns = copyOf.stuns;
@@ -222,7 +232,7 @@ public class Status {
    * @return time before the status expires.
    */
   public Duration getDuration() {
-    return duration;
+    return currentDuration;
   }
 
   /**
@@ -329,7 +339,7 @@ public class Status {
    * @param duration time before this Status expires.
    */
   public void setDuration(Duration duration) {
-    this.duration = duration;
+    this.currentDuration = duration;
   }
   
   /**
