@@ -216,6 +216,39 @@ public class Status {
   }
   
   /**
+   * Returns {@code true} if the the given Status object can be legally combined
+   * with this object. A legal status must first be equivalent by having the
+   * same name value. The two objects are checked to see if their duration
+   * values are either both instant, both infinite, or both finite. Mismatched
+   * flags for stacks, defeats, stuns, and hidden values results in a {@code
+   * false} return value. See {@link #combineWith(Status status) combineWith}
+   * for a description of what happens when two statuses are successfully
+   * combined.
+   * @param  status the status to test.
+   * @return {@code true} if the given status can combine with this one.
+   */
+  public boolean canCombine(Status status) {
+    return false;
+  }
+  
+  /**
+   * Takes an equivalent Status object that can legally combine with this status
+   * and will increases the stack magnitude of this status, extends its
+   * duration, do both, or do neither. For this status to increment the stack
+   * magnitude, the {@link #isStackable() isStackable} method must return {@code
+   * true}. If the duration of the Status objects are finite, then the duration
+   * of this status will be extended by the duration of the given status. In all
+   * cases this will inherit any {@link StatusHandler} objects listening to the
+   * given Status object that this doesn't already have. Passing this method a
+   * value that would return {@code false} if passed to this object's {@link
+   * #canCombine(battle.Status) canCombine} method will throw an {@link
+   * IllegalArgumentException}.
+   * @param status the status to combine with.
+   */
+  public void combineWith(Status status) {
+  }
+  
+  /**
    * Returns a description of the status and how it is intended to interact with
    * Fighter objects it is applied to, as well as its interactions with other
    * Status objects on the same fighter.
