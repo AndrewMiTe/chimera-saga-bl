@@ -279,20 +279,38 @@ public class Status {
   }
   
   /**
-   * Takes an equivalent Status object that can legally combine with this status
-   * and will increases the stack magnitude of this status, extends its
-   * duration, do both, or do neither. For this status to increment the stack
-   * magnitude, the {@link #isStackable() isStackable} method must return {@code
-   * true}. If the duration of the Status objects are finite, then the duration
-   * of this status will be extended by the duration of the given status. In all
-   * cases this will inherit any {@link StatusHandler} objects listening to the
-   * given Status object that this doesn't already have. Passing this method a
-   * value that would return {@code false} if passed to this object's {@link
-   * #canCombine(battle.Status) canCombine} method will throw an {@link
-   * IllegalArgumentException}.
+   * Takes a Status object that can legally combine with this status and
+   * incorporates many properties, including stack size, duration, and listeners
+   * whenever applicable. When the {@link #isStackable() isStackable} method
+   * returns {@code true} for this status, the stack size of the given status is
+   * combined with this. In addition, if this status is finite in duration, the
+   * given status is incorporated so that the stack size may decrement at
+   * varying intervals, based on the durations of the incorporated status and
+   * this. If this status is finite and not stackable, then the duration of the
+   * given status is added to this. In all cases this will inherit any {@link
+   * StatusHandler} objects listening to the given Status object that this
+   * doesn't already have. Passing this method a value that would return {@code
+   * false} if passed to this object's {@link #canCombine(battle.Status)
+   * canCombine} method will throw an {@link IllegalArgumentException}.
    * @param status the status to combine with.
    */
   public void combineWith(Status status) {
+    if (!canCombine(status)) {
+      throw new IllegalArgumentException("Status cannot be combined.");
+    }
+    if (isStackable()) {
+      if (isFinite()) {
+        stackList.addAll(status.stackList);
+      }
+      else {
+        stackList.get(0).stackSize += status.stackList.get(0).stackSize;
+      }
+    }
+    else {
+      if (isFinite()) {
+        stackList.get(0).duration.plus(status.stackList.get(0).duration);
+      }
+    }
   }
   
   /**
