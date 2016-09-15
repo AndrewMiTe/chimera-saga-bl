@@ -65,18 +65,9 @@ public class Status {
   private final Duration duration;
 
   /**
-   * The current time remaining before this status expires. This value is
-   * allowed to change where the duration value set during initialization must
-   * remain immutable for making new copies of this Status. This is the value
-   * returned by this object's accessor methods.
-   */
-  private Duration currentDuration;
-
-  /**
    * The current number of stacks. Attempting to initiate the value as less then
-   * 1 will throw an {@link IllegalArgumentException}.
+   * {@code 1} will throw an {@link IllegalArgumentException}.
    */
-  // @todo Track the original stackSize.
   private int stackSize;
 
   /**
@@ -186,7 +177,6 @@ public class Status {
       throw new IllegalArgumentException("duration cannot be null");
     }
     this.duration = duration;
-    this.currentDuration = this.duration;
     if (stackSize < 0) {
       throw new IllegalArgumentException("stacks cannot be negative");
     }
@@ -228,7 +218,6 @@ public class Status {
     this.name = copyOf.name;
     this.description = copyOf.description;
     this.duration = copyOf.duration;
-    this.currentDuration = copyOf.duration;
     this.stackSize = copyOf.stackSize;
     this.stacks = copyOf.stacks;
     this.stuns = copyOf.stuns;
@@ -344,6 +333,12 @@ public class Status {
    * @return time before the status expires.
    */
   public Duration getDuration() {
+    Duration currentDuration = stackList.get(0).duration;
+    for (Stack s : stackList) {
+      if (currentDuration.compareTo(s.duration) < 0) {
+        currentDuration = s.duration;
+      }
+    }
     return currentDuration;
   }
 
@@ -368,7 +363,11 @@ public class Status {
    * @return stack size.
    */
   public int getStackSize() {
-    return stackSize;
+    int currentSize = 0;
+    for (Stack s : stackList) {
+        currentSize += s.stackSize;
+    }
+    return currentSize;
   }
 
   @Override
@@ -475,34 +474,6 @@ public class Status {
    */
   public boolean removeListener(StatusHandler listener) {
     return this.listeners.remove(listener);
-  }
-  
-  /**
-   * Sets the time before the status expires. If set to zero, the status is
-   * considered to have an instant duration. If set to a negative value, the
-   * duration is considered infinite.
-   * @param duration time before this Status expires.
-   */
-  public void setDuration(Duration duration) {
-    this.currentDuration = duration;
-  }
-  
-  /**
-   * Sets the stack size of the Status. Attempting to set this value below zero
-   * will throw an IllegalArgumentException. Attempting to set this value to
-   * anything other then 1 while the duration is a positive non-zero value will
-   * also throw a IllegalArgumentException.
-   * @param stacks stack size.
-   */
-  public void setStacks(int stacks) {
-    if (stacks < 0) {
-      throw new IllegalArgumentException("stacks cannot be negative");
-    }
-    if (!duration.isNegative() && !duration.isZero() && (stacks > 1)) {
-      throw new IllegalArgumentException("stacks cannot be above 1 when the "
-          + "duration is a positive non-zero value");
-    }
-    this.stackSize = stacks;
   }
   
   @Override
