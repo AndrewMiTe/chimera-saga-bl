@@ -183,7 +183,7 @@ public class StatusBuilder {
     return this;
   }
 
-    /**
+  /**
    * @param duration name value for producing a Status object. The default value
    * is a Duration object of ZERO.
    * @return this.
@@ -197,6 +197,28 @@ public class StatusBuilder {
     return this;
   }
 
+  /**
+   * Sets this so that the status built would be marked for removal immediately
+   * after being applied. This is a convenience method for setting the duration
+   * value to ZERO.
+   * @return this.
+   */
+  public StatusBuilder setAsInstant() {
+    this.duration = Duration.ZERO;
+    return this;
+  }
+  
+  /**
+   * Sets this so that the status built could not expire due to the passing of
+   * time. This is a convenience method for setting the duration value to one
+   * negative second.
+   * @return this.
+   */
+  public StatusBuilder setAsInfinite() {
+    this.duration = Duration.ofSeconds(-1);
+    return this;
+  }
+  
   /**
    * @param stackSize name value for producing a Status object. The default
    * value is 1.
@@ -284,5 +306,5 @@ public class StatusBuilder {
     this.removeCondition = removeCondition;
     return this;
   }
-
+  
 }
