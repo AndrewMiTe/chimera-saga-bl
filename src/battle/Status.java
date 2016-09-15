@@ -25,6 +25,7 @@
 package battle;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,21 +42,12 @@ import java.util.function.Predicate;
 public class Status {
   
   /**
-   * Used within this class to track when to decrement the stack size of the
-   * status when it combined with Status objects that have a finite in duration
-   * and are stackable.
-   */
-  private class Stack {
-    int stackSize;
-    Duration currentDuration;
-  }
-  
-  /**
    * Name of the status. Identifies the status from unrelated Status objects.
    * Attempting to initiate the value as {@code null} will throw an {@link
    * IllegalArgumentException}.
    */
   private final String name;
+
   /**
    * Description of the status and how it is intended to interact with
    * Fighter objects it is applied to, as well as its interactions with other
@@ -63,6 +55,7 @@ public class Status {
    * {@code null} will throw an {@link IllegalArgumentException}.
    */
   private final String description;
+
   /**
    * The time before this status expires once it is applied. Zero means the
    * Status has an instant duration and should expire as soon as it is applied.
@@ -70,6 +63,7 @@ public class Status {
    * as {@code null} will throw an {@link IllegalArgumentException}.
    */
   private final Duration duration;
+
   /**
    * The current time remaining before this status expires. This value is
    * allowed to change where the duration value set during initialization must
@@ -77,32 +71,39 @@ public class Status {
    * returned by this object's accessor methods.
    */
   private Duration currentDuration;
+
   /**
    * The current number of stacks. Attempting to initiate the value as less then
    * 1 will throw an {@link IllegalArgumentException}.
    */
+  // @todo Track the original stackSize.
   private int stackSize;
+
   /**
    * States whether the status increases in stack size when equivalent Status
    * objects are combined with it.
    */
   private final boolean stacks;
+
   /**
    * States whether or not this status stuns the fighter. Stunned fighters do
    * not decrement their skill cooldowns and cannot execute skills.
    */
   private final boolean stuns;
+
   /**
    * States whether or not the Status object defeats the fighter. Defeated
    * Fighter objects allow their team to lose a battle if all other ally
    * fighters are also defeated.
    */
   private final boolean defeats;
+
   /**
    * States whether or not the status should be visible to the user of the
    * client.
    */
   private final boolean hidden;
+
   /**
    * Test condition that returns true if the status can be successfully applied
    * to the target owner of the status. Accepts the target owner of the status 
@@ -110,25 +111,47 @@ public class Status {
    * will throw an {@link IllegalArgumentException}.
    */
   private final Predicate<Fighter> applyCondition;
+
   /**
    * Test condition that returns true if the status can be successfully removed
    * from the owner of the status. Accepts the owner of the status as the given
    * parameter. Attempting to initiate the value as {@code null} will throw an
    * {@link IllegalArgumentException}.
    */
+
   private final Predicate<Fighter> removeCondition;
   /**
    * List of handler objects that who's methods are called during appropriate
    * state changes in the Status object.
    */
-  // @todo Listeners should be unique. Use a set.
   private final Set<StatusHandler> listeners;
+
   /**
    * The Fighter object that the status belongs to. Value should remain null
    * until the status has been applied using the {@link #onApply(battle.Fighter)
    * onApply} method.
    */
   private Fighter owner;
+  
+  /**
+   * Used within this class to track when to decrement the stack size of the
+   * status when it combined with Status objects that have a finite in duration
+   * and are stackable.
+   */
+  private class Stack {
+    int stackSize;
+    Duration duration;
+    Stack(int stackSize, Duration duration) {
+      this.stackSize = stackSize;
+      this.duration = duration;
+    }
+  }
+  
+  /**
+   * List of Stack objects representing the stack size and duration of other
+   * statuses combined into this.
+   */
+  private final List<Stack> stackList;
   
   /**
    * Initializes the object so that all internal field variables that can be
@@ -184,6 +207,8 @@ public class Status {
     this.removeCondition = removeCondition;
     this.listeners = new HashSet<>(listeners);
     this.owner = null;
+    this.stackList = new ArrayList<>();
+    this.stackList.add(new Stack(stackSize, duration));
   }
   
   /**
@@ -194,8 +219,9 @@ public class Status {
    * reference so as not to duplicate potentially large listeners. {@link
    * Predicate} objects passed to test various conditions are also copied by
    * reference and therefore must be immutable in regards to its {@code test}
-   * method. Copies are always without an owner, even if the original has one,
-   * thus making the value always {@code null}.
+   * method. A copy is based on the stack size and duration of when the the
+   * status was first created. Copies are always without an owner, even if the
+   * original has one, thus making the value always {@code null}.
    * @param copyOf object which the copy is made from.
    */
   public Status(Status copyOf) {
@@ -212,6 +238,8 @@ public class Status {
     this.removeCondition = copyOf.removeCondition;
     this.listeners = new HashSet<>(copyOf.listeners);
     this.owner = null;
+    this.stackList = new ArrayList<>();
+    this.stackList.add(new Stack(stackSize, duration));
   }
   
   /**
