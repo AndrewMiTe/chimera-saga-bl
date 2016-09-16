@@ -239,7 +239,7 @@ public class StatusBuilder {
    * @return this.
    * @see battle.Status Status.stacks
    */
-  public StatusBuilder setStacks(boolean stacks) {
+  public StatusBuilder setStackable(boolean stacks) {
     this.stacks = stacks;
     return this;
   }
@@ -250,7 +250,7 @@ public class StatusBuilder {
    * @return this.
    * @see battle.Status Status.stuns
    */
-  public StatusBuilder setStuns(boolean stuns) {
+  public StatusBuilder setStuning(boolean stuns) {
     this.stuns = stuns;
     return this;
   }
@@ -261,7 +261,7 @@ public class StatusBuilder {
    * @return this.
    * @see battle.Status Status.defeats
    */
-  public StatusBuilder setDefeats(boolean defeats) {
+  public StatusBuilder setDefeating(boolean defeats) {
     this.defeats = defeats;
     return this;
   }
