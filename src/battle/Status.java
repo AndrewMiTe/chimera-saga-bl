@@ -232,17 +232,32 @@ public class Status {
   }
   
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes in the Status object.
-   * @param listener object to handle state changes.
+   * Event method for when this Status is applied.
+   * @param  newOwner the Unit the Status is being applied to.
+   * @return true if status can be applied to the target owner.
    */
-  public void addListener(StatusHandler listener) {
-    if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
+  public boolean onApply(Fighter newOwner) {
+    if (!applyCondition.test(owner)) return false;
+    this.owner = newOwner;
+    for (StatusHandler handler : listeners) {
+      handler.onStatusApplication(this);
     }
-    listeners.add(listener);
+    return true;
   }
-  
+
+  /**
+   * Event method for when this status is removed.
+   * @return true if the status can be removed from its owner.
+   */
+  public boolean onRemove() {
+    if (!removeCondition.test(owner)) return false;
+    owner = null;
+    for (StatusHandler handler : listeners) {
+      handler.onStatusRemoval(this);
+    }
+    return true;
+  }
+
   /**
    * Returns {@code true} if the the given Status object can be legally combined
    * with this object. A legal status must first be equivalent by having the
@@ -357,19 +372,35 @@ public class Status {
   }
   
   /**
-   * Returns {@code true} if the object is an instance of Status and the name
-   * value of this status and the assumed status are equal. This is to ensure
-   * that {@link Fighter} objects fail to apply a status with a duplicate name
-   * and attempt to combine them instead.
-   * @param obj the status to test equality with.
-   * @return {@code true} if the given status is equivalent.
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes in the Status object.
+   * @param listener object to handle state changes.
    */
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Status)) return false;
-    return this.name.equals(((Status)obj).getName());
+  public void addListener(StatusHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
+    }
+    listeners.add(listener);
   }
   
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes in the Status object.
+   * @param listener the object to be removed.
+   * @return true if the object was successfully removed.
+   */
+  public boolean removeListener(StatusHandler listener) {
+    return this.listeners.remove(listener);
+  }
+  
+  /**
+   * Name of the status. Identifies the status from unrelated Status objects.
+   * @return name of the Status.
+   */
+  public String getName() {
+    return name;
+  }
+
   /**
    * Returns a description of the status and how it is intended to interact with
    * Fighter objects it is applied to, as well as its interactions with other
@@ -398,22 +429,6 @@ public class Status {
   }
 
   /**
-   * Name of the status. Identifies the status from unrelated Status objects.
-   * @return name of the Status.
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * The Fighter object that the status belongs to.
-   * @return the owner of the status.
-   */
-  public Fighter getOwner() {
-    return owner;
-  }
-  
-  /**
    * The current number of stacks.
    * @return stack size.
    */
@@ -425,55 +440,12 @@ public class Status {
     return currentSize;
   }
 
-  @Override
-  public int hashCode() {
-    return this.name.hashCode();
-  }
-  
   /**
-   * Returns true if the Status object defeats the fighter. Defeated Fighter
-   * objects allow their team to lose a battle if all other ally fighters are
-   * also defeated.
-   * @return true if this defeats the fighter it is applied to.
+   * The Fighter object that the status belongs to.
+   * @return the owner of the status.
    */
-  public boolean isDefeating() {
-    return defeats;
-  }
-  
-  /**
-   * Returns {@code true} if the status should be removed as soon as it is
-   * applied. This is indicated my setting the duration value to {@code ZERO}.
-   * @return true if this is an instant status.
-   */
-  public boolean isFinite() {
-    return !isInfinite() && !isInstant();
-  }
-  
-  /**
-   * Returns true is the status should be hidden from client users.
-   * @return true if this is hidden from user.
-   */
-  public boolean isHidden() {
-    return hidden;
-  }
-
-  /**
-   * Returns {@code true} if the status should be unable to expire due to
-   * passing time. This is indicated my setting the duration value to a
-   * negative value.
-   * @return true if this is an instant status.
-   */
-  public boolean isInfinite() {
-    return this.duration.isNegative();
-  }
-  
-  /**
-   * Returns {@code true} if the status should be removed as soon as it is
-   * applied. This is indicated my setting the duration value to {@code ZERO}.
-   * @return true if this is an instant status.
-   */
-  public boolean isInstant() {
-    return this.duration.isZero();
+  public Fighter getOwner() {
+    return owner;
   }
   
   /**
@@ -495,40 +467,68 @@ public class Status {
   }
 
   /**
-   * Event method for when this Status is applied.
-   * @param  newOwner the Unit the Status is being applied to.
-   * @return true if status can be applied to the target owner.
+   * Returns true if the Status object defeats the fighter. Defeated Fighter
+   * objects allow their team to lose a battle if all other ally fighters are
+   * also defeated.
+   * @return true if this defeats the fighter it is applied to.
    */
-  public boolean onApply(Fighter newOwner) {
-    if (!applyCondition.test(owner)) return false;
-    this.owner = newOwner;
-    for (StatusHandler handler : listeners) {
-      handler.onStatusApplication(this);
-    }
-    return true;
+  public boolean isDefeating() {
+    return defeats;
+  }
+  
+  /**
+   * Returns true is the status should be hidden from client users.
+   * @return true if this is hidden from user.
+   */
+  public boolean isHidden() {
+    return hidden;
   }
 
   /**
-   * Event method for when this status is removed.
-   * @return true if the status can be removed from its owner.
+   * Returns {@code true} if the status should be removed as soon as it is
+   * applied. This is indicated my setting the duration value to {@code ZERO}.
+   * @return true if this is an instant status.
    */
-  public boolean onRemove() {
-    if (!removeCondition.test(owner)) return false;
-    owner = null;
-    for (StatusHandler handler : listeners) {
-      handler.onStatusRemoval(this);
-    }
-    return true;
+  public boolean isFinite() {
+    return !isInfinite() && !isInstant();
   }
-
+  
   /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes in the Status object.
-   * @param listener the object to be removed.
-   * @return true if the object was successfully removed.
+   * Returns {@code true} if the status should be unable to expire due to
+   * passing time. This is indicated my setting the duration value to a
+   * negative value.
+   * @return true if this is an instant status.
    */
-  public boolean removeListener(StatusHandler listener) {
-    return this.listeners.remove(listener);
+  public boolean isInfinite() {
+    return this.duration.isNegative();
+  }
+  
+  /**
+   * Returns {@code true} if the status should be removed as soon as it is
+   * applied. This is indicated my setting the duration value to {@code ZERO}.
+   * @return true if this is an instant status.
+   */
+  public boolean isInstant() {
+    return this.duration.isZero();
+  }
+  
+  @Override
+  public int hashCode() {
+    return this.name.hashCode();
+  }
+  
+  /**
+   * Returns {@code true} if the object is an instance of Status and the name
+   * value of this status and the assumed status are equal. This is to ensure
+   * that {@link Fighter} objects fail to apply a status with a duplicate name
+   * and attempt to combine them instead.
+   * @param obj the status to test equality with.
+   * @return {@code true} if the given status is equivalent.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Status)) return false;
+    return this.name.equals(((Status)obj).getName());
   }
   
   @Override
