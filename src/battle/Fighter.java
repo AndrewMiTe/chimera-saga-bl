@@ -29,5 +29,22 @@ package battle;
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Fighter {
+
+  /**
+   * Attempts to remove the given Status object from the fighter. Returns {@code
+   * true} if the object was both found and if the predicate for its removal
+   * returned {@code true}. This method will only remove the Status object
+   * given. To remove a status with a particular name, see {@link
+   * #removeStatus(String name) removeStatus(String name)}. If the given status
+   * is {@code null}, this method will throw an {@link
+   * IllegalArgumentException}.
+   * @param status the status to be removed.
+   * @return {@code true} if the Status object was found and successfully
+   *         removed.
+   * @stub
+   */
+  public boolean removeStatus(Status status) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
   
 }
