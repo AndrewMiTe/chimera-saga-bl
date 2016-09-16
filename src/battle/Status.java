@@ -252,7 +252,7 @@ public class Status {
    * false} return value. See {@link #combineWith(Status status) combineWith}
    * for a description of what happens when two statuses are successfully
    * combined.
-   * @param  status the status to test.
+   * @param status the status to test.
    * @return {@code true} if the given status can combine with this one.
    */
   public boolean canCombine(Status status) {
@@ -303,6 +303,60 @@ public class Status {
   }
   
   /**
+   * Decrements the time remaining by the amount of time given. If the result
+   * decreases the time remaining to zero, the status informs the owner to
+   * remove the status. If the status has multiple stacks of varying duration,
+   * all stacks decrement equally and any stacks with no remaining time are
+   * removed. Status objects that are infinite in duration are unchanged by
+   * calls to this method. Passing a negative duration value throws an {@link
+   * IllegalArgumentException}.
+   * @param amount the amount of time to remove.
+   */
+  public void removeDuration(Duration amount) {
+    if (amount.isNegative()) throw new IllegalArgumentException(" Cannot "
+            + "remove negative time from a status.");
+    if (!isInfinite()) {
+      if (getDuration().compareTo(amount) <= 0) {
+        stackList.clear();
+        if (owner != null) owner.removeStatus(this);
+      }
+      else {
+        for (Stack s : stackList) {
+          if (s.duration.compareTo(amount) <= 0) {
+            stackList.remove(s);
+          }
+          else {
+            s.duration = s.duration.minus(amount);
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * Decrements the stack size by the amount given. If the result decreases the
+   * stack size to zero, the status informs the owner to remove the status. If
+   * the status has multiple stacks of varying duration, the stacks with the
+   * longest duration are removed first. Passing a negative value throws an 
+   * {@link IllegalArgumentException}.
+   * @param amount the amount of stacks to remove.
+   */
+  public void removeStacks(int amount) {
+    if (amount < 0)  throw new IllegalArgumentException("Cannnot remove "
+        + "negative stacks from a status.");
+    if (amount >= getStackSize()) {
+      stackList.clear();
+      if (owner != null) owner.removeStatus(this);
+    }
+    else {
+      stackList.sort((a, b) -> b.duration.compareTo(a.duration));
+      for (int i = 0; i < amount; i++) {
+        if (--stackList.get(0).stackSize <= 0) stackList.remove(0);
+      }
+    }    
+  }
+  
+  /**
    * Returns {@code true} if the object is an instance of Status and the name
    * value of this status and the assumed status are equal. This is to ensure
    * that {@link Fighter} objects fail to apply a status with a duplicate name
@@ -333,6 +387,7 @@ public class Status {
    * @return time before the status expires.
    */
   public Duration getDuration() {
+    if (stackList.isEmpty()) return Duration.ZERO;
     Duration currentDuration = stackList.get(0).duration;
     for (Stack s : stackList) {
       if (currentDuration.compareTo(s.duration) < 0) {
@@ -469,7 +524,7 @@ public class Status {
   /**
    * Removes a handler object from the list of listeners who's methods are
    * called during appropriate state changes in the Status object.
-   * @param  listener the object to be removed.
+   * @param listener the object to be removed.
    * @return true if the object was successfully removed.
    */
   public boolean removeListener(StatusHandler listener) {
