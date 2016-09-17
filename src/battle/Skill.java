@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Instructions that, when executed by its owner, applies Status objects to
@@ -54,10 +55,6 @@ public class Skill {
    */
   private String description;
   /**
-   * Defines which Row(s) the Skill can be executed in.
-   */
-  private Row rowUse;
-  /**
    * The default amount of time until the Skill can be used after execution.
    * Measured in milliseconds.
    */
@@ -72,6 +69,11 @@ public class Skill {
    * applies its action to.
    */
   private Target target;
+  /**
+   * Defines the case when the skill is usable, which allows its cooldown to
+   * decrement and for the skill to execute.
+   */
+  private Predicate<Skill> usablity;
   /**
    * List of Status objects to apply to the Target of the Skill.
    */
@@ -89,22 +91,22 @@ public class Skill {
 
   /**
    * Basic constructor.
-   * @param  name name of the Skill.
-   * @param  description simple text-based description of the Skill.
-   * @param  rowUse Defines which Row(s) the Skill can be executed in.
-   * @param  target Enumerated Target value for determining valid Unit objects
-   *         this Skill applies its action to.
-   * @param  maxCooldown The default amount of time until the Skill can be used
-   *         after execution. Measured in milliseconds.
+   * @param name name of the Skill.
+   * @param description simple text-based description of the Skill.
+   * @param usablity case for when the skill can be used.
+   * @param target Enumerated Target value for determining valid Unit objects
+   *        this Skill applies its action to.
+   * @param maxCooldown The default amount of time until the Skill can be used
+   *        after execution. Measured in milliseconds.
    */
-  public Skill(String name, String description, Row rowUse, Target target,
-      Duration maxCooldown) {
+  public Skill(String name, String description, Target target,
+      Duration maxCooldown, Predicate<Skill> usablity) {
     this.name = name;
     this.description = description;
-    this.rowUse = rowUse;
     this.target = target;
     this.maxCooldown = maxCooldown;
     this.cooldown = maxCooldown;
+    this.usablity = usablity;
     this.requirements = new ArrayList<>();
     this.effects = new ArrayList<>();
     this.subSkills = new ArrayList<>();
@@ -118,7 +120,7 @@ public class Skill {
   public Skill(Skill copyOf) {
     this.name = copyOf.name;
     this.description = copyOf.description;
-    this.rowUse = copyOf.rowUse;
+    this.usablity = copyOf.usablity;
     this.target = copyOf.target;
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
@@ -217,11 +219,16 @@ public class Skill {
   }
 
   /**
-   * Getter for the Row the Skill is usable in.
+   * Returns {@code true} if the skill is in a usable state. By default, a skill
+   * cannot be used if it lacks an owner. In addition, a {@link Predicate}
+   * object passed to this skill during initiation can place additional
+   * conditions.
    * @return enumerated Row value that the Skill is usable in.
    */
-  public Row getRowUse() {
-    return rowUse;
+  public boolean isUsable() {
+    // @todo uncomment if (owner == null) return false;
+    // @todo uncomment return usablity.test(this);
+    return true;
   }
 
   /**
@@ -275,14 +282,6 @@ public class Skill {
    */
   public void setName(String name) {
     this.name = name;
-  }
-
-  /**
-   * Setter for what Row the Skill is usable in.
-   * @param  rowUse enumerated Row value the Skill is usable in.
-   */
-  public void setRowUse(Row rowUse) {
-    this.rowUse = rowUse;
   }
 
   /**
