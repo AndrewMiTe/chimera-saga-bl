@@ -30,18 +30,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Contains the instructions for a interaction between its owner, a Unit object,
- * and its Target(s), other Unit objects contained within the same Battlefield
- * object. When executed, Unit objects matching both the Target description and
- * containing the required Status objects are search for. If a match is found,
- * then all Skill objects contained within this Skill object are executed
- * recursively. If some but not all sub-Skill objects report a successful
- * execution, then the skill returns as successful and does nothing else. If all
- * sub-Skill objects execute successfully, then all matching Unit objects, those
- * that match the Target description and containing the Status objects required
- * by this Skill, will have all of this Skill object's actions applied to them,
- * if there are any. Actions are a separate list of Status objects contained
- * within this Skill.
+ * Instructions that, when executed by its owner, applies Status objects to
+ * valid target(s). When executed, fighters matching both the enumerated Target
+ * description and containing the required Status objects are search for. If a
+ * match is found, then all sub-skills (other Skill objects) contained within
+ * this Skill object are executed recursively. If some but not all sub-skills
+ * report a successful execution, then the skill returns as successful and does
+ * nothing else. If all sub-Skill objects execute successfully, then all target
+ * Fighter objects, those that match the Target description and containing the
+ * Status objects required by this skill, will have all of this skill's effects
+ * applied to them. The effects of this skill are a separate list of Status
+ * objects listed within.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Skill {
@@ -76,12 +75,12 @@ public class Skill {
   /**
    * List of Status objects to apply to the Target of the Skill.
    */
-  private final List<Status> actions;
+  private final List<Status> effects;
   /**
    * List of Status objects that the Target of the Skill must have in order to
    * continue Skill execution.
    */
-  private final List<String> requires;
+  private final List<String> requirements;
   /**
    * List of Skill objects that must be successfully executed in order for this
    * Skill to apply its actions to its Target(s).
@@ -106,8 +105,8 @@ public class Skill {
     this.target = target;
     this.maxCooldown = maxCooldown;
     this.cooldown = maxCooldown;
-    this.requires = new ArrayList<>();
-    this.actions = new ArrayList<>();
+    this.requirements = new ArrayList<>();
+    this.effects = new ArrayList<>();
     this.subSkills = new ArrayList<>();
   }
 
@@ -123,13 +122,13 @@ public class Skill {
     this.target = copyOf.target;
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
-    this.requires = new ArrayList<>(copyOf.requires.size());
-    for (String next : copyOf.requires) {
-      this.requires.add(next);
+    this.requirements = new ArrayList<>(copyOf.requirements.size());
+    for (String next : copyOf.requirements) {
+      this.requirements.add(next);
     }
-    this.actions = new ArrayList<>(copyOf.actions.size());
-    for (Status next : copyOf.actions) {
-      this.actions.add(new Status(next));
+    this.effects = new ArrayList<>(copyOf.effects.size());
+    for (Status next : copyOf.effects) {
+      this.effects.add(new Status(next));
     }
     this.subSkills = new ArrayList<>(copyOf.subSkills.size());
     for (Skill next : copyOf.subSkills) {
@@ -142,8 +141,8 @@ public class Skill {
    * @param  newStatus Status object to apply when the whole Skill is executed
    *         successfully.
    */
-  public void addAction(Status newStatus) {
-    actions.add(newStatus);
+  public void addEffect(Status newStatus) {
+    effects.add(newStatus);
   }
   
   /**
@@ -151,7 +150,7 @@ public class Skill {
    * @param  statusName Status object to check the Target against for a match.
    */
   public void addRequirement(String statusName) {
-    requires.add(statusName);
+    requirements.add(statusName);
   }
 
   /**
@@ -170,7 +169,7 @@ public class Skill {
    *         when the Skill is successfully executed.
    */
   public Iterator<Status> getActions() {
-    return actions.iterator();
+    return effects.iterator();
   }
 
   /**
@@ -214,7 +213,7 @@ public class Skill {
    *         required to match.
    */
   public Iterator<String> getRequires() {
-    return requires.iterator();
+    return requirements.iterator();
   }
 
   /**
