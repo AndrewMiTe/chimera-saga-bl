@@ -32,7 +32,8 @@ import java.util.function.Predicate;
 /**
  * Constructs {@link Status} objects using a builder pattern. All setter methods
  * return the instance of the object it is called upon. The build method returns
- * a new Status object using the information obtained through setters.
+ * a new Status object using the information obtained through defaults and set
+ * methods.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class StatusBuilder {
