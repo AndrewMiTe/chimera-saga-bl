@@ -39,7 +39,7 @@ import java.util.function.Predicate;
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Status {
+public final class Status {
   
   /**
    * Name of the status. Identifies the status from unrelated Status objects.
@@ -161,12 +161,12 @@ public class Status {
    * @param removeCondition {@see #removeCondition}
    * @param listeners {@see #listeners}
    */
-  public Status(String name, String description, Duration duration,
+  protected Status(String name, String description, Duration duration,
       int stackSize, boolean stacks, boolean stuns, boolean defeats,
       boolean hidden, Predicate<Fighter> applyCondition, Predicate<Fighter>
       removeCondition, List<StatusHandler> listeners) {
     if (name == null) {
-      throw new IllegalArgumentException("description cannot be null");
+      throw new IllegalArgumentException("name cannot be null");
     }
     this.name = name;
     if (description == null) {
@@ -329,7 +329,7 @@ public class Status {
    */
   public void removeDuration(Duration amount) {
     if (amount.isNegative()) throw new IllegalArgumentException(" Cannot "
-            + "remove negative time from a status.");
+        + "remove negative time from a status.");
     if (!isInfinite()) {
       if (getDuration().compareTo(amount) <= 0) {
         stackList.clear();
