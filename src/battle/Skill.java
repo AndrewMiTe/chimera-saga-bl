@@ -93,6 +93,12 @@ public class Skill {
    * skill to apply its effects to its target(s).
    */
   private final List<Skill> subSkills;
+    /**
+   * The Fighter object that the skill belongs to. Value should remain null
+   * until the skill has been applied using the {@link #onApply(battle.Fighter)
+   * onApply} method.
+   */
+  private Fighter owner;
 
   /**
    * Initializes the object so that all internal field variables that can be
@@ -132,11 +138,14 @@ public class Skill {
     this.effects = new ArrayList<>(effects);
     this.requirements = new ArrayList<>(requirements);
     this.subSkills = new ArrayList<>(subSkills);
+    this.owner = null;
   }
 
   /**
    * Initializes a copy of the given Skill object such that direct changes to
    * the state of either the original or the copy have no affect on the other.
+   * Copies are always without an owner, even if the original has one, thus
+   * making the value always {@code null}.
    * @param copyOf object which the copy is made from.
    */
   public Skill(Skill copyOf) {
@@ -149,6 +158,7 @@ public class Skill {
     this.requirements = new ArrayList<>(copyOf.requirements);
     this.effects = new ArrayList<>(copyOf.effects);
     this.subSkills = new ArrayList<>(copyOf.subSkills);
+    this.owner = null;
   }
 
   /**
@@ -221,7 +231,15 @@ public class Skill {
   public Target getTarget() {
     return target;
   }
-
+  
+  /**
+   * The Fighter object that the skill belongs to.
+   * @return the owner of the skill.
+   */
+  public Fighter getOwner() {
+    return owner;
+  }
+  
   /**
    * Returns {@code true} if the skill is in a usable state. By default, a skill
    * cannot be used if it lacks an owner. In addition, a {@link Predicate}
