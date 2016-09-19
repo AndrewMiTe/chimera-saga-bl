@@ -47,69 +47,91 @@ import java.util.function.Predicate;
 public class Skill {
   
   /**
-   * Name of the Skill.
+   * Name of the Skill. Attempting to initiate the value as {@code null} will
+   * throw an {@link IllegalArgumentException}.
    */
   private String name;
   /**
-   * Simple text-based description of the Skill.
+   * Description of the skill and how it is intended to interact with its
+   * target(s). Attempting to initiate the value as {@code null} will throw an
+   * {@link IllegalArgumentException}.
    */
   private String description;
   /**
    * The default amount of time until the Skill can be used after execution.
-   * Measured in milliseconds.
+   * Attempting to initiate the value as {@code null} will throw an {@link
+   * IllegalArgumentException}.
    */
   private Duration maxCooldown;
   /**
-   * The current amount of time until the skill can be used. Measured in
-   * milliseconds.
+   * The current amount of time until the skill can be used.
    */
   private Duration cooldown;
   /**
-   * Enumerated Target value for determining valid Unit objects this Skill
-   * applies its action to.
+   * Enumerated Target value for determining valid Fighter objects this skill
+   * applies its effects to. Attempting to initiate the value as {@code null}
+   * will throw an {@link IllegalArgumentException}.
    */
   private Target target;
   /**
    * Defines the case when the skill is usable, which allows its cooldown to
-   * decrement and for the skill to execute.
+   * decrement and for the skill to execute. Attempting to initiate the value as
+   * {@code null} will throw an {@link IllegalArgumentException}.
    */
-  private Predicate<Skill> usablity;
+  private final Predicate<Skill> usablity;
   /**
    * List of Status objects to apply to the Target of the Skill.
    */
   private final List<Status> effects;
   /**
-   * List of Status objects that the Target of the Skill must have in order to
-   * continue Skill execution.
+   * List of Status objects that the target of the skill must have in order to
+   * successfully execute.
    */
   private final List<String> requirements;
   /**
    * List of Skill objects that must be successfully executed in order for this
-   * Skill to apply its actions to its Target(s).
+   * skill to apply its effects to its target(s).
    */
   private final List<Skill> subSkills;
 
   /**
-   * Basic constructor.
-   * @param name name of the Skill.
-   * @param description simple text-based description of the Skill.
-   * @param usablity case for when the skill can be used.
-   * @param target Enumerated Target value for determining valid Unit objects
-   *        this Skill applies its action to.
-   * @param maxCooldown The default amount of time until the Skill can be used
-   *        after execution. Measured in milliseconds.
+   * Initializes the object so that all internal field variables that can be
+   * explicitly set are done so through the given parameters. See the {@link 
+   * SkillBuilder} class which allows you to create Skill object using a builder
+   * pattern.
+   * @param name {@see #name}
+   * @param description {@see #description}
+   * @param usablity {@see #usablity}
+   * @param target {@see #target}
+   * @param maxCooldown {@see #maxCooldown}
+   * @param requirements {@see #requirements}
+   * @param effects {@see #effects}
+   * @param subSkills {@see #subSkills}
    */
   public Skill(String name, String description, Target target,
-      Duration maxCooldown, Predicate<Skill> usablity) {
+      Duration maxCooldown, Predicate<Skill> usablity, List<Status> effects,
+      List<String> requirements, List<Skill> subSkills) {
+    if (name == null) {
+      throw new IllegalArgumentException("name cannot be null");
+    }
     this.name = name;
+    if (description == null) {
+      throw new IllegalArgumentException("description cannot be null");
+    }
     this.description = description;
+    if (target == null) {
+      throw new IllegalArgumentException("target cannot be null");
+    }
     this.target = target;
     this.maxCooldown = maxCooldown;
     this.cooldown = maxCooldown;
+    if (usablity == null) {
+      throw new IllegalArgumentException("usablity Predicate cannot be null");
+    }
     this.usablity = usablity;
-    this.requirements = new ArrayList<>();
-    this.effects = new ArrayList<>();
-    this.subSkills = new ArrayList<>();
+    this.effects = new ArrayList<>(effects);
+    this.requirements = new ArrayList<>(requirements);
+    this.subSkills = new ArrayList<>(subSkills);
   }
 
   /**
