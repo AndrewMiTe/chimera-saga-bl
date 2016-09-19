@@ -26,7 +26,6 @@ package battle;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -58,13 +57,13 @@ public class Skill {
    */
   private String description;
   /**
-   * The default amount of time until the Skill can be used after execution.
-   * Attempting to initiate the value as {@code null} will throw an {@link
+   * The amount of time until the Skill can be used after execution. Attempting
+   * to initiate the value as {@code null} will throw an {@link
    * IllegalArgumentException}.
    */
   private Duration maxCooldown;
   /**
-   * The current amount of time until the skill can be used.
+   * The current amount of time remaining until the skill can be used.
    */
   private Duration cooldown;
   /**
@@ -80,7 +79,8 @@ public class Skill {
    */
   private final Predicate<Skill> usablity;
   /**
-   * List of Status objects to apply to the Target of the Skill.
+   * List of Status objects to apply to the target of the skill when the skill
+   * successfully executes.
    */
   private final List<Status> effects;
   /**
@@ -162,16 +162,17 @@ public class Skill {
   }
 
   /**
-   * Getter for the actions performed on the Target.
-   * @return Iterator of all the Status objects to apply to Target Unit objects
-   *         when the Skill is successfully executed.
+   * Returns a list of Status objects to apply to the target of the skill when
+   * the skill successfully executes.
+   * @return list of effects.
    */
-  public Iterator<Status> getActions() {
-    return effects.iterator();
+  public List<Status> getEffects() {
+    return new ArrayList<>(effects);
   }
 
   /**
-   * Getter for a simple text-based description of the Skill.
+   * Returns a description of the skill and how it is intended to interact with
+   * its target(s).
    * @return simple text-based description of the Skill.
    */
   public String getDescription() {
@@ -179,25 +180,23 @@ public class Skill {
   }
 
   /**
-   * Getter for the current time value needed to pass until the Skill can be
-   * executed. Measured in milliseconds.
-   * @return current time value needed to pass until the Skill can be executed.
+   * Returns the current amount of time remaining until the skill can be used.
+   * @return the current cooldown.
    */
   public Duration getCooldown() {
     return cooldown;
   }
 
   /**
-   * Getter for the default time value needed to pass until the Skill can be
-   * executed. Measured in milliseconds.
-   * @return default time value needed to pass until the Skill can be executed.
+   * Returns the amount of time until the Skill can be used after execution.
+   * @return the cooldown after execution.
    */
   public Duration getMaxCooldown() {
     return maxCooldown;
   }
 
   /**
-   * Getter for the name of the Skill.
+   * Returns the name of the Skill.
    * @return name of the Skill.
    */
   public String getName() {
@@ -205,35 +204,34 @@ public class Skill {
   }
   
   /**
-   * Getter for an Status objects that the Target Unit objects are required to
-   * match for the skill to be successfully executed.
-   * @return Iterator of Status objects that the Target Unit objects are
-   *         required to match.
+   * Returns a list of Strings that represent the name values of Status objects
+   * that the target of the skill must have in order to successfully execute.
+   * @return list of requires statuses.
    */
-  public Iterator<String> getRequires() {
-    return requirements.iterator();
+  public List<String> getRequires() {
+    return new ArrayList<>(requirements);
   }
 
   /**
-   * Getter for the Skill objects required to execute successfully for this
-   * Skill to apply its actions.
-   * @return Iterator of the Skill objects required to execute successfully.
+   * Returns a list of Skill objects that must be successfully executed in order
+   * for this skill to apply its effects to its target(s).
+   * @return list of sub-skills.
    */
-  public Iterator<Skill> getSubSkills() {
-    return subSkills.iterator();
+  public List<Skill> getSubSkills() {
+    return new ArrayList<>(subSkills);
   }
 
   /**
-   * Getter for the Target of the Skill object's requirements and actions.
-   * @return enumerated Target value of the Skill object's requirements and
-   *         actions.
+   * Returns an enumerated Target value for determining valid Fighter objects
+   * this skill can apply its effects to in battle.
+   * @return target of the skill.
    */
   public Target getTarget() {
     return target;
   }
   
   /**
-   * The Fighter object that the skill belongs to.
+   * Returns the Fighter object that the skill belongs to.
    * @return the owner of the skill.
    */
   public Fighter getOwner() {
@@ -248,9 +246,8 @@ public class Skill {
    * @return enumerated Row value that the Skill is usable in.
    */
   public boolean isUsable() {
-    // @todo uncomment if (owner == null) return false;
-    // @todo uncomment return usablity.test(this);
-    return true;
+    if (owner == null) return false;
+    return usablity.test(this);
   }
 
   @Override
