@@ -135,8 +135,8 @@ public class Skill {
   }
 
   /**
-   * Initializes a deep copy of the given Skill object such that changes to the
-   * state of the copy have no affect on the original, and vica versa.
+   * Initializes a copy of the given Skill object such that direct changes to
+   * the state of either the original or the copy have no affect on the other.
    * @param copyOf object which the copy is made from.
    */
   public Skill(Skill copyOf) {
@@ -146,18 +146,12 @@ public class Skill {
     this.target = copyOf.target;
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
-    this.requirements = new ArrayList<>(copyOf.requirements.size());
-    for (String next : copyOf.requirements) {
-      this.requirements.add(next);
-    }
+    this.requirements = new ArrayList<>(copyOf.requirements);
     this.effects = new ArrayList<>(copyOf.effects.size());
     for (Status next : copyOf.effects) {
       this.effects.add(new Status(next));
     }
-    this.subSkills = new ArrayList<>(copyOf.subSkills.size());
-    for (Skill next : copyOf.subSkills) {
-      this.subSkills.add(new Skill(next));
-    }
+    this.subSkills = new ArrayList<>(copyOf.subSkills);
   }
 
   /**
