@@ -78,7 +78,7 @@ public class SkillBuilder {
 
   public Skill build() {
     return new Skill(name, description, target, maxCooldown, usablity, null,
-        null, null);
+        null, null, null);
   }
   
 }
