@@ -93,7 +93,12 @@ public class Skill {
    * skill to apply its effects to its target(s).
    */
   private final List<Skill> subSkills;
-    /**
+  /**
+   * List of handler objects that who's methods are called during appropriate
+   * state changes or method calls to the Skill object.
+   */
+  private final List<SkillHandler> listeners;
+  /**
    * The Fighter object that the skill belongs to. Value should remain null
    * until the skill has been applied using the {@link #onApply(battle.Fighter)
    * onApply} method.
@@ -113,10 +118,12 @@ public class Skill {
    * @param requirements {@see #requirements}
    * @param effects {@see #effects}
    * @param subSkills {@see #subSkills}
+   * @param listeners {@see #listeners}
    */
   public Skill(String name, String description, Target target,
       Duration maxCooldown, Predicate<Skill> usablity, List<Status> effects,
-      List<String> requirements, List<Skill> subSkills) {
+      List<String> requirements, List<Skill> subSkills, List<SkillHandler>
+      listeners) {
     if (name == null) {
       throw new IllegalArgumentException("name cannot be null");
     }
@@ -138,6 +145,7 @@ public class Skill {
     this.effects = new ArrayList<>(effects);
     this.requirements = new ArrayList<>(requirements);
     this.subSkills = new ArrayList<>(subSkills);
+    this.listeners = new ArrayList<>(listeners);
     this.owner = null;
   }
 
@@ -158,9 +166,32 @@ public class Skill {
     this.requirements = new ArrayList<>(copyOf.requirements);
     this.effects = new ArrayList<>(copyOf.effects);
     this.subSkills = new ArrayList<>(copyOf.subSkills);
+    this.listeners = new ArrayList<>(copyOf.listeners);
     this.owner = null;
   }
 
+  /**
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes or method calls to the Skill object.
+   * @param listener object to handle state changes.
+   */
+  public void addListener(SkillHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
+    }
+    listeners.add(listener);
+  }
+  
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes in the Status object.
+   * @param listener the object to be removed.
+   * @return true if the object was successfully removed.
+   */
+  public boolean removeListener(SkillHandler listener) {
+    return this.listeners.remove(listener);
+  }
+  
   /**
    * Returns a list of Status objects to apply to the target of the skill when
    * the skill successfully executes.
