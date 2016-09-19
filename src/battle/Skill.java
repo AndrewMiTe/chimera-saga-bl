@@ -147,38 +147,8 @@ public class Skill {
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
     this.requirements = new ArrayList<>(copyOf.requirements);
-    this.effects = new ArrayList<>(copyOf.effects.size());
-    for (Status next : copyOf.effects) {
-      this.effects.add(new Status(next));
-    }
+    this.effects = new ArrayList<>(copyOf.effects);
     this.subSkills = new ArrayList<>(copyOf.subSkills);
-  }
-
-  /**
-   * Adds a new action to perform on the Target.
-   * @param  newStatus Status object to apply when the whole Skill is executed
-   *         successfully.
-   */
-  public void addEffect(Status newStatus) {
-    effects.add(newStatus);
-  }
-  
-  /**
-   * Adds a new requirement for the Target to match.
-   * @param  statusName Status object to check the Target against for a match.
-   */
-  public void addRequirement(String statusName) {
-    requirements.add(statusName);
-  }
-
-  /**
-   * Adds a new sub-Skill that must execute successfully before this Skill can
-   * apply its actions.
-   * @param  newSubSkill Skill object required to be successfully performed
-   *         before this Skill can apply its actions.
-   */
-  public void addSubSkill(Skill newSubSkill) {
-    subSkills.add(newSubSkill);
   }
 
   /**
@@ -235,19 +205,6 @@ public class Skill {
   }
 
   /**
-   * Returns {@code true} if the skill is in a usable state. By default, a skill
-   * cannot be used if it lacks an owner. In addition, a {@link Predicate}
-   * object passed to this skill during initiation can place additional
-   * conditions.
-   * @return enumerated Row value that the Skill is usable in.
-   */
-  public boolean isUsable() {
-    // @todo uncomment if (owner == null) return false;
-    // @todo uncomment return usablity.test(this);
-    return true;
-  }
-
-  /**
    * Getter for the Skill objects required to execute successfully for this
    * Skill to apply its actions.
    * @return Iterator of the Skill objects required to execute successfully.
@@ -266,49 +223,18 @@ public class Skill {
   }
 
   /**
-   * Setter for a simple text-based description of the Skill.
-   * @param  description simple text-based description of the Skill.
+   * Returns {@code true} if the skill is in a usable state. By default, a skill
+   * cannot be used if it lacks an owner. In addition, a {@link Predicate}
+   * object passed to this skill during initiation can place additional
+   * conditions.
+   * @return enumerated Row value that the Skill is usable in.
    */
-  public void setDescription(String description) {
-    this.description = description;
+  public boolean isUsable() {
+    // @todo uncomment if (owner == null) return false;
+    // @todo uncomment return usablity.test(this);
+    return true;
   }
 
-  /**
-   * Setter for the time value that must pass until the Skill is usable.
-   * Measured in milliseconds.
-   * @param  cooldown time value that must pass until the Skill is usable.
-   */
-  public void setCooldown(Duration cooldown) {
-    this.cooldown = cooldown;
-  }
-
-  /**
-   * Setter for the default time value that must pass until the Skill is usable.
-   * The time value is measured in milliseconds.
-   * @param  cooldown default time value that must pass until the Skill is
-   *         usable.
-   */
-  public void setMaxCooldown(Duration cooldown) {
-    this.maxCooldown = cooldown;
-  }
-
-  /**
-   * Setter for the name of the Skill.
-   * @param  name name of the Skill.
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * Setter for the Target of the Skill object's requirements and actions.
-   * @param  target enumerated Target value of the Skill object's requirements
-   *         and actions.
-   */
-  public void setTarget(Target target) {
-    this.target = target;
-  }
-  
   @Override
   public String toString() {
     return this.name;
