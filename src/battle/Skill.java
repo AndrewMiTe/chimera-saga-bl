@@ -274,13 +274,24 @@ public class Skill {
    * cannot be used if it lacks an owner. In addition, a {@link Predicate}
    * object passed to this skill during initiation can place additional
    * conditions.
-   * @return enumerated Row value that the Skill is usable in.
+   * @return {@code true} if the skill is usable by its owner.
    */
   public boolean isUsable() {
     if (owner == null) return false;
     return usablity.test(this);
   }
 
+  /**
+   * Returns {@code true} if the skill is consistent with the requirements to be
+   * a pre-battle skill, a skill executed before combat begins and is not
+   * executed again that battle. Pre-battle skills are required to have a
+   * negative cooldown value and a target value of SELF only.
+   * @return {@code true} if this is a pre-battle skill.
+   */
+  public boolean isPreBattleSkill() {
+    return false;
+  }
+  
   @Override
   public String toString() {
     return this.name;
