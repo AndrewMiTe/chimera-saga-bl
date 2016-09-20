@@ -75,6 +75,16 @@ public class SkillBuilder {
     this.usablity = usablity;
     return this;
   }
+  
+  /**
+   * Sets this so that the skill built would qualify as a pre-battle skill.
+   * @return this.
+   */
+  public SkillBuilder setAsPreBattleSkill() {
+    this.maxCooldown = Duration.ofSeconds(-1);
+    this.target = Target.SELF;
+    return this;
+  }
 
   public Skill build() {
     return new Skill(name, description, target, maxCooldown, usablity, null,
