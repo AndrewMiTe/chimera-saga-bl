@@ -43,51 +43,61 @@ public class StatusBuilder {
    * @see battle.Status Status.name
    */
   private String name;
+  
   /**
    * Stores the description value for producing a Status object.
    * @see battle.Status Status.description
    */
   private String description;
+  
   /**
    * Stores the duration value for producing a Status object.
    * @see battle.Status Status.duration
    */
   private Duration duration;
+  
   /**
    * Stores the stackSize value for producing a Status object.
    * @see battle.Status Status.stackSize
    */
   private int stackSize;
+  
   /**
    * Stores the stacks value for producing a Status object.
    * @see battle.Status Status.stacks
    */
   private boolean stacks;
+  
   /**
    * Stores the stuns value for producing a Status object.
    * @see battle.Status Status.stuns
    */
   private boolean stuns;
+  
   /**
    * Stores the defeats value for producing a Status object.
    * @see battle.Status Status.defeats
    */
   private boolean defeats;
+  
   /**
    * Stores the hidden value for producing a Status object.
    * @see battle.Status Status.hidden
    */
   private boolean hidden;
+  
   /**
    * Stores the applyCondition value for producing a Status object.
    * @see battle.Status Status.applyCondition
    */
   private Predicate<Fighter> applyCondition;
+  
   /**
    * Stores the removeCondition value for producing a Status object.
    * @see battle.Status Status.removeCondition
    */
   private Predicate<Fighter> removeCondition;
+  
   /**
    * Stores the listeners value for producing a Status object.
    * @see battle.Status Status.listeners
@@ -122,7 +132,7 @@ public class StatusBuilder {
    * builder object. Default values for all parameters, if not explicitely set,
    * are used with exception to the name parameter, which is set when the
    * StatusBuilder is initiated.
-   * @return new Status object built with the values set by this builder object.
+   * @return new Status object built with the values set in this builder object.
    */
   public Status build() {
     return new Status(name, description, duration, stackSize, stacks, stuns,
@@ -130,32 +140,6 @@ public class StatusBuilder {
   }
 
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes in the Status object.
-   * @param  listener object to handle state changes.
-   * @return this.
-   * @see battle.Status Status.listeners
-   */
-  public StatusBuilder addListener(StatusHandler listener) {
-    if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
-    }
-    listeners.add(listener);
-    return this;
-  }
-  
-  /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes in the Status object.
-   * @param  listener the object to be removed.
-   * @return true if the object was successfully removed.
-   * @see battle.Status Status.listeners
-   */
-  public boolean removeListener(StatusHandler listener) {
-    return this.listeners.remove(listener);
-  }
-  
-/**
    * @param name name value for producing a Status object. There is no default
    * value. Initialization of the StatusBuilder object requires a non-null name
    * value.
@@ -306,6 +290,32 @@ public class StatusBuilder {
     }
     this.removeCondition = removeCondition;
     return this;
+  }
+  
+  /**
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes in the Status object.
+   * @param  listener object to handle state changes.
+   * @return this.
+   * @see battle.Status Status.listeners
+   */
+  public StatusBuilder addListener(StatusHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
+    }
+    listeners.add(listener);
+    return this;
+  }
+  
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes in the Status object.
+   * @param  listener the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Status Status.listeners
+   */
+  public boolean removeListener(StatusHandler listener) {
+    return this.listeners.remove(listener);
   }
   
 }
