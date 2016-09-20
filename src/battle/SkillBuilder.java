@@ -25,6 +25,8 @@
 package battle;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 
@@ -38,34 +40,40 @@ import java.util.function.Predicate;
 public class SkillBuilder {
 
   /**
-   * Stores the name value for producing a Status object.
-   * @see battle.Status Status.name
+   * Stores the name value for producing a Skill object.
+   * @see battle.Status Skill.name
    */
   private String name;
   
   /**
-   * Stores the description value for producing a Status object.
-   * @see battle.Status Status.description
+   * Stores the description value for producing a Skill object.
+   * @see battle.Status Skill.description
    */
   private String description;
   
   /**
-   * Stores the target value for producing a Status object.
-   * @see battle.Status Status.target
+   * Stores the target value for producing a Skill object.
+   * @see battle.Status Skill.target
    */
   private Target target;
   
   /**
-   * Stores the maxCooldown value for producing a Status object.
-   * @see battle.Status Status.maxCooldown
+   * Stores the maxCooldown value for producing a Skill object.
+   * @see battle.Status Skill.maxCooldown
    */
   private Duration maxCooldown;
   
   /**
-   * Stores the usability value for producing a Status object.
-   * @see battle.Status Status.usability
+   * Stores the usability value for producing a Skill object.
+   * @see battle.Status Skill.usability
    */
   private Predicate<Skill> usability;
+
+  /**
+   * Stores the listeners value for producing a Skill object.
+   * @see battle.Status Skill.listeners
+   */
+  private final List<StatusHandler> listeners;
 
   /**
    * Instantiates the object with the name of the {@link Skill} to be built.
@@ -79,6 +87,7 @@ public class SkillBuilder {
     this.target = Target.SELF;
     this.maxCooldown = Duration.ofSeconds(5);
     this.usability = a -> true;
+    this.listeners = new ArrayList<>();
   }
 
   /**
@@ -177,4 +186,31 @@ public class SkillBuilder {
     return this;
   }
 
+  /**
+   * Adds to the list of handler objects that who's methods are called during
+   * appropriate state changes or method calls in the Skill object.
+   * @param  listener object to handle state changes.
+   * @return this.
+   * @see battle.Skill Skill.listeners
+   */
+  public SkillBuilder addListener(StatusHandler listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("Listeners cannot be null");
+    }
+    listeners.add(listener);
+    return this;
+  }
+  
+  /**
+   * Removes a handler object from the list of listeners who's methods are
+   * called during appropriate state changes or method calls in the Skill
+   * object.
+   * @param  listener the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Skill Skill.listeners
+   */
+  public boolean removeListener(StatusHandler listener) {
+    return this.listeners.remove(listener);
+  }
+  
 }
