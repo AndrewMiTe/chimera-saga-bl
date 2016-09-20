@@ -25,6 +25,7 @@
 package battle;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.function.Predicate;
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public final class Status {
+public final class Status implements TurnItem {
   
   /**
    * Name of the status. Identifies the status from unrelated Status objects.
@@ -123,7 +124,7 @@ public final class Status {
    * onApply} method.
    */
   private Fighter owner;
-  
+
   /**
    * Used within this class to track when to decrement the stack size of the
    * status when it combined with Status objects that have a finite in duration
@@ -512,7 +513,17 @@ public final class Status {
     return this.duration.isZero();
   }
   
-  @Override
+  @Override // from TurnItem
+  public LocalDateTime getTurnTime(LocalDateTime currentTime) {
+    return currentTime.plus(getDuration());
+  }
+  
+  @Override // from TurnItem
+  public void advanceTime(Duration timeChange) {
+    removeDuration(timeChange);
+  }
+  
+  @Override // from Object
   public int hashCode() {
     return this.name.hashCode();
   }
@@ -525,13 +536,13 @@ public final class Status {
    * @param obj the status to test equality with.
    * @return {@code true} if the given status is equivalent.
    */
-  @Override
+  @Override // from Object
   public boolean equals(Object obj) {
     if (!(obj instanceof Status)) return false;
     return this.name.equals(((Status)obj).getName());
   }
   
-  @Override
+  @Override // from Object
   public String toString() {
     return this.name;
   }
