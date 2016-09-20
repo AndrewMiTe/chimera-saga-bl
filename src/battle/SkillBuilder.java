@@ -101,6 +101,9 @@ public class SkillBuilder {
    * @see battle.Skill Skill.name
    */
   public SkillBuilder setName(String name) {
+    if (name == null) {
+      throw new IllegalArgumentException("name cannot be null");
+    }
     this.name = name;
     return this;
   }
@@ -112,6 +115,9 @@ public class SkillBuilder {
    * @see battle.Skill Skill.name
    */
   public SkillBuilder setDescription(String description) {
+    if (description == null) {
+      throw new IllegalArgumentException("description cannot be null");
+    }
     this.description = description;
     return this;
   }
@@ -123,6 +129,9 @@ public class SkillBuilder {
    * @see battle.Skill Skill.name
    */
   public SkillBuilder setTarget(Target target) {
+    if (target == null) {
+      throw new IllegalArgumentException("target cannot be null");
+    }
     this.target = target;
     return this;
   }
@@ -134,6 +143,12 @@ public class SkillBuilder {
    * @see battle.Skill Skill.name
    */
   public SkillBuilder setMaxCooldown(Duration maxCooldown) {
+    if (maxCooldown.isZero()) {
+      throw new IllegalArgumentException("maxCooldown cannot be ZERO");
+    }
+    if (maxCooldown == null) {
+      throw new IllegalArgumentException("maxCooldown cannot be null");
+    }
     this.maxCooldown = maxCooldown;
     return this;
   }
@@ -145,6 +160,9 @@ public class SkillBuilder {
    * @see battle.Skill Skill.name
    */
   public SkillBuilder setUsablity(Predicate<Skill> usability) {
+    if (usability == null) {
+      throw new IllegalArgumentException("usablity Predicate cannot be null");
+    }
     this.usability = usability;
     return this;
   }
