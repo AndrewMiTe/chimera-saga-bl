@@ -25,21 +25,20 @@
 package battle;
 
 /**
- *
+ * Objects implementing this interface can become listeners to various Skill
+ * object events and state changes. All methods have a do-nothing default
+ * implementation that can be overridden.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface SkillHandler {
   
-  public default boolean onSkillExecution(Skill skill) {
-    return true;
+  public default void onSkillExecution(Skill skill) {
   }
   
-  public default boolean onSkillApplication(Skill skill) {
-    return true;
+  public default void onSkillApplication(Skill skill) {
   }
   
-  public default boolean onSkillRemoval(Skill skill) {
-    return true;
+  public default void onSkillRemoval(Skill skill) {
   }
   
 }
