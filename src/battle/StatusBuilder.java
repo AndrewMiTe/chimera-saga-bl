@@ -171,8 +171,8 @@ public class StatusBuilder {
   }
 
   /**
-   * @param description name value for producing a Status object. The default
-   * value is an empty string.
+   * @param description description value for producing a Status object. The
+   * default value is an empty string.
    * @return this.
    * @see battle.Status Status.description
    */
@@ -185,8 +185,8 @@ public class StatusBuilder {
   }
 
   /**
-   * @param duration name value for producing a Status object. The default value
-   * is a Duration object of ZERO.
+   * @param duration duration value for producing a Status object. The default
+   * value is a Duration object of ZERO.
    * @return this.
    * @see battle.Status Status.duration
    */
@@ -221,7 +221,7 @@ public class StatusBuilder {
   }
   
   /**
-   * @param stackSize name value for producing a Status object. The default
+   * @param stackSize stackSize value for producing a Status object. The default
    * value is 1.
    * @return this.
    * @see battle.Status Status.stackSize
@@ -235,7 +235,7 @@ public class StatusBuilder {
   }
 
   /**
-   * @param stacks name value for producing a Status object. The default value
+   * @param stacks stacks value for producing a Status object. The default value
    * is {@code true}.
    * @return this.
    * @see battle.Status Status.stacks
@@ -246,7 +246,7 @@ public class StatusBuilder {
   }
 
   /**
-   * @param stuns name value for producing a Status object. The default value
+   * @param stuns stuns value for producing a Status object. The default value
    * is {@code false}.
    * @return this.
    * @see battle.Status Status.stuns
@@ -257,8 +257,8 @@ public class StatusBuilder {
   }
 
   /**
-   * @param defeats name value for producing a Status object. The default value
-   * is {@code false}.
+   * @param defeats defeats value for producing a Status object. The default
+   * value is {@code false}.
    * @return this.
    * @see battle.Status Status.defeats
    */
@@ -268,7 +268,7 @@ public class StatusBuilder {
   }
 
   /**
-   * @param hidden name value for producing a Status object. The default value
+   * @param hidden hidden value for producing a Status object. The default value
    * is {@code false}.
    * @return this.
    * @see battle.Status Status.hidden
@@ -279,8 +279,8 @@ public class StatusBuilder {
   }
   
   /**
-   * @param applyCondition name value for producing a Status object. The default
-   * value is a function that returns {@code true}.
+   * @param applyCondition applyCondtion value for producing a Status object.
+   * The default value is a function that returns {@code true}.
    * @return this.
    * @see battle.Status Status.applyCondition
    */
@@ -294,8 +294,8 @@ public class StatusBuilder {
   }
 
   /**
-   * @param removeCondition name value for producing a Status object. The
-   * default value is a function that returns {@code true}.
+   * @param removeCondition removeCondition value for producing a Status object.
+   * The default value is a function that returns {@code true}.
    * @return this.
    * @see battle.Status Status.removeCondition
    */
