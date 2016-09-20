@@ -149,9 +149,22 @@ public class Skill implements TurnItem {
       throw new IllegalArgumentException("usablity Predicate cannot be null");
     }
     this.usability = usability;
+    if (effects != null & effects.contains(null)) {
+      throw new IllegalArgumentException("effects list cannot contain null");
+    }
     this.effects = new ArrayList<>(effects);
+    if (requirements != null & requirements.contains(null)) {
+      throw new IllegalArgumentException("requirements list cannot contain "
+          + "null");
+    }
     this.requirements = new ArrayList<>(requirements);
+    if (subSkills != null & subSkills.contains(null)) {
+      throw new IllegalArgumentException("subSkills list cannot contain null");
+    }
     this.subSkills = new ArrayList<>(subSkills);
+    if (listeners != null & listeners.contains(null)) {
+      throw new IllegalArgumentException("listeners list cannot contain null");
+    }
     this.listeners = new ArrayList<>(listeners);
     this.owner = null;
   }
