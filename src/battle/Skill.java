@@ -25,6 +25,7 @@
 package battle;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -43,7 +44,7 @@ import java.util.function.Predicate;
  * objects listed within.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Skill {
+public class Skill implements TurnItem {
   
   /**
    * Name of the Skill. Attempting to initiate the value as {@code null} will
@@ -292,7 +293,20 @@ public class Skill {
     return false;
   }
   
-  @Override
+  @Override // from TurnItem
+  public LocalDateTime getTurnTime(LocalDateTime currentTime) {
+    return currentTime.plus(cooldown);
+  }
+  
+  @Override // from TurnItem
+  public void advanceTime(Duration timeChange) {
+    if (isUsable()) {
+      cooldown = cooldown.minus(timeChange);
+      if (cooldown.isNegative()) cooldown.isZero();
+    }
+  }
+  
+  @Override // from Object
   public String toString() {
     return this.name;
   }
