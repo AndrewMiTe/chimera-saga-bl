@@ -25,17 +25,17 @@
 package battle;
 
 /**
- *
+ * Objects implementing this interface can become listeners to various Status
+ * object events and state changes. All methods have a do-nothing default
+ * implementation that can be overridden.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface StatusHandler {
   
-  public default boolean onStatusApplication(Status status) {
-    return true;
+  public default void onStatusApplication(Status status) {
   }
   
-  public default boolean onStatusRemoval(Status status) {
-    return true;
+  public default void onStatusRemoval(Status status) {
   }
   
 }
