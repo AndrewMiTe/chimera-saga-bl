@@ -193,14 +193,13 @@ public class Skill {
   }
   
   /**
-   * Returns a list of Status objects to apply to the target of the skill when
-   * the skill successfully executes.
-   * @return list of effects.
+   * Returns the name of the Skill.
+   * @return name of the Skill.
    */
-  public List<Status> getEffects() {
-    return new ArrayList<>(effects);
+  public String getName() {
+    return name;
   }
-
+  
   /**
    * Returns a description of the skill and how it is intended to interact with
    * its target(s).
@@ -208,14 +207,6 @@ public class Skill {
    */
   public String getDescription() {
     return description;
-  }
-
-  /**
-   * Returns the current amount of time remaining until the skill can be used.
-   * @return the current cooldown.
-   */
-  public Duration getCooldown() {
-    return cooldown;
   }
 
   /**
@@ -227,13 +218,31 @@ public class Skill {
   }
 
   /**
-   * Returns the name of the Skill.
-   * @return name of the Skill.
+   * Returns the current amount of time remaining until the skill can be used.
+   * @return the current cooldown.
    */
-  public String getName() {
-    return name;
+  public Duration getCooldown() {
+    return cooldown;
+  }
+
+  /**
+   * Returns an enumerated Target value for determining valid Fighter objects
+   * this skill can apply its effects to in battle.
+   * @return target of the skill.
+   */
+  public Target getTarget() {
+    return target;
   }
   
+  /**
+   * Returns a list of Status objects to apply to the target of the skill when
+   * the skill successfully executes.
+   * @return list of effects.
+   */
+  public List<Status> getEffects() {
+    return new ArrayList<>(effects);
+  }
+
   /**
    * Returns a list of Strings that represent the name values of Status objects
    * that the target of the skill must have in order to successfully execute.
@@ -252,15 +261,6 @@ public class Skill {
     return new ArrayList<>(subSkills);
   }
 
-  /**
-   * Returns an enumerated Target value for determining valid Fighter objects
-   * this skill can apply its effects to in battle.
-   * @return target of the skill.
-   */
-  public Target getTarget() {
-    return target;
-  }
-  
   /**
    * Returns the Fighter object that the skill belongs to.
    * @return the owner of the skill.
