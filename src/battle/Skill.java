@@ -59,7 +59,7 @@ public class Skill implements TurnItem {
   private String description;
   /**
    * The amount of time until the Skill can be used after execution. Attempting
-   * to initiate the value as {@code null} will throw an {@link
+   * to initiate with a ZERO value or as {@code null} will throw an {@link
    * IllegalArgumentException}.
    */
   private Duration maxCooldown;
@@ -78,7 +78,7 @@ public class Skill implements TurnItem {
    * decrement and for the skill to execute. Attempting to initiate the value as
    * {@code null} will throw an {@link IllegalArgumentException}.
    */
-  private final Predicate<Skill> usablity;
+  private final Predicate<Skill> usability;
   /**
    * List of Status objects to apply to the target of the skill when the skill
    * successfully executes.
@@ -113,7 +113,7 @@ public class Skill implements TurnItem {
    * pattern.
    * @param name {@see #name}
    * @param description {@see #description}
-   * @param usablity {@see #usablity}
+   * @param usability {@see #usablity}
    * @param target {@see #target}
    * @param maxCooldown {@see #maxCooldown}
    * @param requirements {@see #requirements}
@@ -122,7 +122,7 @@ public class Skill implements TurnItem {
    * @param listeners {@see #listeners}
    */
   public Skill(String name, String description, Target target,
-      Duration maxCooldown, Predicate<Skill> usablity, List<Status> effects,
+      Duration maxCooldown, Predicate<Skill> usability, List<Status> effects,
       List<String> requirements, List<Skill> subSkills, List<SkillHandler>
       listeners) {
     if (name == null) {
@@ -137,12 +137,18 @@ public class Skill implements TurnItem {
       throw new IllegalArgumentException("target cannot be null");
     }
     this.target = target;
+    if (maxCooldown.isZero()) {
+      throw new IllegalArgumentException("maxCooldown cannot be ZERO");
+    }
+    if (maxCooldown == null) {
+      throw new IllegalArgumentException("maxCooldown cannot be null");
+    }
     this.maxCooldown = maxCooldown;
     this.cooldown = maxCooldown;
-    if (usablity == null) {
+    if (usability == null) {
       throw new IllegalArgumentException("usablity Predicate cannot be null");
     }
-    this.usablity = usablity;
+    this.usability = usability;
     this.effects = new ArrayList<>(effects);
     this.requirements = new ArrayList<>(requirements);
     this.subSkills = new ArrayList<>(subSkills);
@@ -160,7 +166,7 @@ public class Skill implements TurnItem {
   public Skill(Skill copyOf) {
     this.name = copyOf.name;
     this.description = copyOf.description;
-    this.usablity = copyOf.usablity;
+    this.usability = copyOf.usability;
     this.target = copyOf.target;
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
@@ -279,7 +285,7 @@ public class Skill implements TurnItem {
    */
   public boolean isUsable() {
     if (owner == null) return false;
-    return usablity.test(this);
+    return usability.test(this);
   }
 
   /**
