@@ -37,42 +37,115 @@ import java.util.function.Predicate;
  */
 public class SkillBuilder {
 
-  private String name;
-  private String description = "";
-  private Target target = Target.SELF;
-  private Duration maxCooldown = Duration.ofSeconds(5);
   /**
-   * This default Predicate returns {@code true} if the fighter is not stunned
-   * or defeated.
+   * Stores the name value for producing a Status object.
+   * @see battle.Status Status.name
    */
-  private Predicate<Skill> usablity = a -> true;
+  private String name;
+  
+  /**
+   * Stores the description value for producing a Status object.
+   * @see battle.Status Status.description
+   */
+  private String description;
+  
+  /**
+   * Stores the target value for producing a Status object.
+   * @see battle.Status Status.target
+   */
+  private Target target;
+  
+  /**
+   * Stores the maxCooldown value for producing a Status object.
+   * @see battle.Status Status.maxCooldown
+   */
+  private Duration maxCooldown;
+  
+  /**
+   * Stores the usability value for producing a Status object.
+   * @see battle.Status Status.usability
+   */
+  private Predicate<Skill> usability;
 
+  /**
+   * Instantiates the object with the name of the {@link Skill} to be built.
+   * Passing a {@code null} value to the constructor will throw an {@link
+   * IllegalArgumentException}.
+   * @param name name value for producing a Skill object.
+   */
   public SkillBuilder(String name) {
     this.name = name;
+    this.description = "";
+    this.target = Target.SELF;
+    this.maxCooldown = Duration.ofSeconds(5);
+    this.usability = a -> true;
   }
 
+  /**
+   * Creates a new {@link Skill} object built with the values set by this
+   * builder object. Default values for all parameters, if not explicitely set,
+   * are used with exception to the name parameter, which is set when the
+   * SkillBuilder is initiated.
+   * @return new Skill object built with the values set in this builder object.
+   */
+  public Skill build() {
+    return new Skill(name, description, target, maxCooldown, usability, null,
+        null, null, null);
+  }
+  
+  /**
+   * @param name name value for producing a Skill object. There is no default
+   * value. Initialization of the StatusBuilder object requires a non-null name
+   * value.
+   * @return this.
+   * @see battle.Skill Skill.name
+   */
   public SkillBuilder setName(String name) {
     this.name = name;
     return this;
   }
 
+  /**
+   * @param description description value for producing a Skill object. The
+   * default value is an empty string.
+   * @return this.
+   * @see battle.Skill Skill.name
+   */
   public SkillBuilder setDescription(String description) {
     this.description = description;
     return this;
   }
 
+  /**
+   * @param target target value for producing a Skill object. The default value
+   * is SELF.
+   * @return this.
+   * @see battle.Skill Skill.name
+   */
   public SkillBuilder setTarget(Target target) {
     this.target = target;
     return this;
   }
 
+  /**
+   * @param maxCooldown maxCooldown value for producing a Skill object. The
+   * default value is 5 seconds.
+   * @return this.
+   * @see battle.Skill Skill.name
+   */
   public SkillBuilder setMaxCooldown(Duration maxCooldown) {
     this.maxCooldown = maxCooldown;
     return this;
   }
 
-  public SkillBuilder setUsablity(Predicate<Skill> usablity) {
-    this.usablity = usablity;
+  /**
+   * @param usability usability value for producing a Skill object. The default
+   * value is a Predicate that always returns true.
+   * @return this.
+   * @see battle.Skill Skill.name
+   */
+  public SkillBuilder setUsablity(Predicate<Skill> usability) {
+    this.usability = usability;
     return this;
   }
   
@@ -86,9 +159,4 @@ public class SkillBuilder {
     return this;
   }
 
-  public Skill build() {
-    return new Skill(name, description, target, maxCooldown, usablity, null,
-        null, null, null);
-  }
-  
 }
