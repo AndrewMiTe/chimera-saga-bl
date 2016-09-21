@@ -92,6 +92,18 @@ public class SkillBuilder {
    * @see battle.Skill Skill.listeners
    */
   private final List<SkillHandler> listeners;
+  
+  /**
+   * When {@code false} this object will build the skill with a useCase that
+   * also checks to make sure the owner of the skill is not stunned.
+   */
+  private boolean stunBreak;
+  
+  /**
+   * When {@code false} this object will build the skill with a useCase that
+   * also checks to make sure the owner of the skill is not defeated.
+   */
+  private boolean deathless;
 
   /**
    * Instantiates the object with the name of the {@link Skill} to be built.
@@ -104,11 +116,13 @@ public class SkillBuilder {
     this.description = "";
     this.target = Target.SELF;
     this.maxCooldown = Duration.ofSeconds(5);
-    this.useCase = s -> !s.getOwner().isStunned() && !s.getOwner().isDefeated();
+    this.useCase = s -> true;
     this.effects = new ArrayList<>();
     this.requirements = new ArrayList<>();
     this.subSkills = new ArrayList<>();
     this.listeners = new ArrayList<>();
+    this.stunBreak = false;
+    this.deathless = false;
   }
 
   /**
@@ -119,8 +133,11 @@ public class SkillBuilder {
    * @return new Skill object built with the values set in this builder object.
    */
   public Skill build() {
-    return new Skill(name, description, target, maxCooldown, useCase, effects,
-        requirements, subSkills, listeners);
+    Predicate<Skill> finalizedUseCase = s -> useCase.test(s) &&
+        (deathless ? true : !s.getOwner().isDefeated()) &&
+        (stunBreak ? true : !s.getOwner().isStunned());
+    return new Skill(name, description, target, maxCooldown, finalizedUseCase,
+        effects, requirements, subSkills, listeners);
   }
   
   /**
@@ -194,8 +211,29 @@ public class SkillBuilder {
     if (useCase == null) {
       throw new IllegalArgumentException("use case cannot be null");
     }
-    this.useCase = (Skill skill) -> !skill.getOwner().isStunned() &&
-        !skill.getOwner().isDefeated() && useCase.test(skill);
+    this.useCase = useCase;
+    return this;
+  }
+  
+  /**
+   * This method allows you to set the skill built to be usable while the owner
+   * of the skill is stunned.
+   * @param stunBreak true is the skill is unaffected by stuns.
+   * @return this.
+   */
+  public SkillBuilder setStunBreak(boolean stunBreak) {
+    this.stunBreak = stunBreak;
+    return this;
+  }
+  
+  /**
+   * This method allows you to set the skill built to be usable while the owner
+   * of the skill is defeated.
+   * @param deathless true is the skill is unaffected by defeat.
+   * @return this.
+   */
+  public SkillBuilder setDeathless(boolean deathless) {
+    this.deathless = deathless;
     return this;
   }
   
