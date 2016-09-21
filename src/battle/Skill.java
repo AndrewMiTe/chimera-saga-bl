@@ -51,54 +51,64 @@ public class Skill implements TurnItem {
    * throw an {@link IllegalArgumentException}.
    */
   private String name;
+  
   /**
    * Description of the skill and how it is intended to interact with its
    * target(s). Attempting to initiate the value as {@code null} will throw an
    * {@link IllegalArgumentException}.
    */
   private String description;
+  
   /**
    * The amount of time until the Skill can be used after execution. Attempting
    * to initiate with a ZERO value or as {@code null} will throw an {@link
    * IllegalArgumentException}.
    */
   private Duration maxCooldown;
+  
   /**
    * The current amount of time remaining until the skill can be used.
    */
   private Duration cooldown;
+  
   /**
    * Enumerated Target value for determining valid Fighter objects this skill
    * applies its effects to. Attempting to initiate the value as {@code null}
    * will throw an {@link IllegalArgumentException}.
    */
   private Target target;
+  
   /**
    * Defines the case when the skill is usable, which allows its cooldown to
    * decrement and for the skill to execute. Attempting to initiate the value as
    * {@code null} will throw an {@link IllegalArgumentException}.
    */
-  private final Predicate<Skill> usability;
+  private final Predicate<Skill> useCase;
+  
   /**
    * List of Status objects to apply to the target of the skill when the skill
    * successfully executes.
    */
   private final List<Status> effects;
+  
   /**
    * List of Status objects that the target of the skill must have in order to
    * successfully execute.
    */
   private final List<String> requirements;
+  
   /**
    * List of Skill objects that must be successfully executed in order for this
    * skill to apply its effects to its target(s).
    */
   private final List<Skill> subSkills;
+  
   /**
    * List of handler objects that who's methods are called during appropriate
    * state changes or method calls to the Skill object.
    */
   private final List<SkillHandler> listeners;
+  
   /**
    * The Fighter object that the skill belongs to. Value should remain null
    * until the skill has been applied using the {@link #onApply(battle.Fighter)
@@ -113,7 +123,7 @@ public class Skill implements TurnItem {
    * pattern.
    * @param name {@see #name}
    * @param description {@see #description}
-   * @param usability {@see #usablity}
+   * @param useCase {@see #useCase}
    * @param target {@see #target}
    * @param maxCooldown {@see #maxCooldown}
    * @param requirements {@see #requirements}
@@ -121,8 +131,8 @@ public class Skill implements TurnItem {
    * @param subSkills {@see #subSkills}
    * @param listeners {@see #listeners}
    */
-  public Skill(String name, String description, Target target,
-      Duration maxCooldown, Predicate<Skill> usability, List<Status> effects,
+  protected Skill(String name, String description, Target target,
+      Duration maxCooldown, Predicate<Skill> useCase, List<Status> effects,
       List<String> requirements, List<Skill> subSkills, List<SkillHandler>
       listeners) {
     if (name == null) {
@@ -145,10 +155,10 @@ public class Skill implements TurnItem {
     }
     this.maxCooldown = maxCooldown;
     this.cooldown = maxCooldown;
-    if (usability == null) {
+    if (useCase == null) {
       throw new IllegalArgumentException("usablity Predicate cannot be null");
     }
-    this.usability = usability;
+    this.useCase = useCase;
     if (effects != null & effects.contains(null)) {
       throw new IllegalArgumentException("effects list cannot contain null");
     }
@@ -179,7 +189,7 @@ public class Skill implements TurnItem {
   public Skill(Skill copyOf) {
     this.name = copyOf.name;
     this.description = copyOf.description;
-    this.usability = copyOf.usability;
+    this.useCase = copyOf.useCase;
     this.target = copyOf.target;
     this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
@@ -298,7 +308,7 @@ public class Skill implements TurnItem {
    */
   public boolean isUsable() {
     if (owner == null) return false;
-    return usability.test(this);
+    return useCase.test(this);
   }
 
   /**
