@@ -248,9 +248,9 @@ public class SkillBuilder {
   }
 
   /**
-   * Adds to the list of effects (Status objects) for producing a Skill object.
-   * The default is an empty list.
-   * @param  effect object to apply to targets on successful execution.
+   * Adds to the list of effects for producing a Skill object. The default is an
+   * empty list.
+   * @param effect object to apply to targets on successful execution.
    * @return this.
    * @see battle.Skill Skill.effects
    */
@@ -264,12 +264,64 @@ public class SkillBuilder {
   
   /**
    * Removes an effect from the list of effects for producing a Skill object.
-   * @param  effect the object to be removed.
+   * @param effect the object to be removed.
    * @return true if the object was successfully removed.
    * @see battle.Skill Skill.effects
    */
   public boolean removeEffect(Status effect) {
     return this.effects.remove(effect);
+  }
+  
+  /**
+   * Adds to the list of requirements for producing a Skill object. The default
+   * is an empty list.
+   * @param requirement name of status object required for targets to have.
+   * @return this.
+   * @see battle.Skill Skill.requirements
+   */
+  public SkillBuilder addRequirement(String requirement) {
+    if (requirement == null) {
+      throw new IllegalArgumentException("requirements cannot be null");
+    }
+    requirements.add(requirement);
+    return this;
+  }
+  
+  /**
+   * Removes a requirement from the list of requirements for producing a Skill
+   * object.
+   * @param requirement the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Skill Skill.requirements
+   */
+  public boolean removeRequirement(String requirement) {
+    return this.requirements.remove(requirement);
+  }
+  
+  /**
+   * Adds to the list of sub-skills for producing a Skill object. The default is
+   * an empty list.
+   * @param subSkill skill required to execute successfully.
+   * @return this.
+   * @see battle.Skill Skill.subSkills
+   */
+  public SkillBuilder addSubSkill(Skill subSkill) {
+    if (subSkill == null) {
+      throw new IllegalArgumentException("sub-skills cannot be null");
+    }
+    subSkills.add(subSkill);
+    return this;
+  }
+  
+  /**
+   * Removes a sub-skill from the list of sub-skills for producing a Skill
+   * object.
+   * @param subSkill the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Skill Skill.subSkills
+   */
+  public boolean removeSubSkill(Skill subSkill) {
+    return this.subSkills.remove(subSkill);
   }
   
   /**
