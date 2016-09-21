@@ -40,7 +40,7 @@ import java.util.function.Predicate;
  * @see StatusBuilder
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public final class Status implements TurnItem {
+public class Status implements TurnItem {
   
   /**
    * Name of the status. Identifies the status from unrelated Status objects.
@@ -69,7 +69,7 @@ public final class Status implements TurnItem {
    * The current number of stacks. Attempting to initiate the value as less then
    * {@code 1} will throw an {@link IllegalArgumentException}.
    */
-  private int stackSize;
+  private final int stackSize;
 
   /**
    * States whether the status increases in stack size when equivalent Status
@@ -240,7 +240,7 @@ public final class Status implements TurnItem {
    * @param  newOwner the Unit the Status is being applied to.
    * @return true if status can be applied to the target owner.
    */
-  public boolean onApply(Fighter newOwner) {
+  public final boolean onApply(Fighter newOwner) {
     if (!applyCondition.test(owner)) return false;
     this.owner = newOwner;
     for (StatusHandler handler : listeners) {
@@ -253,7 +253,7 @@ public final class Status implements TurnItem {
    * Event method for when this status is removed.
    * @return true if the status can be removed from its owner.
    */
-  public boolean onRemove() {
+  public final boolean onRemove() {
     if (!removeCondition.test(owner)) return false;
     owner = null;
     for (StatusHandler handler : listeners) {
@@ -274,7 +274,7 @@ public final class Status implements TurnItem {
    * @param status the status to test.
    * @return {@code true} if the given status can combine with this one.
    */
-  public boolean canCombine(Status status) {
+  public final boolean canCombine(Status status) {
     return (status != null) &&
         status.name.equals(name) &&
         (status.stacks == this.stacks) &&
@@ -302,7 +302,7 @@ public final class Status implements TurnItem {
    * canCombine} method will throw an {@link IllegalArgumentException}.
    * @param status the status to combine with.
    */
-  public void combineWith(Status status) {
+  public final void combineWith(Status status) {
     if (!canCombine(status)) {
       throw new IllegalArgumentException("Status cannot be combined.");
     }
@@ -331,7 +331,7 @@ public final class Status implements TurnItem {
    * IllegalArgumentException}.
    * @param amount the amount of time to remove.
    */
-  public void removeDuration(Duration amount) {
+  public final void removeDuration(Duration amount) {
     if (amount.isNegative()) throw new IllegalArgumentException(" Cannot "
         + "remove negative time from a status.");
     if (!isInfinite()) {
@@ -360,7 +360,7 @@ public final class Status implements TurnItem {
    * {@link IllegalArgumentException}.
    * @param amount the amount of stacks to remove.
    */
-  public void removeStacks(int amount) {
+  public final void removeStacks(int amount) {
     if (amount < 0)  throw new IllegalArgumentException("Cannnot remove "
         + "negative stacks from a status.");
     if (amount >= getStackSize()) {
@@ -380,7 +380,7 @@ public final class Status implements TurnItem {
    * appropriate state changes in the Status object.
    * @param listener object to handle state changes.
    */
-  public void addListener(StatusHandler listener) {
+  public final void addListener(StatusHandler listener) {
     if (listener == null) {
       throw new IllegalArgumentException("Listeners cannot be null");
     }
@@ -393,7 +393,7 @@ public final class Status implements TurnItem {
    * @param listener the object to be removed.
    * @return true if the object was successfully removed.
    */
-  public boolean removeListener(StatusHandler listener) {
+  public final boolean removeListener(StatusHandler listener) {
     return this.listeners.remove(listener);
   }
   
@@ -401,7 +401,7 @@ public final class Status implements TurnItem {
    * Name of the status. Identifies the status from unrelated Status objects.
    * @return name of the Status.
    */
-  public String getName() {
+  public final String getName() {
     return name;
   }
 
@@ -411,7 +411,7 @@ public final class Status implements TurnItem {
    * Status objects on the same fighter.
    * @return description of the status
    */
-  public String getDescription() {
+  public final String getDescription() {
     return description;
   }
 
@@ -421,7 +421,7 @@ public final class Status implements TurnItem {
    * duration is infinite.
    * @return time before the status expires.
    */
-  public Duration getDuration() {
+  public final Duration getDuration() {
     if (stackList.isEmpty()) return Duration.ZERO;
     Duration currentDuration = stackList.get(0).duration;
     for (Stack s : stackList) {
@@ -436,7 +436,7 @@ public final class Status implements TurnItem {
    * The current number of stacks.
    * @return stack size.
    */
-  public int getStackSize() {
+  public final int getStackSize() {
     int currentSize = 0;
     for (Stack s : stackList) {
         currentSize += s.stackSize;
@@ -448,7 +448,7 @@ public final class Status implements TurnItem {
    * The Fighter object that the status belongs to.
    * @return the owner of the status.
    */
-  public Fighter getOwner() {
+  public final Fighter getOwner() {
     return owner;
   }
   
@@ -457,7 +457,7 @@ public final class Status implements TurnItem {
    * objects are added to it.
    * @return true if this is stacks.
    */
-  public boolean isStackable() {
+  public final boolean isStackable() {
     return stacks;
   }
   
@@ -466,7 +466,7 @@ public final class Status implements TurnItem {
    * decrement their skill cooldowns and cannot execute skills.
    * @return true if the Status stuns the Unit it is applied to.
    */
-  public boolean isStunning() {
+  public final boolean isStunning() {
     return stuns;
   }
 
@@ -476,7 +476,7 @@ public final class Status implements TurnItem {
    * also defeated.
    * @return true if this defeats the fighter it is applied to.
    */
-  public boolean isDefeating() {
+  public final boolean isDefeating() {
     return defeats;
   }
   
@@ -484,7 +484,7 @@ public final class Status implements TurnItem {
    * Returns true is the status should be hidden from client users.
    * @return true if this is hidden from user.
    */
-  public boolean isHidden() {
+  public final boolean isHidden() {
     return hidden;
   }
 
@@ -493,7 +493,7 @@ public final class Status implements TurnItem {
    * applied. This is indicated my setting the duration value to {@code ZERO}.
    * @return true if this is an instant status.
    */
-  public boolean isFinite() {
+  public final boolean isFinite() {
     return !isInfinite() && !isInstant();
   }
   
@@ -503,7 +503,7 @@ public final class Status implements TurnItem {
    * negative value.
    * @return true if this is an instant status.
    */
-  public boolean isInfinite() {
+  public final boolean isInfinite() {
     return this.duration.isNegative();
   }
   
@@ -512,22 +512,22 @@ public final class Status implements TurnItem {
    * applied. This is indicated my setting the duration value to {@code ZERO}.
    * @return true if this is an instant status.
    */
-  public boolean isInstant() {
+  public final boolean isInstant() {
     return this.duration.isZero();
   }
   
   @Override // from TurnItem
-  public LocalDateTime getTurnTime(LocalDateTime currentTime) {
+  public final LocalDateTime getTurnTime(LocalDateTime currentTime) {
     return currentTime.plus(getDuration());
   }
   
   @Override // from TurnItem
-  public void advanceTime(Duration timeChange) {
+  public final void advanceTime(Duration timeChange) {
     removeDuration(timeChange);
   }
   
   @Override // from Object
-  public int hashCode() {
+  public final int hashCode() {
     return this.name.hashCode();
   }
   
@@ -540,14 +540,9 @@ public final class Status implements TurnItem {
    * @return {@code true} if the given status is equivalent.
    */
   @Override // from Object
-  public boolean equals(Object obj) {
+  public final boolean equals(Object obj) {
     if (!(obj instanceof Status)) return false;
     return this.name.equals(((Status)obj).getName());
-  }
-  
-  @Override // from Object
-  public String toString() {
-    return this.name;
   }
   
 }
