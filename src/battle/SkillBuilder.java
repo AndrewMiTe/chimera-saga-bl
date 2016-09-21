@@ -70,6 +70,24 @@ public class SkillBuilder {
   private Predicate<Skill> usability;
 
   /**
+   * Stores the effects value for producing a Skill object.
+   * @see battle.Skill Skill.effects
+   */
+  private final List<Status> effects;
+
+  /**
+   * Stores the requirements value for producing a Skill object.
+   * @see battle.Skill Skill.requirements
+   */
+  private final List<String> requirements;
+  
+  /**
+   * Stores the subSkills value for producing a Skill object.
+   * @see battle.Skill Skill.subSkills
+   */
+  private final List<Skill> subSkills;
+  
+  /**
    * Stores the listeners value for producing a Skill object.
    * @see battle.Skill Skill.listeners
    */
@@ -87,6 +105,9 @@ public class SkillBuilder {
     this.target = Target.SELF;
     this.maxCooldown = Duration.ofSeconds(5);
     this.usability = a -> true;
+    this.effects = new ArrayList<>();
+    this.requirements = new ArrayList<>();
+    this.subSkills = new ArrayList<>();
     this.listeners = new ArrayList<>();
   }
 
@@ -98,8 +119,8 @@ public class SkillBuilder {
    * @return new Skill object built with the values set in this builder object.
    */
   public Skill build() {
-    return new Skill(name, description, target, maxCooldown, usability, null,
-        null, null, listeners);
+    return new Skill(name, description, target, maxCooldown, usability, effects,
+        requirements, subSkills, listeners);
   }
   
   /**
