@@ -41,39 +41,39 @@ public class SkillBuilder {
 
   /**
    * Stores the name value for producing a Skill object.
-   * @see battle.Status Skill.name
+   * @see battle.Skill Skill.name
    */
   private String name;
   
   /**
    * Stores the description value for producing a Skill object.
-   * @see battle.Status Skill.description
+   * @see battle.Skill Skill.description
    */
   private String description;
   
   /**
    * Stores the target value for producing a Skill object.
-   * @see battle.Status Skill.target
+   * @see battle.Skill Skill.target
    */
   private Target target;
   
   /**
    * Stores the maxCooldown value for producing a Skill object.
-   * @see battle.Status Skill.maxCooldown
+   * @see battle.Skill Skill.maxCooldown
    */
   private Duration maxCooldown;
   
   /**
    * Stores the usability value for producing a Skill object.
-   * @see battle.Status Skill.usability
+   * @see battle.Skill Skill.usability
    */
   private Predicate<Skill> usability;
 
   /**
    * Stores the listeners value for producing a Skill object.
-   * @see battle.Status Skill.listeners
+   * @see battle.Skill Skill.listeners
    */
-  private final List<StatusHandler> listeners;
+  private final List<SkillHandler> listeners;
 
   /**
    * Instantiates the object with the name of the {@link Skill} to be built.
@@ -99,7 +99,7 @@ public class SkillBuilder {
    */
   public Skill build() {
     return new Skill(name, description, target, maxCooldown, usability, null,
-        null, null, null);
+        null, null, listeners);
   }
   
   /**
@@ -193,7 +193,7 @@ public class SkillBuilder {
    * @return this.
    * @see battle.Skill Skill.listeners
    */
-  public SkillBuilder addListener(StatusHandler listener) {
+  public SkillBuilder addListener(SkillHandler listener) {
     if (listener == null) {
       throw new IllegalArgumentException("Listeners cannot be null");
     }
@@ -209,7 +209,7 @@ public class SkillBuilder {
    * @return true if the object was successfully removed.
    * @see battle.Skill Skill.listeners
    */
-  public boolean removeListener(StatusHandler listener) {
+  public boolean removeListener(SkillHandler listener) {
     return this.listeners.remove(listener);
   }
   
