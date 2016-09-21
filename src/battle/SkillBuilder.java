@@ -67,7 +67,7 @@ public class SkillBuilder {
    * Stores the usability value for producing a Skill object.
    * @see battle.Skill Skill.usability
    */
-  private Predicate<Skill> usability;
+  private Predicate<Skill> useCase;
 
   /**
    * Stores the effects value for producing a Skill object.
@@ -104,7 +104,7 @@ public class SkillBuilder {
     this.description = "";
     this.target = Target.SELF;
     this.maxCooldown = Duration.ofSeconds(5);
-    this.usability = a -> true;
+    this.useCase = s -> !s.getOwner().isStunned() && !s.getOwner().isDefeated();
     this.effects = new ArrayList<>();
     this.requirements = new ArrayList<>();
     this.subSkills = new ArrayList<>();
@@ -119,7 +119,7 @@ public class SkillBuilder {
    * @return new Skill object built with the values set in this builder object.
    */
   public Skill build() {
-    return new Skill(name, description, target, maxCooldown, usability, effects,
+    return new Skill(name, description, target, maxCooldown, useCase, effects,
         requirements, subSkills, listeners);
   }
   
@@ -174,26 +174,28 @@ public class SkillBuilder {
    */
   public SkillBuilder setMaxCooldown(Duration maxCooldown) {
     if (maxCooldown.isZero()) {
-      throw new IllegalArgumentException("maxCooldown cannot be ZERO");
+      throw new IllegalArgumentException("max cooldown cannot be ZERO");
     }
     if (maxCooldown == null) {
-      throw new IllegalArgumentException("maxCooldown cannot be null");
+      throw new IllegalArgumentException("max cooldown cannot be null");
     }
     this.maxCooldown = maxCooldown;
     return this;
   }
 
   /**
-   * @param usability usability value for producing a Skill object. The default
-   * value is a Predicate that always returns true.
+   * @param useCase usability value for producing a Skill object. The default
+   * value is a Predicate that returns true of the owner of the skill is neither
+   * stunned nor defeated.
    * @return this.
-   * @see battle.Skill Skill.name
+   * @see battle.Skill Skill.useCase
    */
-  public SkillBuilder setUsablity(Predicate<Skill> usability) {
-    if (usability == null) {
-      throw new IllegalArgumentException("usablity Predicate cannot be null");
+  public SkillBuilder setUseCase(Predicate<Skill> useCase) {
+    if (useCase == null) {
+      throw new IllegalArgumentException("use case cannot be null");
     }
-    this.usability = usability;
+    this.useCase = (Skill skill) -> !skill.getOwner().isStunned() &&
+        !skill.getOwner().isDefeated() && useCase.test(skill);
     return this;
   }
   
@@ -241,7 +243,7 @@ public class SkillBuilder {
    */
   public SkillBuilder addListener(SkillHandler listener) {
     if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
+      throw new IllegalArgumentException("listeners cannot be null");
     }
     listeners.add(listener);
     return this;
