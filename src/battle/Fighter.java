@@ -46,5 +46,13 @@ public class Fighter {
   public boolean removeStatus(Status status) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
+
+  boolean isStunned() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  boolean isDefeated() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
   
 }
