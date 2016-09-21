@@ -208,6 +208,31 @@ public class SkillBuilder {
   }
 
   /**
+   * Adds to the list of effects (Status objects) for producing a Skill object.
+   * The default is an empty list.
+   * @param  effect object to apply to targets on successful execution.
+   * @return this.
+   * @see battle.Skill Skill.effects
+   */
+  public SkillBuilder addEffect(Status effect) {
+    if (effect == null) {
+      throw new IllegalArgumentException("effects cannot be null");
+    }
+    effects.add(effect);
+    return this;
+  }
+  
+  /**
+   * Removes an effect from the list of effects for producing a Skill object.
+   * @param  effect the object to be removed.
+   * @return true if the object was successfully removed.
+   * @see battle.Skill Skill.effects
+   */
+  public boolean removeEffect(Status effect) {
+    return this.effects.remove(effect);
+  }
+  
+  /**
    * Adds to the list of handler objects that who's methods are called during
    * appropriate state changes or method calls in the Skill object.
    * @param  listener object to handle state changes.
