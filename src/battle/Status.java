@@ -78,30 +78,23 @@ public class Status implements TurnItem {
   private final boolean defeating;
 
   /**
-   * States whether or not the status should be visible to the user of the
-   * client.
+   * @see StatusBuilder#setHidden(boolean)
    */
   private final boolean hidden;
 
   /**
-   * Test condition that returns true if the status can be successfully applied
-   * to the target owner of the status. Accepts the target owner of the status 
-   * as the given parameter. Attempting to initiate the value as {@code null}
-   * will throw an {@link IllegalArgumentException}.
+   * @see StatusBuilder#setApplyCondition(java.util.function.Predicate)
    */
   private final Predicate<Fighter> applyCondition;
 
   /**
-   * Test condition that returns true if the status can be successfully removed
-   * from the owner of the status. Accepts the owner of the status as the given
-   * parameter. Attempting to initiate the value as {@code null} will throw an
-   * {@link IllegalArgumentException}.
+   * @see StatusBuilder#setRemoveCondition(java.util.function.Predicate)
    */
 
   private final Predicate<Fighter> removeCondition;
+  
   /**
-   * List of handler objects that who's methods are called during appropriate
-   * state changes in the Status object.
+   * @see StatusBuilder#addListener(battle.StatusHandler)
    */
   private final Set<StatusHandler> listeners;
 
@@ -137,20 +130,20 @@ public class Status implements TurnItem {
    * explicitly set are done so through the given parameters. See the {@link 
    * StatusBuilder} class which allows you to create Status object using a
    * builder pattern.
-   * @param name {@see #name}
-   * @param description {@see #description}
-   * @param duration {@see #duration}
-   * @param stackSize {@see #stackSize}
-   * @param stacks {@see #stacks}
-   * @param stuns {@see #stuns}
-   * @param defeats {@see #defeats}
-   * @param hidden {@see #hidden}
-   * @param applyCondition {@see #applyCondition}
-   * @param removeCondition {@see #removeCondition}
-   * @param listeners {@see #listeners}
+   * @param name {@see StatusBuilder#setName}
+   * @param description {@see StatusBuilder#setDescription}
+   * @param duration {@see StatusBuilder#setDuration}
+   * @param stackSize {@see StatusBuilder#setStackSize}
+   * @param stackable {@see StatusBuilder#setStackable}
+   * @param stunning {@see StatusBuilder#setStunning}
+   * @param defeating {@see StatusBuilder#setDefeating}
+   * @param hidden {@see StatusBuilder#setHidden}
+   * @param applyCondition {@see StatusBuilder#setApplyCondition}
+   * @param removeCondition {@see StatusBuilder#setRemoveCondition}
+   * @param listeners {@see StatusBuilder#addListener}
    */
   protected Status(String name, String description, Duration duration,
-      int stackSize, boolean stacks, boolean stuns, boolean defeats,
+      int stackSize, boolean stackable, boolean stunning, boolean defeating,
       boolean hidden, Predicate<Fighter> applyCondition, Predicate<Fighter>
       removeCondition, List<StatusHandler> listeners) {
     if (name == null) {
@@ -169,9 +162,9 @@ public class Status implements TurnItem {
       throw new IllegalArgumentException("stacks cannot be negative");
     }
     this.stackSize = stackSize;
-    this.stackable = stacks;
-    this.stunning = stuns;
-    this.defeating = defeats;
+    this.stackable = stackable;
+    this.stunning = stunning;
+    this.defeating = defeating;
     this.hidden = hidden;
     if (applyCondition == null) {
       throw new IllegalArgumentException("Condition for application cannot be"
@@ -363,9 +356,9 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes in the Status object.
-   * @param listener object to handle state changes.
+   * Adds to the list of {@link StatusHandler} objects that are called during
+   * appropriate events in the Status object.
+   * @param listener object to handle events.
    */
   public final void addListener(StatusHandler listener) {
     if (listener == null) {
@@ -375,38 +368,35 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes in the Status object.
+   * Removes a listener from the list of {@link StatusHandler} objects that are
+   * called during appropriate events in the Status object.
    * @param listener the object to be removed.
    * @return true if the object was successfully removed.
+   * @see #addListener(battle.StatusHandler)
    */
   public final boolean removeListener(StatusHandler listener) {
     return this.listeners.remove(listener);
   }
   
   /**
-   * Name of the status. Identifies the status from unrelated Status objects.
    * @return name of the Status.
+   * @see StatusBuilder#setName
    */
   public final String getName() {
     return name;
   }
 
   /**
-   * Returns a description of the status and how it is intended to interact with
-   * Fighter objects it is applied to, as well as its interactions with other
-   * Status objects on the same fighter.
-   * @return description of the status
+   * @return description of the status.
+   * @see StatusBuilder#setDescription
    */
   public final String getDescription() {
     return description;
   }
 
   /**
-   * The time before this status expires. Zero means the Status has an instant
-   * duration and should expire as soon as it is applied. Less then zero means
-   * duration is infinite.
    * @return time before the status expires.
+   * @see StatusBuilder#setDuration
    */
   public final Duration getDuration() {
     if (stackList.isEmpty()) return Duration.ZERO;
@@ -420,8 +410,8 @@ public class Status implements TurnItem {
   }
 
   /**
-   * The current number of stacks.
-   * @return stack size.
+   * @return the current stack size.
+   * @see StatusBuilder#setStackSize
    */
   public final int getStackSize() {
     int currentSize = 0;
@@ -440,45 +430,41 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Returns true if the status increases in stack size when equivalent Status
-   * objects are added to it.
-   * @return true if this is stacks.
+   * @return {@code true} if the status is stackable.
+   * @see StatusBuilder#setStackable
    */
   public final boolean isStackable() {
     return stackable;
   }
   
   /**
-   * Returns true if this status stuns the fighter. Stunned fighters do not
-   * decrement their skill cooldowns and cannot execute skills.
-   * @return true if the Status stuns the Unit it is applied to.
+   * @return {@code true} if the status stuns the fighter it is applied to.
+   * @see StatusBuilder#setStunning
    */
   public final boolean isStunning() {
     return stunning;
   }
 
   /**
-   * Returns true if the Status object defeats the fighter. Defeated Fighter
-   * objects allow their team to lose a battle if all other ally fighters are
-   * also defeated.
-   * @return true if this defeats the fighter it is applied to.
+   * @return {@code true} if the status defeats the fighter it is applied to.
+   * @see StatusBuilder#setDefeating
    */
   public final boolean isDefeating() {
     return defeating;
   }
   
   /**
-   * Returns true is the status should be hidden from client users.
-   * @return true if this is hidden from user.
+   * @return {@code true} if the status should be hidden from user.
+   * @see StatusBuilder#setHidden
    */
   public final boolean isHidden() {
     return hidden;
   }
 
   /**
-   * Returns {@code true} if the status should be removed as soon as it is
-   * applied. This is indicated my setting the duration value to {@code ZERO}.
-   * @return true if this is an instant status.
+   * Returns {@code true} if the status has a finite duration and does not
+   * expire instantly.
+   * @return {@code true} if this is a finite status.
    */
   public final boolean isFinite() {
     return !isInfinite() && !isInstant();
@@ -486,9 +472,8 @@ public class Status implements TurnItem {
   
   /**
    * Returns {@code true} if the status should be unable to expire due to
-   * passing time. This is indicated my setting the duration value to a
-   * negative value.
-   * @return true if this is an instant status.
+   * passing time.
+   * @return {@code true} if this is an infinite status.
    */
   public final boolean isInfinite() {
     return this.duration.isNegative();
@@ -496,8 +481,8 @@ public class Status implements TurnItem {
   
   /**
    * Returns {@code true} if the status should be removed as soon as it is
-   * applied. This is indicated my setting the duration value to {@code ZERO}.
-   * @return true if this is an instant status.
+   * applied.
+   * @return {@code true} if this is an instant status.
    */
   public final boolean isInstant() {
     return this.duration.isZero();
