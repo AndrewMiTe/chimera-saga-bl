@@ -40,67 +40,67 @@ public class StatusBuilder {
 
   /**
    * Stores the name value for producing a Status object.
-   * @see #setName(java.lang.String)
+   * @see #setName
    */
   private String name;
   
   /**
    * Stores the description value for producing a Status object.
-   * @see #setDescription(java.lang.String)
+   * @see #setDescription
    */
   private String description;
   
   /**
    * Stores the duration value for producing a Status object.
-   * @see #setDuration(java.time.Duration)
+   * @see #setDuration
    */
   private Duration duration;
   
   /**
    * Stores the stackSize value for producing a Status object.
-   * @see #setStackSize(int)
+   * @see #setStackSize
    */
   private int stackSize;
   
   /**
    * Stores the stacks value for producing a Status object.
-   * @see #setStackable(boolean)
+   * @see #setStackable
    */
   private boolean stackable;
   
   /**
    * Stores the stunning value for producing a Status object.
-   * @see #setStunning(boolean)
+   * @see #setStunning
    */
   private boolean stunning;
   
   /**
    * Stores the defeating value for producing a Status object.
-   * @see #setDefeating(boolean)
+   * @see #setDefeating
    */
   private boolean defeating;
   
   /**
    * Stores the hidden value for producing a Status object.
-   * @see #setHidden(boolean)
+   * @see #setHidden
    */
   private boolean hidden;
   
   /**
    * Stores the applyCondition value for producing a Status object.
-   * @see #setApplyCondition(java.util.function.Predicate)
+   * @see #setApplyCondition
    */
   private Predicate<Fighter> applyCondition;
   
   /**
    * Stores the removeCondition value for producing a Status object.
-   * @see #setRemoveCondition(java.util.function.Predicate)
+   * @see #setRemoveCondition
    */
   private Predicate<Fighter> removeCondition;
   
   /**
    * Stores the listeners value for producing a Status object.
-   * @see #addListener(battle.StatusHandler)
+   * @see #addListener
    */
   private final List<StatusHandler> listeners;
 
@@ -108,7 +108,7 @@ public class StatusBuilder {
    * Instantiates the object with the name of the {@link Status} to be built.
    * Passing a {@code null} value to the constructor will throw an {@link
    * IllegalArgumentException}.
-   * @param name see {@see #setName(java.lang.String)}
+   * @param name see {@see #setName}
    */
   public StatusBuilder(String name) {
     if (name == null) {
@@ -318,7 +318,7 @@ public class StatusBuilder {
   /**
    * Adds to the list of {@link StatusHandler} objects that are called during
    * appropriate events in the Status object.
-   * @param  listener object to handle events.
+   * @param listener object to handle events.
    * @return this object.
    */
   public StatusBuilder addListener(StatusHandler listener) {
@@ -332,7 +332,7 @@ public class StatusBuilder {
   /**
    * Removes a listener from the list of {@link StatusHandler} objects that are
    * called during appropriate events in the Status object.
-   * @param  listener the object to be removed.
+   * @param listener the object to be removed.
    * @return true if the object was successfully removed.
    * @see #addListener(battle.StatusHandler)
    */
