@@ -43,52 +43,39 @@ import java.util.function.Predicate;
 public class Status implements TurnItem {
   
   /**
-   * Name of the status. Identifies the status from unrelated Status objects.
-   * Attempting to initiate the value as {@code null} will throw an {@link
-   * IllegalArgumentException}.
+   * @see StatusBuilder#setName(java.lang.String)
    */
   private final String name;
 
   /**
-   * Description of the status and how it is intended to interact with
-   * Fighter objects it is applied to, as well as its interactions with other
-   * Status objects on the same fighter. Attempting to initiate the value as
-   * {@code null} will throw an {@link IllegalArgumentException}.
+   * @see StatusBuilder#setDescription(java.lang.String)
    */
   private final String description;
 
   /**
-   * The time before this status expires once it is applied. Zero means the
-   * Status has an instant duration and should expire as soon as it is applied.
-   * Less then zero means duration is infinite. Attempting to initiate the value
-   * as {@code null} will throw an {@link IllegalArgumentException}.
+   * @see StatusBuilder#setDuration(java.time.Duration)
    */
   private final Duration duration;
 
   /**
-   * The current number of stacks. Attempting to initiate the value as less then
-   * {@code 1} will throw an {@link IllegalArgumentException}.
+   * @see StatusBuilder#setStackSize(int)
    */
   private final int stackSize;
 
   /**
-   * States whether the status increases in stack size when equivalent Status
-   * objects are combined with it.
+   * @see StatusBuilder#setStackable(boolean)
    */
-  private final boolean stacks;
+  private final boolean stackable;
 
   /**
-   * States whether or not this status stuns the fighter. Stunned fighters do
-   * not decrement their skill cooldowns and cannot execute skills.
+   * @see StatusBuilder#setStunning(boolean)
    */
-  private final boolean stuns;
+  private final boolean stunning;
 
   /**
-   * States whether or not the Status object defeats the fighter. Defeated
-   * Fighter objects allow their team to lose a battle if all other ally
-   * fighters are also defeated.
+   * @see StatusBuilder#setDefeating(boolean)
    */
-  private final boolean defeats;
+  private final boolean defeating;
 
   /**
    * States whether or not the status should be visible to the user of the
@@ -182,9 +169,9 @@ public class Status implements TurnItem {
       throw new IllegalArgumentException("stacks cannot be negative");
     }
     this.stackSize = stackSize;
-    this.stacks = stacks;
-    this.stuns = stuns;
-    this.defeats = defeats;
+    this.stackable = stacks;
+    this.stunning = stuns;
+    this.defeating = defeats;
     this.hidden = hidden;
     if (applyCondition == null) {
       throw new IllegalArgumentException("Condition for application cannot be"
@@ -223,9 +210,9 @@ public class Status implements TurnItem {
     this.description = copyOf.description;
     this.duration = copyOf.duration;
     this.stackSize = copyOf.stackSize;
-    this.stacks = copyOf.stacks;
-    this.stuns = copyOf.stuns;
-    this.defeats = copyOf.defeats;
+    this.stackable = copyOf.stackable;
+    this.stunning = copyOf.stunning;
+    this.defeating = copyOf.defeating;
     this.hidden = copyOf.hidden;
     this.applyCondition = copyOf.applyCondition;
     this.removeCondition = copyOf.removeCondition;
@@ -277,9 +264,9 @@ public class Status implements TurnItem {
   public final boolean canCombine(Status status) {
     return (status != null) &&
         status.name.equals(name) &&
-        (status.stacks == this.stacks) &&
-        (status.defeats == this.defeats) &&
-        (status.stuns == this.stuns) &&
+        (status.stackable == this.stackable) &&
+        (status.defeating == this.defeating) &&
+        (status.stunning == this.stunning) &&
         (status.hidden == this.hidden) &&
         ((status.isInstant() == status.isInstant()) ||
         (status.isFinite() == this.isFinite()) ||
@@ -458,7 +445,7 @@ public class Status implements TurnItem {
    * @return true if this is stacks.
    */
   public final boolean isStackable() {
-    return stacks;
+    return stackable;
   }
   
   /**
@@ -467,7 +454,7 @@ public class Status implements TurnItem {
    * @return true if the Status stuns the Unit it is applied to.
    */
   public final boolean isStunning() {
-    return stuns;
+    return stunning;
   }
 
   /**
@@ -477,7 +464,7 @@ public class Status implements TurnItem {
    * @return true if this defeats the fighter it is applied to.
    */
   public final boolean isDefeating() {
-    return defeats;
+    return defeating;
   }
   
   /**
