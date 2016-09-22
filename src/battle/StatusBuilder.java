@@ -251,7 +251,7 @@ public class StatusBuilder {
   }
 
   /**
-   * Sets the status to be built to that it can defeat the fighter it is applied
+   * Sets the status to be built so that it can defeat the fighter it is applied
    * to. Defeated {@link Fighter} objects allow their team to lose a battle if
    * all other ally fighters are also defeated. Defeated fighters do not
    * decrement their skill cooldowns or execute skills for non-deathless skills.
@@ -266,10 +266,10 @@ public class StatusBuilder {
   }
 
   /**
-   * @param hidden hidden value for producing a Status object. The default value
-   * is {@code false}.
-   * @return this.
-   * @see battle.Status Status.hidden
+   * Sets the status to be built so that it should not be visible to the user of
+   * the client. The default value is {@code false}.
+   * @param hidden allows the status to be hidden when {@code true}.
+   * @return this object.
    */
   public StatusBuilder setHidden(boolean hidden) {
     this.hidden = hidden;
@@ -277,10 +277,15 @@ public class StatusBuilder {
   }
   
   /**
-   * @param applyCondition applyCondtion value for producing a Status object.
-   * The default value is a function that returns {@code true}.
-   * @return this.
-   * @see battle.Status Status.applyCondition
+   * Sets the test condition that returns {@code true} if the status can be
+   * successfully applied to the target owner of the status to be built. Accepts
+   * the target owner of the status as the given parameter. Attempting to
+   * initiate the value as {@code null} will throw an {@link
+   * IllegalArgumentException}. The default value is a function that returns
+   * {@code true}.
+   * @param applyCondition functional interface that returns {@code true} when
+   *        the status can be applied.
+   * @return this object.
    */
   public StatusBuilder setApplyCondition(Predicate<Fighter> applyCondition) {
     if (applyCondition == null) {
@@ -292,10 +297,14 @@ public class StatusBuilder {
   }
 
   /**
-   * @param removeCondition removeCondition value for producing a Status object.
+   * Sets the test condition that returns {@code true} if the status can be
+   * successfully removed from the owner of the status to be built. Accepts
+   * the owner of the status as the given parameter. Attempting to initiate
+   * the value as {@code null} will throw an {@link IllegalArgumentException}.
    * The default value is a function that returns {@code true}.
-   * @return this.
-   * @see battle.Status Status.removeCondition
+   * @param removeCondition functional interface that returns {@code true} when
+   *        the status can be removed.
+   * @return this object.
    */
   public StatusBuilder setRemoveCondition(Predicate<Fighter> removeCondition) {
     if (removeCondition == null) {
@@ -307,11 +316,10 @@ public class StatusBuilder {
   }
   
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes in the Status object.
-   * @param  listener object to handle state changes.
-   * @return this.
-   * @see battle.Status Status.listeners
+   * Adds to the list of {@link StatusHandler} objects that are called during
+   * appropriate events in the Status object.
+   * @param  listener object to handle events.
+   * @return this object.
    */
   public StatusBuilder addListener(StatusHandler listener) {
     if (listener == null) {
@@ -322,11 +330,11 @@ public class StatusBuilder {
   }
   
   /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes in the Status object.
+   * Removes a listener from the list of {@link StatusHandler} objects that are
+   * called during appropriate events in the Status object.
    * @param  listener the object to be removed.
    * @return true if the object was successfully removed.
-   * @see battle.Status Status.listeners
+   * @see #addListener(battle.StatusHandler)
    */
   public boolean removeListener(StatusHandler listener) {
     return this.listeners.remove(listener);
