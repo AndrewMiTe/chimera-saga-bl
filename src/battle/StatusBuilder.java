@@ -106,13 +106,14 @@ public class StatusBuilder {
 
   /**
    * Instantiates the object with the name of the {@link Status} to be built.
-   * Passing a {@code null} value to the constructor will throw an {@link
-   * IllegalArgumentException}.
-   * @param name see {@see #setName}
+   * Sets all other properties of the status to be built to their default
+   * values.
+   * @param name see {@see #setName}. Throws {@link NullPointerException} if 
+   *        {@code null}.
    */
   public StatusBuilder(String name) {
     if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
+      throw new NullPointerException("name: null");
     }
     this.name = name;
     this.description = "";
@@ -142,14 +143,14 @@ public class StatusBuilder {
 
   /**
    * Sets the name that identifies the status to be built from unrelated {@link
-   * Status} objects. Attempting to set the value as {@code null} will throw an
-   * {@link IllegalArgumentException}. There is no default value.
-   * @param name name of a status.
+   * Status} objects. The name has no default value.
+   * @param name name of a status. Throws {@link NullPointerException} if {@code
+   *        null}.
    * @return this object.
    */
   public StatusBuilder setName(String name) {
     if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
+      throw new NullPointerException("name: null");
     }
     this.name = name;
     return this;
@@ -158,15 +159,15 @@ public class StatusBuilder {
   /**
    * Sets the description of the status to be built and how it is intended to
    * interact with {@link Fighter} objects it is applied to, as well as its
-   * interactions with other {@link Status} objects on the same fighter.
-   * Attempting to initiate the value as {@code null} will throw an {@link
-   * IllegalArgumentException}. The default value is an empty string.
-   * @param description description of a status.
+   * interactions with other {@link Status} objects on the same fighter. The
+   * default description is an empty string.
+   * @param description description of a status. Throws {@link
+   *        NullPointerException} if {@code null}.
    * @return this object.
    */
   public StatusBuilder setDescription(String description) {
     if (description == null) {
-      throw new IllegalArgumentException("description cannot be null");
+      throw new NullPointerException("description: null");
     }
     this.description = description;
     return this;
@@ -175,15 +176,14 @@ public class StatusBuilder {
   /**
    * Sets the time before this status expires once it is applied. Zero means the
    * status has an instant duration and should expire as soon as it is applied.
-   * Less then zero means duration is infinite. Attempting to initiate the value
-   * as {@code null} will throw an {@link IllegalArgumentException}. The default
-   * value is instant ({@link Duration#ZERO ZERO}).
-   * @param duration the time until the status expires.
+   * Less then zero means duration is infinite. The default duration is instant.
+   * @param duration the time until the status expires. Throws {@link
+   *        NullPointerException} if {@code null}.
    * @return this object.
    */
   public StatusBuilder setDuration(Duration duration) {
     if (duration == null) {
-      throw new IllegalArgumentException("duration cannot be null");
+      throw new NullPointerException("duration: null");
     }
     this.duration = duration;
     return this;
@@ -212,15 +212,14 @@ public class StatusBuilder {
   }
   
   /**
-   * Sets the current number of stacks. Attempting to initiate the value as less
-   * then {@code 1} will throw an {@link IllegalArgumentException}. The default
-   * value is {@code 1}.
-   * @param stackSize the size of the stack.
+   * Sets the current number of stacks. The default stack size is {@code 1}.
+   * @param stackSize the size of the stack. Throws {@link
+   *        IllegalArgumentException} if {@code < 1}.
    * @return this object.
    */
   public StatusBuilder setStackSize(int stackSize) {
     if (stackSize < 1) {
-      throw new IllegalArgumentException("stacks cannot be less then 1");
+      throw new IllegalArgumentException("stacks size: < 1");
     }
     this.stackSize = stackSize;
     return this;
@@ -279,18 +278,16 @@ public class StatusBuilder {
   /**
    * Sets the test condition that returns {@code true} if the status can be
    * successfully applied to the target owner of the status to be built. Accepts
-   * the target owner of the status as the given parameter. Attempting to
-   * initiate the value as {@code null} will throw an {@link
-   * IllegalArgumentException}. The default value is a function that returns
-   * {@code true}.
+   * the target owner of the status as the given parameter. The default
+   * condition is a function that returns {@code true}.
    * @param applyCondition functional interface that returns {@code true} when
-   *        the status can be applied.
+   *        the status can be applied. Throws {@link NullPointerException} if
+   *        {@code null}.
    * @return this object.
    */
   public StatusBuilder setApplyCondition(Predicate<Fighter> applyCondition) {
     if (applyCondition == null) {
-      throw new IllegalArgumentException("Condition for application cannot be"
-          + " null");
+      throw new NullPointerException("apply condition: null");
     }
     this.applyCondition = applyCondition;
     return this;
@@ -299,17 +296,16 @@ public class StatusBuilder {
   /**
    * Sets the test condition that returns {@code true} if the status can be
    * successfully removed from the owner of the status to be built. Accepts
-   * the owner of the status as the given parameter. Attempting to initiate
-   * the value as {@code null} will throw an {@link IllegalArgumentException}.
-   * The default value is a function that returns {@code true}.
+   * the owner of the status as the given parameter.  The default condition is a
+   * function that returns {@code true}.
    * @param removeCondition functional interface that returns {@code true} when
-   *        the status can be removed.
+   *        the status can be removed. Throws {@link NullPointerException} if
+   *        {@code null}.
    * @return this object.
    */
   public StatusBuilder setRemoveCondition(Predicate<Fighter> removeCondition) {
     if (removeCondition == null) {
-      throw new IllegalArgumentException("Condition for removal cannot be"
-          + " null");
+      throw new NullPointerException("remove condition: null");
     }
     this.removeCondition = removeCondition;
     return this;
@@ -318,12 +314,13 @@ public class StatusBuilder {
   /**
    * Adds to the list of {@link StatusHandler} objects that are called during
    * appropriate events in the Status object.
-   * @param listener object to handle events.
+   * @param listener object to handle events. Throws {@link
+   *        NullPointerException} if {@code null}.
    * @return this object.
    */
   public StatusBuilder addListener(StatusHandler listener) {
     if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
+      throw new NullPointerException("listener: null");
     }
     listeners.add(listener);
     return this;
