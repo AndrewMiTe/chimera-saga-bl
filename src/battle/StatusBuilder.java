@@ -127,6 +127,26 @@ public class StatusBuilder {
     this.removeCondition = a -> true;
     this.listeners = new ArrayList<>();
   }
+  
+  /**
+   * Instantiates the object by setting all properties so that any status built
+   * directly after initialization would be a copy of the Status object given.
+   * @param status the status used to set all properties.
+   */
+  public StatusBuilder(Status status) {
+    Status copyOf = new Status(status);
+    this.name = copyOf.getName();
+    this.description = copyOf.getDescription();
+    this.duration = copyOf.getDuration();
+    this.stackSize = copyOf.getStackSize();
+    this.stackable = copyOf.isStackable();
+    this.stunning = copyOf.isStunning();
+    this.defeating = copyOf.isDefeating();
+    this.hidden = copyOf.isHidden();
+    this.applyCondition = copyOf.getApplyConidtion();
+    this.removeCondition = copyOf.getRemoveConidtion();
+    this.listeners = copyOf.getListeners();
+  }
 
   /**
    * Creates a new {@link Status} object built with the values set by this
