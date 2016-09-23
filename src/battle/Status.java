@@ -43,58 +43,58 @@ import java.util.function.Predicate;
 public class Status implements TurnItem {
   
   /**
-   * @see StatusBuilder#setName(java.lang.String)
+   * @see StatusBuilder#setName
    */
   private final String name;
 
   /**
-   * @see StatusBuilder#setDescription(java.lang.String)
+   * @see StatusBuilder#setDescription
    */
   private final String description;
 
   /**
-   * @see StatusBuilder#setDuration(java.time.Duration)
+   * @see StatusBuilder#setDuration
    */
   private final Duration duration;
 
   /**
-   * @see StatusBuilder#setStackSize(int)
+   * @see StatusBuilder#setStackSize
    */
   private final int stackSize;
 
   /**
-   * @see StatusBuilder#setStackable(boolean)
+   * @see StatusBuilder#setStackable
    */
   private final boolean stackable;
 
   /**
-   * @see StatusBuilder#setStunning(boolean)
+   * @see StatusBuilder#setStunning
    */
   private final boolean stunning;
 
   /**
-   * @see StatusBuilder#setDefeating(boolean)
+   * @see StatusBuilder#setDefeating
    */
   private final boolean defeating;
 
   /**
-   * @see StatusBuilder#setHidden(boolean)
+   * @see StatusBuilder#setHidden
    */
   private final boolean hidden;
 
   /**
-   * @see StatusBuilder#setApplyCondition(java.util.function.Predicate)
+   * @see StatusBuilder#setApplyCondition
    */
   private final Predicate<Fighter> applyCondition;
 
   /**
-   * @see StatusBuilder#setRemoveCondition(java.util.function.Predicate)
+   * @see StatusBuilder#setRemoveCondition
    */
 
   private final Predicate<Fighter> removeCondition;
   
   /**
-   * @see StatusBuilder#addListener(battle.StatusHandler)
+   * @see StatusBuilder#addListener
    */
   private final Set<StatusHandler> listeners;
 
