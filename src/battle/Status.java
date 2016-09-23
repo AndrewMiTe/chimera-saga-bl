@@ -187,7 +187,7 @@ public class Status implements TurnItem {
   
   /**
    * Initializes a copy of the given Status object such that direct changes to
-   * the state of either the original or the copy have no affect on the other.
+   * the state of either the original or the copy has no affect on the other.
    * Some copied parameters are purposefully not deep. It is assumed that all
    * {@link StatusHandler} objects passed to handle events should be copied by
    * reference so as not to duplicate potentially large listeners. {@link
@@ -421,6 +421,30 @@ public class Status implements TurnItem {
     return currentSize;
   }
 
+  /**
+   * @return the function that determines if status can be applied.
+   * @see StatusBuilder#setApplyCondition
+   */
+  protected final Predicate<Fighter> getApplyConidtion() {
+    return applyCondition;
+  }
+  
+  /**
+   * @return the function that determines if status can be removed.
+   * @see StatusBuilder#setRemoveCondition
+   */
+  protected final Predicate<Fighter> getRemoveConidtion() {
+    return removeCondition;
+  }
+  
+  /**
+   * @return the list of listeners.
+   * @see StatusBuilder#addListener
+   */
+  protected final List<StatusHandler> getListeners() {
+    return new ArrayList<>(listeners);
+  }
+ 
   /**
    * The Fighter object that the status belongs to.
    * @return the owner of the status.
