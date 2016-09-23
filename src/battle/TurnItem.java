@@ -35,12 +35,22 @@ import java.time.LocalDateTime;
 public interface TurnItem {
 
   /**
+   * The Fighter object that the turn item belongs to.
+   * @return the owner of the status.
+   */
+  public Fighter getOwner();
+
+  /**
    * Returns the time when the turn item will be due.
    * @param currentTime the current time.
    * @return time of the turn.
    */
   public LocalDateTime getTurnTime(LocalDateTime currentTime);
   
+  /**
+   * Advances the time dependent values of the turn item.
+   * @param timeChange 
+   */
   public void advanceTime(Duration timeChange);
-
+  
 }
