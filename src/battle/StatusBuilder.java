@@ -203,7 +203,7 @@ public class StatusBuilder {
   /**
    * Sets the status to be built so that it would be marked for removal
    * immediately after being applied. This is a convenience method for setting
-   * the duration value to {@link Duration#ZERO ZERO}.
+   * the duration to {@link Duration#ZERO ZERO}.
    * @return this object.
    */
   public StatusBuilder setAsInstant() {
@@ -213,7 +213,7 @@ public class StatusBuilder {
   
   /**
    * Sets this so that the status to be built can not expire due to the passing
-   * of time. This is a convenience method for setting the duration value to
+   * of time. This is a convenience method for setting the duration to
    * {@code -1} second.
    * @return this object.
    */
@@ -235,7 +235,7 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it can have a stack size greater then
-   * {@code 1}. The default value is {@code true}.
+   * {@code 1}. The default is {@code true}.
    * @param stackable allows the status to stack when {@code true}
    * @return this object.
    */
@@ -247,7 +247,7 @@ public class StatusBuilder {
   /**
    * Sets the status to be built so that it can stun the fighter it is applied
    * to. Stunned fighters do not decrement their skill cooldowns or execute
-   * skills for non-stunbreak skills. The default value is {@code false}.
+   * skills for non-stunbreak skills. The default is {@code false}.
    * @param stunning allows the status to stun when {@code true}.
    * @return this object.
    * @see SkillBuilder#setStunBreak(boolean)
@@ -262,7 +262,7 @@ public class StatusBuilder {
    * to. Defeated {@link Fighter} objects allow their team to lose a battle if
    * all other ally fighters are also defeated. Defeated fighters do not
    * decrement their skill cooldowns or execute skills for non-deathless skills.
-   * The default value is {@code false}.
+   * The default is {@code false}.
    * @param defeats allows the status to defeat when {@code true}.
    * @return this object.
    * @see SkillBuilder#setDeathless(boolean)
@@ -274,7 +274,7 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it should not be visible to the user of
-   * the client. The default value is {@code false}.
+   * the client. The default is {@code false}.
    * @param hidden allows the status to be hidden when {@code true}.
    * @return this object.
    */
