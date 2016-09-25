@@ -41,55 +41,55 @@ public class SkillBuilder {
 
   /**
    * Stores the name value for producing a Skill object.
-   * @see battle.Skill Skill.name
+   * @see #setName
    */
   private String name;
   
   /**
    * Stores the description value for producing a Skill object.
-   * @see battle.Skill Skill.description
+   * @see #setDescription
    */
   private String description;
   
   /**
    * Stores the target value for producing a Skill object.
-   * @see battle.Skill Skill.target
+   * @see #setTarget
    */
   private Target target;
   
   /**
    * Stores the maxCooldown value for producing a Skill object.
-   * @see battle.Skill Skill.maxCooldown
+   * @see #setCooldown
    */
-  private Duration maxCooldown;
+  private Duration cooldown;
   
   /**
-   * Stores the usability value for producing a Skill object.
-   * @see battle.Skill Skill.usability
+   * Stores the use case value for producing a Skill object.
+   * @see #setUseCase
    */
   private Predicate<Skill> useCase;
 
   /**
    * Stores the effects value for producing a Skill object.
-   * @see battle.Skill Skill.effects
+   * @see #addEffect
    */
   private final List<Status> effects;
 
   /**
    * Stores the requirements value for producing a Skill object.
-   * @see battle.Skill Skill.requirements
+   * @see #addRequirement
    */
   private final List<String> requirements;
   
   /**
    * Stores the subSkills value for producing a Skill object.
-   * @see battle.Skill Skill.subSkills
+   * @see #addSubSkill
    */
   private final List<Skill> subSkills;
   
   /**
    * Stores the listeners value for producing a Skill object.
-   * @see battle.Skill Skill.listeners
+   * @see #addListener
    */
   private final List<SkillHandler> listeners;
   
@@ -107,15 +107,14 @@ public class SkillBuilder {
 
   /**
    * Instantiates the object with the name of the {@link Skill} to be built.
-   * Passing a {@code null} value to the constructor will throw an {@link
-   * IllegalArgumentException}.
-   * @param name name value for producing a Skill object.
+   * @param name see {@see #setName}. Cannot be {@code null}.
    */
   public SkillBuilder(String name) {
+    if (name == null) throw new NullPointerException("name: null");
     this.name = name;
     this.description = "";
     this.target = Target.SELF;
-    this.maxCooldown = Duration.ofSeconds(5);
+    this.cooldown = Duration.ofSeconds(1);
     this.useCase = s -> true;
     this.effects = new ArrayList<>();
     this.requirements = new ArrayList<>();
@@ -130,96 +129,97 @@ public class SkillBuilder {
    * builder object. Default values for all parameters, if not explicitely set,
    * are used with exception to the name parameter, which is set when the
    * SkillBuilder is initiated.
-   * @return new Skill object built with the values set in this builder object.
+   * @return new Skill object built with properties set to this builder object.
    */
   public Skill build() {
     Predicate<Skill> finalizedUseCase = s -> useCase.test(s) &&
         (deathless ? true : !s.getOwner().isDefeated()) &&
         (stunBreak ? true : !s.getOwner().isStunned());
-    return new Skill(name, description, target, maxCooldown, finalizedUseCase,
+    return new Skill(name, description, target, cooldown, finalizedUseCase,
         effects, requirements, subSkills, listeners);
   }
   
   /**
-   * @param name name value for producing a Skill object. There is no default
-   * value. Initialization of the StatusBuilder object requires a non-null name
+   * Sets the name of the skill to be built. The name property has no default
    * value.
-   * @return this.
-   * @see battle.Skill Skill.name
+   * @param name name parameter for producing a Skill object. Cannot be {@code
+   *        null}.
+   * @return this object.
    */
   public SkillBuilder setName(String name) {
-    if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
-    }
+    if (name == null) throw new NullPointerException("name: null");
     this.name = name;
     return this;
   }
 
   /**
-   * @param description description value for producing a Skill object. The
-   * default value is an empty string.
-   * @return this.
-   * @see battle.Skill Skill.name
+   * Sets the description of the skill and how it is intended to interact with
+   * its target(s). The default description is an empty string.
+   * @param description description parameter for producing a Skill object.
+   *        Cannot be {@code null}.
+   * @return this object.
    */
   public SkillBuilder setDescription(String description) {
-    if (description == null) {
-      throw new IllegalArgumentException("description cannot be null");
-    }
+    if (description == null)
+      throw new NullPointerException("description: null");
     this.description = description;
     return this;
   }
 
   /**
-   * @param target target value for producing a Skill object. The default value
-   * is SELF.
-   * @return this.
-   * @see battle.Skill Skill.name
+   * Sets the enumerated target value for determining valid Fighter objects this
+   * skill applies its effects to. The default target is {@link Target#SELF
+   * SELF}.
+   * @param target target parameter for producing a Skill object. Cannot be
+   *        {@code null}.
+   * @return this object.
    */
   public SkillBuilder setTarget(Target target) {
-    if (target == null) {
-      throw new IllegalArgumentException("target cannot be null");
-    }
+    if (target == null) throw new NullPointerException("target: null");
     this.target = target;
     return this;
   }
 
   /**
-   * @param maxCooldown maxCooldown value for producing a Skill object. The
-   * default value is 5 seconds.
-   * @return this.
-   * @see battle.Skill Skill.name
+   * Sets the amount of time remaining until the skill can be used directly
+   * after it is executed. The default cooldown is {@code 1} second.
+   * @param cooldown cooldown parameter for producing a Skill object. Cannot be
+   *        {@code null} or {@link Duration#ZERO ZERO}.
+   * @return this object.
    */
-  public SkillBuilder setMaxCooldown(Duration maxCooldown) {
-    if (maxCooldown.isZero()) {
-      throw new IllegalArgumentException("max cooldown cannot be ZERO");
+  public SkillBuilder setCooldown(Duration cooldown) {
+    if (cooldown.isZero()) {
+      throw new IllegalArgumentException("cooldown: ZERO");
     }
-    if (maxCooldown == null) {
-      throw new IllegalArgumentException("max cooldown cannot be null");
+    if (cooldown == null) {
+      throw new IllegalArgumentException("cooldown: null");
     }
-    this.maxCooldown = maxCooldown;
+    this.cooldown = cooldown;
     return this;
   }
 
   /**
-   * @param useCase usability value for producing a Skill object. The default
-   * value is a Predicate that returns true of the owner of the skill is neither
-   * stunned nor defeated.
-   * @return this.
-   * @see battle.Skill Skill.useCase
+   * Sets the case when the skill is usable. When its test method returns {@code
+   * true}, it allows the time remaining to decrement and for the skill to
+   * execute. The default use case returns {@code true} if the owner of the
+   * skill is neither stunned nor defeated.
+   * @param useCase usability parameter for producing a Skill object. Cannot be
+   *        {@code null}.
+   * @return this object.
    */
   public SkillBuilder setUseCase(Predicate<Skill> useCase) {
     if (useCase == null) {
-      throw new IllegalArgumentException("use case cannot be null");
+      throw new IllegalArgumentException("use case: null");
     }
     this.useCase = useCase;
     return this;
   }
   
   /**
-   * This method allows you to set the skill built to be usable while the owner
-   * of the skill is stunned.
-   * @param stunBreak true is the skill is unaffected by stuns.
-   * @return this.
+   * This method allows you to set the skill to be built so that it is usable
+   * while the owner of the skill is stunned.
+   * @param stunBreak true if the skill is unaffected by stuns.
+   * @return this object.
    */
   public SkillBuilder setStunBreak(boolean stunBreak) {
     this.stunBreak = stunBreak;
@@ -227,10 +227,10 @@ public class SkillBuilder {
   }
   
   /**
-   * This method allows you to set the skill built to be usable while the owner
-   * of the skill is defeated.
+   * This method allows you to set the skill to be built so that it is usable
+   * while the owner of the skill is defeated.
    * @param deathless true is the skill is unaffected by defeat.
-   * @return this.
+   * @return this object.
    */
   public SkillBuilder setDeathless(boolean deathless) {
     this.deathless = deathless;
@@ -239,24 +239,25 @@ public class SkillBuilder {
   
   /**
    * Sets this so that the skill built would qualify as a pre-battle skill.
-   * @return this.
+   * (Cooldown is negative and the target is {@link Target#SELF SELF}.)
+   * @return this object.
    */
   public SkillBuilder setAsPreBattleSkill() {
-    this.maxCooldown = Duration.ofSeconds(-1);
+    this.cooldown = Duration.ofSeconds(-1);
     this.target = Target.SELF;
     return this;
   }
 
   /**
-   * Adds to the list of effects for producing a Skill object. The default is an
-   * empty list.
-   * @param effect object to apply to targets on successful execution.
-   * @return this.
-   * @see battle.Skill Skill.effects
+   * Adds a new Status object to apply to targets of this skill during
+   * successful execution.
+   * @param effect new effect for producing a Skill object. Cannot be {@code
+   *        null}.
+   * @return this object.
    */
   public SkillBuilder addEffect(Status effect) {
     if (effect == null) {
-      throw new IllegalArgumentException("effects cannot be null");
+      throw new IllegalArgumentException("effect: null");
     }
     effects.add(effect);
     return this;
@@ -266,22 +267,22 @@ public class SkillBuilder {
    * Removes an effect from the list of effects for producing a Skill object.
    * @param effect the object to be removed.
    * @return true if the object was successfully removed.
-   * @see battle.Skill Skill.effects
+   * @see SkillBuilder#addEffect
    */
   public boolean removeEffect(Status effect) {
     return this.effects.remove(effect);
   }
   
   /**
-   * Adds to the list of requirements for producing a Skill object. The default
-   * is an empty list.
-   * @param requirement name of status object required for targets to have.
-   * @return this.
-   * @see battle.Skill Skill.requirements
+   * Adds the name of a new Status object required to be owned by the targets of
+   * this skill in order for a successful execution.
+   * @param requirement new requirement for producing a Skill object. Cannot be
+   *        {@code null}.
+   * @return this object.
    */
   public SkillBuilder addRequirement(String requirement) {
     if (requirement == null) {
-      throw new IllegalArgumentException("requirements cannot be null");
+      throw new IllegalArgumentException("requirement: null");
     }
     requirements.add(requirement);
     return this;
@@ -292,22 +293,22 @@ public class SkillBuilder {
    * object.
    * @param requirement the object to be removed.
    * @return true if the object was successfully removed.
-   * @see battle.Skill Skill.requirements
+   * @see SkillBuilder#addRequirement
    */
   public boolean removeRequirement(String requirement) {
     return this.requirements.remove(requirement);
   }
   
   /**
-   * Adds to the list of sub-skills for producing a Skill object. The default is
-   * an empty list.
-   * @param subSkill skill required to execute successfully.
-   * @return this.
-   * @see battle.Skill Skill.subSkills
+   * Adds a new Skill object required to execute successfully before this skill
+   * can apply its effects.
+   * @param subSkill new subSkill for producing a Skill object. Cannot be {@code
+   *        null}.
+   * @return this object.
    */
   public SkillBuilder addSubSkill(Skill subSkill) {
     if (subSkill == null) {
-      throw new IllegalArgumentException("sub-skills cannot be null");
+      throw new IllegalArgumentException("sub-skill: null");
     }
     subSkills.add(subSkill);
     return this;
@@ -318,34 +319,32 @@ public class SkillBuilder {
    * object.
    * @param subSkill the object to be removed.
    * @return true if the object was successfully removed.
-   * @see battle.Skill Skill.subSkills
+   * @see SkillBuilder#addSubSkill
    */
   public boolean removeSubSkill(Skill subSkill) {
     return this.subSkills.remove(subSkill);
   }
   
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes or method calls in the Skill object.
-   * @param  listener object to handle state changes.
-   * @return this.
-   * @see battle.Skill Skill.listeners
+   * Adds a new {@link SkillHandler} object to receive method calls during
+   * appropriate events in the skill, such as successful skill execution.
+   * @param listener new listener for producing a Skill object. Cannot be {@code
+   *        null}.
+   * @return this object.
    */
   public SkillBuilder addListener(SkillHandler listener) {
     if (listener == null) {
-      throw new IllegalArgumentException("listeners cannot be null");
+      throw new IllegalArgumentException("listener: null");
     }
     listeners.add(listener);
     return this;
   }
   
   /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes or method calls in the Skill
-   * object.
+   * Removes a listener from the list of listeners for producing a Skill object.
    * @param  listener the object to be removed.
    * @return true if the object was successfully removed.
-   * @see battle.Skill Skill.listeners
+   * @see SkillBuilder#addListener
    */
   public boolean removeListener(SkillHandler listener) {
     return this.listeners.remove(listener);

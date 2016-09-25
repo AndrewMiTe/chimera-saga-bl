@@ -163,7 +163,8 @@ public class StatusBuilder {
   /**
    * Sets the name that identifies the status to be built from unrelated {@link
    * Status} objects. The name property has no default value.
-   * @param name name of a status. Cannot be {@code null}.
+   * @param name name parameter for producing a Status object. Cannot be {@code
+   *        null}.
    * @return this object.
    */
   public StatusBuilder setName(String name) {
@@ -177,7 +178,8 @@ public class StatusBuilder {
    * with {@link Fighter} objects it is applied to, as well as its interactions
    * with other {@link Status} objects on the same fighter. The default
    * description is an empty string.
-   * @param description description of a status. Cannot be {@code null}.
+   * @param description description parameter for producing a Status object.
+   *        Cannot be {@code null}.
    * @return this object.
    */
   public StatusBuilder setDescription(String description) {
@@ -191,7 +193,8 @@ public class StatusBuilder {
    * Sets the time before this status expires once it is applied. Zero means the
    * status has an instant duration and should expire as soon as it is applied.
    * Less then zero means duration is infinite. The default duration is instant.
-   * @param duration the time until the status expires. Cannot be {@code null}.
+   * @param duration duration parameter for producing a Status object. Cannot be
+   *        {@code null}.
    * @return this object.
    */
   public StatusBuilder setDuration(Duration duration) {
@@ -224,7 +227,8 @@ public class StatusBuilder {
   
   /**
    * Sets the current number of stacks. The default stack size is {@code 1}.
-   * @param stackSize the size of the stack. Cannot be {@code < 1}.
+   * @param stackSize stack size parameter for producing a Status object. Cannot
+   *        be {@code < 1}.
    * @return this object.
    */
   public StatusBuilder setStackSize(int stackSize) {
@@ -235,8 +239,8 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it can have a stack size greater then
-   * {@code 1}. The default is {@code true}.
-   * @param stackable allows the status to stack when {@code true}
+   * {@code 1} when set to {@code true}. The default is {@code true}.
+   * @param stackable stackable parameter for producing a Status object.
    * @return this object.
    */
   public StatusBuilder setStackable(boolean stackable) {
@@ -246,9 +250,10 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it can stun the fighter it is applied
-   * to. Stunned fighters do not decrement their skill cooldowns or execute
-   * skills for non-stunbreak skills. The default is {@code false}.
-   * @param stunning allows the status to stun when {@code true}.
+   * to when set to {@code true}. Stunned fighters do not decrement their skill
+   * cooldowns or execute skills for non-stunbreak skills. The default is {@code
+   * false}.
+   * @param stunning stunning parameter for producing a Status object.
    * @return this object.
    * @see SkillBuilder#setStunBreak(boolean)
    */
@@ -259,11 +264,11 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it can defeat the fighter it is applied
-   * to. Defeated {@link Fighter} objects allow their team to lose a battle if
-   * all other ally fighters are also defeated. Defeated fighters do not
-   * decrement their skill cooldowns or execute skills for non-deathless skills.
-   * The default is {@code false}.
-   * @param defeats allows the status to defeat when {@code true}.
+   * to when set to {@code true}. Defeated {@link Fighter} objects allow their
+   * team to lose a battle if all other ally fighters are also defeated.
+   * Defeated fighters do not decrement their skill cooldowns or execute skills
+   * for non-deathless skills. The default is {@code false}.
+   * @param defeats defeats parameter for producing a Status object.
    * @return this object.
    * @see SkillBuilder#setDeathless(boolean)
    */
@@ -274,8 +279,8 @@ public class StatusBuilder {
 
   /**
    * Sets the status to be built so that it should not be visible to the user of
-   * the client. The default is {@code false}.
-   * @param hidden allows the status to be hidden when {@code true}.
+   * the client when set to {@code true}. The default is {@code false}.
+   * @param hidden hidden parameter for producing a Status object.
    * @return this object.
    */
   public StatusBuilder setHidden(boolean hidden) {
@@ -288,8 +293,8 @@ public class StatusBuilder {
    * successfully applied to the target owner of the status to be built. Accepts
    * the target owner of the status as the given parameter. The default
    * condition is a function that returns {@code true}.
-   * @param applyCondition functional interface that returns {@code true} when
-   *        the status can be applied. Cannot be {@code null}.
+   * @param applyCondition apply condition parameter for producing a Status
+   *        object. Cannot be {@code null}.
    * @return this object.
    */
   public StatusBuilder setApplyCondition(Predicate<Fighter> applyCondition) {
@@ -304,8 +309,8 @@ public class StatusBuilder {
    * successfully removed from the owner of the status to be built. Accepts
    * the owner of the status as the given parameter.  The default condition is a
    * function that returns {@code true}.
-   * @param removeCondition functional interface that returns {@code true} when
-   *        the status can be removed. Cannot be {@code null}.
+   * @param removeCondition remove condition parameter for producing a Status
+   *        object. Cannot be {@code null}.
    * @return this object.
    */
   public StatusBuilder setRemoveCondition(Predicate<Fighter> removeCondition) {
@@ -316,9 +321,10 @@ public class StatusBuilder {
   }
   
   /**
-   * Adds to the list of {@link StatusHandler} objects that are called during
-   * appropriate events in the Status object.
-   * @param listener object to handle events. Cannot be {@code null}.
+   * Adds a new {@link StatusHandler} object to receive method calls during
+   * appropriate events in the skill, such status application and removal.
+   * @param listener new listener for producing a Status object. Cannot be
+   *        {@code null}.
    * @return this object.
    */
   public StatusBuilder addListener(StatusHandler listener) {
@@ -328,9 +334,9 @@ public class StatusBuilder {
   }
   
   /**
-   * Removes a listener from the list of {@link StatusHandler} objects that are
-   * called during appropriate events in the Status object.
-   * @param listener the object to be removed.
+   * Removes a listener from the list of listeners for producing a Status
+   * object.
+   * @param  listener the object to be removed.
    * @return true if the object was successfully removed.
    * @see #addListener(battle.StatusHandler)
    */

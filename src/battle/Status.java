@@ -356,9 +356,8 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Adds to the list of {@link StatusHandler} objects that are called during
-   * appropriate events in the Status object.
    * @param listener object to handle events.
+   * @see StatusBuilder#addListener
    */
   public final void addListener(StatusHandler listener) {
     if (listener == null) {
@@ -368,18 +367,17 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Removes a listener from the list of {@link StatusHandler} objects that are
-   * called during appropriate events in the Status object.
+   * Removes a listener from the list of listeners.
    * @param listener the object to be removed.
    * @return true if the object was successfully removed.
-   * @see #addListener(battle.StatusHandler)
+   * @see StatusBuilder#addListener
    */
   public final boolean removeListener(StatusHandler listener) {
     return this.listeners.remove(listener);
   }
   
   /**
-   * @return name of the Status.
+   * @return name of the status.
    * @see StatusBuilder#setName
    */
   public final String getName() {

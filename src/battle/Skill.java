@@ -47,65 +47,52 @@ import java.util.function.Predicate;
 public class Skill implements TurnItem {
   
   /**
-   * Name of the Skill. Attempting to initiate the value as {@code null} will
-   * throw an {@link IllegalArgumentException}.
+   * @see SkillBuilder#setName
    */
   private String name;
   
   /**
-   * Description of the skill and how it is intended to interact with its
-   * target(s). Attempting to initiate the value as {@code null} will throw an
-   * {@link IllegalArgumentException}.
+   * @see SkillBuilder#setDescription
    */
   private String description;
   
   /**
-   * The amount of time until the Skill can be used after execution. Attempting
-   * to initiate with a ZERO value or as {@code null} will throw an {@link
-   * IllegalArgumentException}.
-   */
-  private Duration maxCooldown;
-  
-  /**
-   * The current amount of time remaining until the skill can be used.
-   */
-  private Duration cooldown;
-  
-  /**
-   * Enumerated Target value for determining valid Fighter objects this skill
-   * applies its effects to. Attempting to initiate the value as {@code null}
-   * will throw an {@link IllegalArgumentException}.
+   * @see SkillBuilder#setTarget
    */
   private Target target;
   
   /**
-   * Defines the case when the skill is usable, which allows its cooldown to
-   * decrement and for the skill to execute. Attempting to initiate the value as
-   * {@code null} will throw an {@link IllegalArgumentException}.
+   * @see SkillBuilder#setCooldown
+   */
+  private Duration cooldown;
+  
+  /**
+   * The current amount of time remaining until the skill can be used.
+   */
+  private Duration timeRemaining;
+  
+  /**
+   * @see SkillBuilder#setUseCase
    */
   private final Predicate<Skill> useCase;
   
   /**
-   * List of Status objects to apply to the target of the skill when the skill
-   * successfully executes.
+   * @see SkillBuilder#addEffect
    */
   private final List<Status> effects;
   
   /**
-   * List of Status objects that the target of the skill must have in order to
-   * successfully execute.
+   * @see SkillBuilder#addRequirement
    */
   private final List<String> requirements;
   
   /**
-   * List of Skill objects that must be successfully executed in order for this
-   * skill to apply its effects to its target(s).
+   * @see SkillBuilder#addSubskill
    */
   private final List<Skill> subSkills;
   
   /**
-   * List of handler objects that who's methods are called during appropriate
-   * state changes or method calls to the Skill object.
+   * @see SkillBuilder#addListener
    */
   private final List<SkillHandler> listeners;
   
@@ -121,18 +108,18 @@ public class Skill implements TurnItem {
    * explicitly set are done so through the given parameters. See the {@link 
    * SkillBuilder} class which allows you to create Skill object using a builder
    * pattern.
-   * @param name {@see #name}
-   * @param description {@see #description}
-   * @param useCase {@see #useCase}
-   * @param target {@see #target}
-   * @param maxCooldown {@see #maxCooldown}
-   * @param requirements {@see #requirements}
-   * @param effects {@see #effects}
-   * @param subSkills {@see #subSkills}
-   * @param listeners {@see #listeners}
+   * @param name {@see SkillBuilder#setName}
+   * @param description {@see SkillBuilder#setDescription}
+   * @param target {@see SkillBuilder#setTarget}
+   * @param cooldown {@see SkillBuilder#setCooldown}
+   * @param useCase {@see SkillBuilder#setUseCase}
+   * @param requirements {@see SkillBuilder#addRequirement}
+   * @param effects {@see SkillBuilder#addEffect}
+   * @param subSkills {@see SkillBuilder#addSubSkill}
+   * @param listeners {@see SkillBuilder#addListener}
    */
   protected Skill(String name, String description, Target target,
-      Duration maxCooldown, Predicate<Skill> useCase, List<Status> effects,
+      Duration cooldown, Predicate<Skill> useCase, List<Status> effects,
       List<String> requirements, List<Skill> subSkills, List<SkillHandler>
       listeners) {
     if (name == null) {
@@ -147,14 +134,14 @@ public class Skill implements TurnItem {
       throw new IllegalArgumentException("target cannot be null");
     }
     this.target = target;
-    if (maxCooldown.isZero()) {
+    if (cooldown.isZero()) {
       throw new IllegalArgumentException("maxCooldown cannot be ZERO");
     }
-    if (maxCooldown == null) {
+    if (cooldown == null) {
       throw new IllegalArgumentException("maxCooldown cannot be null");
     }
-    this.maxCooldown = maxCooldown;
-    this.cooldown = maxCooldown;
+    this.cooldown = cooldown;
+    this.timeRemaining = cooldown;
     if (useCase == null) {
       throw new IllegalArgumentException("usablity Predicate cannot be null");
     }
@@ -191,8 +178,8 @@ public class Skill implements TurnItem {
     this.description = copyOf.description;
     this.useCase = copyOf.useCase;
     this.target = copyOf.target;
-    this.maxCooldown = copyOf.maxCooldown;
     this.cooldown = copyOf.cooldown;
+    this.timeRemaining = copyOf.timeRemaining;
     this.requirements = new ArrayList<>(copyOf.requirements);
     this.effects = new ArrayList<>(copyOf.effects);
     this.subSkills = new ArrayList<>(copyOf.subSkills);
@@ -201,9 +188,8 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * Adds to the list of handler objects that who's methods are called during
-   * appropriate state changes or method calls to the Skill object.
-   * @param listener object to handle state changes.
+   * @param listener object to handle events.
+   * @see SkillBuilder#addListener
    */
   public void addListener(SkillHandler listener) {
     if (listener == null) {
@@ -213,79 +199,74 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * Removes a handler object from the list of listeners who's methods are
-   * called during appropriate state changes in the Status object.
+   * Removes a listener from the list of listeners.
    * @param listener the object to be removed.
    * @return true if the object was successfully removed.
+   * @see SkillBuilder#addListener
    */
   public boolean removeListener(SkillHandler listener) {
     return this.listeners.remove(listener);
   }
   
   /**
-   * Returns the name of the Skill.
-   * @return name of the Skill.
+   * @return name of the skill.
+   * @see SkillBuilder#setName
    */
   public String getName() {
     return name;
   }
   
   /**
-   * Returns a description of the skill and how it is intended to interact with
-   * its target(s).
-   * @return simple text-based description of the Skill.
+   * @return description of the skill.
+   * @see SkillBuilder#setDescription
    */
   public String getDescription() {
     return description;
   }
 
   /**
-   * Returns the amount of time until the Skill can be used after execution.
-   * @return the cooldown after execution.
-   */
-  public Duration getMaxCooldown() {
-    return maxCooldown;
-  }
-
-  /**
-   * Returns the current amount of time remaining until the skill can be used.
-   * @return the current cooldown.
-   */
-  public Duration getCooldown() {
-    return cooldown;
-  }
-
-  /**
-   * Returns an enumerated Target value for determining valid Fighter objects
-   * this skill can apply its effects to in battle.
    * @return target of the skill.
+   * @see SkillBuilder#setTarget
    */
   public Target getTarget() {
     return target;
   }
   
   /**
-   * Returns a list of Status objects to apply to the target of the skill when
-   * the skill successfully executes.
-   * @return list of effects.
+   * @return cooldown of the skill.
+   * @see SkillBuilder#setCooldown
+   */
+  public Duration getCooldown() {
+    return cooldown;
+  }
+
+  /**
+   * Returns the current amount of time remaining until the skill can be used.
+   * @return time remaining of the skill.
+   */
+  public Duration getTimeRemaining() {
+    return timeRemaining;
+  }
+
+  /**
+   * @return the list of effects.
+   * @see SkillBuilder#addEffect
    */
   public List<Status> getEffects() {
     return new ArrayList<>(effects);
   }
 
   /**
-   * Returns a list of Strings that represent the name values of Status objects
-   * that the target of the skill must have in order to successfully execute.
-   * @return list of requires statuses.
+   * @return the list of requirements.
+   * @see SkillBuilder#addRequirement
    */
   public List<String> getRequires() {
     return new ArrayList<>(requirements);
   }
 
   /**
-   * Returns a list of Skill objects that must be successfully executed in order
-   * for this skill to apply its effects to its target(s).
-   * @return list of sub-skills.
+   * @return the list of sub-skills.
+   * @see SkillBuilder#addSubSkill
    */
   public List<Skill> getSubSkills() {
     return new ArrayList<>(subSkills);
@@ -325,14 +306,14 @@ public class Skill implements TurnItem {
   
   @Override // from TurnItem
   public LocalDateTime getTurnTime(LocalDateTime currentTime) {
-    return currentTime.plus(cooldown);
+    return currentTime.plus(timeRemaining);
   }
   
   @Override // from TurnItem
   public void advanceTime(Duration timeChange) {
     if (isUsable()) {
-      cooldown = cooldown.minus(timeChange);
-      if (cooldown.isNegative()) cooldown.isZero();
+      timeRemaining = timeRemaining.minus(timeChange);
+      if (timeRemaining.isNegative()) timeRemaining.isZero();
     }
   }
   
