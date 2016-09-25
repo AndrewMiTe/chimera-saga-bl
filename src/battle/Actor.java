@@ -25,39 +25,15 @@
 package battle;
 
 /**
- *
+ * A participant in a battle that can have turns and perform actions when those
+ * turns are due.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Fighter implements Actor {
-
+public interface Actor {
+  
   /**
-   * Attempts to remove the given Status object from the fighter. Returns {@code
-   * true} if the object was both found and if the predicate for its removal
-   * returned {@code true}. This method will only remove the Status object
-   * given. To remove a status with a particular name, see {@link
-   * #removeStatus(String name) removeStatus(String name)}. If the given status
-   * is {@code null}, this method will throw an {@link
-   * IllegalArgumentException}.
-   * @param status the status to be removed.
-   * @return {@code true} if the Status object was found and successfully
-   *         removed.
-   * @stub
+   * Notifies the actor of that their turn is due and that actions may be taken.
    */
-  public boolean removeStatus(Status status) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  public boolean isStunned() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  public boolean isDefeated() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override // from Actor
-  public void turn() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
+  public void turn();
+  
 }
