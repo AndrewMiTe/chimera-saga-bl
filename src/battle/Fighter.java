@@ -28,7 +28,7 @@ package battle;
  *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Fighter {
+public class Fighter implements Actor {
 
   /**
    * Attempts to remove the given Status object from the fighter. Returns {@code
@@ -47,12 +47,17 @@ public class Fighter {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  boolean isStunned() {
+  public boolean isStunned() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  boolean isDefeated() {
+  public boolean isDefeated() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
-  
+
+  @Override // from Actor
+  public void turn() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
 }
