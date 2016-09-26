@@ -201,11 +201,45 @@ public class Skill implements TurnItem {
   /**
    * Removes a listener from the list of listeners.
    * @param listener the object to be removed.
-   * @return true if the object was successfully removed.
+   * @return {@code true} if the object was successfully removed.
    * @see SkillBuilder#addListener
    */
   public boolean removeListener(SkillHandler listener) {
     return this.listeners.remove(listener);
+  }
+  
+  /**
+   * Event method for when this skill is applied.
+   * @param  newOwner the fighter the skill is being applied to.
+   * @return {@code true} if skill can be applied to the target owner.
+   */
+  protected final boolean onApply(Fighter newOwner) {
+    this.owner = newOwner;
+    for (SkillHandler handler : listeners) {
+      handler.onSkillApplication(this);
+    }
+    return true;
+  }
+
+  /**
+   * Event method for when this skill is removed.
+   * @return {@code true} if the skill can be removed from its owner.
+   */
+  protected final boolean onRemove() {
+    owner = null;
+    for (SkillHandler handler : listeners) {
+      handler.onSkillRemoval(this);
+    }
+    return true;
+  }
+
+  /**
+   * Event method for when this skill is executed.
+   */
+  protected final void onExecute() {
+    for (SkillHandler handler : listeners) {
+      handler.onSkillExecution(this);
+    }
   }
   
   /**
