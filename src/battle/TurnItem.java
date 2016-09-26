@@ -35,10 +35,10 @@ import java.time.LocalDateTime;
 public interface TurnItem {
 
   /**
-   * The Fighter object that the turn item belongs to.
-   * @return the owner of the status.
+   * Returns the actor that performs actions when this turn is due.
+   * @return the actor of this turn.
    */
-  public Fighter getOwner();
+  public Actor getActor();
 
   /**
    * Returns the time when the turn item will be due.
