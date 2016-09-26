@@ -216,33 +216,6 @@ public class Status implements TurnItem {
   }
   
   /**
-   * Event method for when this Status is applied.
-   * @param  newOwner the Unit the Status is being applied to.
-   * @return true if status can be applied to the target owner.
-   */
-  public final boolean onApply(Fighter newOwner) {
-    if (!applyCondition.test(owner)) return false;
-    this.owner = newOwner;
-    for (StatusHandler handler : listeners) {
-      handler.onStatusApplication(this);
-    }
-    return true;
-  }
-
-  /**
-   * Event method for when this status is removed.
-   * @return true if the status can be removed from its owner.
-   */
-  public final boolean onRemove() {
-    if (!removeCondition.test(owner)) return false;
-    owner = null;
-    for (StatusHandler handler : listeners) {
-      handler.onStatusRemoval(this);
-    }
-    return true;
-  }
-
-  /**
    * Returns {@code true} if the the given Status object can be legally combined
    * with this object. A legal status must first be equivalent by having the
    * same name value. The two objects are checked to see if their duration
@@ -376,6 +349,33 @@ public class Status implements TurnItem {
     return this.listeners.remove(listener);
   }
   
+  /**
+   * Event method for when this Status is applied.
+   * @param  newOwner the Unit the Status is being applied to.
+   * @return true if status can be applied to the target owner.
+   */
+  protected final boolean onApply(Fighter newOwner) {
+    if (!applyCondition.test(owner)) return false;
+    this.owner = newOwner;
+    for (StatusHandler handler : listeners) {
+      handler.onStatusApplication(this);
+    }
+    return true;
+  }
+
+  /**
+   * Event method for when this status is removed.
+   * @return true if the status can be removed from its owner.
+   */
+  protected final boolean onRemove() {
+    if (!removeCondition.test(owner)) return false;
+    owner = null;
+    for (StatusHandler handler : listeners) {
+      handler.onStatusRemoval(this);
+    }
+    return true;
+  }
+
   /**
    * @return name of the status.
    * @see StatusBuilder#setName
