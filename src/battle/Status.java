@@ -342,7 +342,7 @@ public class Status implements TurnItem {
   /**
    * Removes a listener from the list of listeners.
    * @param listener the object to be removed.
-   * @return true if the object was successfully removed.
+   * @return {@code true} if the object was successfully removed.
    * @see StatusBuilder#addListener
    */
   public final boolean removeListener(StatusHandler listener) {
@@ -352,7 +352,7 @@ public class Status implements TurnItem {
   /**
    * Event method for when this Status is applied.
    * @param  newOwner the Unit the Status is being applied to.
-   * @return true if status can be applied to the target owner.
+   * @return {@code true} if status can be applied to the target owner.
    */
   protected final boolean onApply(Fighter newOwner) {
     if (!applyCondition.test(owner)) return false;
@@ -365,7 +365,7 @@ public class Status implements TurnItem {
 
   /**
    * Event method for when this status is removed.
-   * @return true if the status can be removed from its owner.
+   * @return {@code true} if the status can be removed from its owner.
    */
   protected final boolean onRemove() {
     if (!removeCondition.test(owner)) return false;
