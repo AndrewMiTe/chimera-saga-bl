@@ -276,8 +276,12 @@ public class Skill implements TurnItem {
    * Returns the Fighter object that the skill belongs to.
    * @return the owner of the skill.
    */
-  @Override // from TurnItem
   public Fighter getOwner() {
+    return owner;
+  }
+  
+  @Override // from TurnItem
+  public Actor getActor() {
     return owner;
   }
   
