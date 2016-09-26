@@ -447,8 +447,12 @@ public class Status implements TurnItem {
    * The Fighter object that the status belongs to.
    * @return the owner of the status.
    */
-  @Override // from TurnItem
   public final Fighter getOwner() {
+    return owner;
+  }
+  
+  @Override // from TurnOrder
+  public final Actor getActor() {
     return owner;
   }
   
