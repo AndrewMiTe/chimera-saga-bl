@@ -55,4 +55,8 @@ public class Fighter {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  public void executeSkill(Skill skill) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
 }
