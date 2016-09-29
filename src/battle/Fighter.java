@@ -55,9 +55,4 @@ public class Fighter {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  @Override // from Actor
-  public void turn() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
 }
