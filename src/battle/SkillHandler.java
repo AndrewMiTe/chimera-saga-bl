@@ -32,12 +32,27 @@ package battle;
  */
 public interface SkillHandler {
   
+  /**
+   * Event method that handles the successful execution of the skill it is
+   * listening to.
+   * @param skill the skill that was successfully executed.
+   */
   public default void onSkillExecution(Skill skill) {
   }
   
+  /**
+   * Event method that handles the successful application of the skill it is
+   * listening to.
+   * @param skill the skill that was successfully applied.
+   */
   public default void onSkillApplication(Skill skill) {
   }
   
+  /**
+   * Event method that handles the successful removal of the skill it is
+   * listening to.
+   * @param skill the skill that was successfully removed.
+   */
   public default void onSkillRemoval(Skill skill) {
   }
   
