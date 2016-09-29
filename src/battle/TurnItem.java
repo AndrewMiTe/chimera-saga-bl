@@ -35,12 +35,6 @@ import java.time.LocalDateTime;
 public interface TurnItem {
 
   /**
-   * Returns the actor that performs actions when this turn is due.
-   * @return the actor of this turn.
-   */
-  public Actor getActor();
-
-  /**
    * Returns the time when the turn item will be due.
    * @param currentTime the current time.
    * @return time of the turn.
