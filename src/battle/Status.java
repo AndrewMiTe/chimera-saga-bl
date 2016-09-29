@@ -451,11 +451,6 @@ public class Status implements TurnItem {
     return owner;
   }
   
-  @Override // from TurnOrder
-  public final Actor getActor() {
-    return owner;
-  }
-  
   /**
    * @return {@code true} if the status is stackable.
    * @see StatusBuilder#setStackable
