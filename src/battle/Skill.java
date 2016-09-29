@@ -334,7 +334,7 @@ public class Skill implements TurnItem {
    * @return {@code true} if this is a pre-battle skill.
    */
   public boolean isPreBattleSkill() {
-    return false;
+    return cooldown.isNegative() && (target == Target.SELF);
   }
   
   @Override // from TurnItem
