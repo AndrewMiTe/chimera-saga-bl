@@ -32,9 +32,19 @@ package battle;
  */
 public interface StatusHandler {
   
+  /**
+   * Event method that handles the successful application of the status it is
+   * listening to.
+   * @param status the status that was successfully applied.
+   */
   public default void onStatusApplication(Status status) {
   }
   
+  /**
+   * Event method that handles the successful removal of the status it is
+   * listening to.
+   * @param status the status that was successfully removed.
+   */
   public default void onStatusRemoval(Status status) {
   }
   
