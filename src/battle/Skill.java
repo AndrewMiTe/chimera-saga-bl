@@ -344,9 +344,10 @@ public class Skill implements TurnItem {
   
   @Override // from TurnItem
   public void advanceTime(Duration timeChange) {
-    if (isUsable()) {
+    if (!isPreBattleSkill() && isUsable()) {
       timeRemaining = timeRemaining.minus(timeChange);
       if (timeRemaining.isNegative()) timeRemaining.isZero();
+      if (timeRemaining.isZero()) owner.executeSkill(this);
     }
   }
   
