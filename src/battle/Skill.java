@@ -314,11 +314,6 @@ public class Skill implements TurnItem {
     return owner;
   }
   
-  @Override // from TurnItem
-  public Actor getActor() {
-    return owner;
-  }
-  
   /**
    * Returns {@code true} if the skill is in a usable state. By default, a skill
    * cannot be used if it lacks an owner. In addition, a {@link Predicate}
