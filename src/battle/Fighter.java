@@ -28,7 +28,7 @@ package battle;
  *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Fighter implements Actor {
+public class Fighter {
 
   /**
    * Attempts to remove the given Status object from the fighter. Returns {@code
