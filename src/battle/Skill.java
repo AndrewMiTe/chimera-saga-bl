@@ -351,6 +351,12 @@ public class Skill implements TurnItem {
     }
   }
   
+  @Override // from TurnItem
+  public Actor getActor() {
+    return owner;
+  }
+
+  
   @Override // from Object
   public String toString() {
     return this.name;
