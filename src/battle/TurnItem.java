@@ -47,4 +47,10 @@ public interface TurnItem {
    */
   public void advanceTime(Duration timeChange);
   
+  /**
+   * Returns the actor responsible for the turn item so that it can mark the
+   * turn for removal when that actor leaves battle.
+   * @return the actor of the turn. 
+   */
+  public Actor getActor();
 }
