@@ -520,6 +520,11 @@ public class Status implements TurnItem {
     removeDuration(timeChange);
   }
   
+  @Override // from TurnItem
+  public Actor getActor() {
+    return owner;
+  }
+
   @Override // from Object
   public final int hashCode() {
     return this.name.hashCode();
