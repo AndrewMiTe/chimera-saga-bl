@@ -28,15 +28,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- * Class for organizing units based on when they have something to do. Takes in
- * both the unit who has a turn and the time their turn is due. Units can be in
- * the turn order multiple times. Multiple units can have their turn due at the
- * same time, yet only one unit will be returned per request.
+ * Encapsulates and sorts items that produce events as time advances.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class TurnOrder {
 
-    
   /**
    * The date and time at the start of the battle. 
    */
@@ -86,7 +82,7 @@ public class TurnOrder {
     }
     turnList.add(item);
   }
-
+  
   /**
    * Removes an item from the turn order.
    * @param item the turn item to remove.
@@ -99,58 +95,30 @@ public class TurnOrder {
   /**
    * Removes all TurnItem objects from the turn order matching that are owned
    * by a given Fighter object.
-   * @param fighter the owner of the items to be removed.
+   * @param actor the actor of the items to be removed.
    * @return true if a match to the given fighter was found and removed. 
    */
-  public boolean removeFighter(Fighter fighter) {
+  public boolean removeActor(Actor actor) {
     return false;
   }
  
   /**
-   * Advances the current time to the time of the next turn, removes that item,
-   * and returns it to the caller.
-   * @return the next turn item.
+   * Advances to and returns the next point in the advancement of the turn order
+   * where a turn item reports that an event has successfully occurred.
+   * @return the item to report a successful event. Returns {@code null} when
+   *         successful events can no longer occur.
    */
   public TurnItem advanceToNext() {
     return null;
   }
   
   /**
-   * Returns the next turn item in the turn order.
-   * @return the next turn item.
+   * Advances the turn order until it has determined that successful events can 
+   * no longer occur.
    */
-  public boolean hasNext() {
-    return false;
+  public void advanceAll() {
   }
-  
-  public TurnItem getNext() {
-    return null;
-  }
-  
-  public Skill advanceToNextSkill() {
-    return null;
-  }
-  
-  public boolean hasNextSkill() {
-    return false;
-  }
-  
-  public Skill getNextSkill() {
-    return null;
-  }
-  
-  public Status advanceToNextStatus() {
-    return null;
-  }
-  
-  public boolean hasNextStatus() {
-    return false;
-  }
-  
-  public Status getNextStatus() {
-    return null;
-  }
-  
+
   /**
    * Getter for the current time of the battle.
    * @return date and time value.
@@ -167,7 +135,11 @@ public class TurnOrder {
     return startTime;
   }
   
-  private void decendingTurnItemSort() {
+  /**
+   * Sorts the turn order in descending order based on the time that events are
+   * due.
+   */
+  private void turnOrderSort() {
   }
 
 }
