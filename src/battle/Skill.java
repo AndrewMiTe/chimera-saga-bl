@@ -77,6 +77,16 @@ public class Skill implements TurnItem {
   private final Predicate<Skill> useCase;
   
   /**
+   * @see SkillBuilder#setStunBreak
+   */
+  private final boolean stunBreak;
+
+  /**
+   * @see SkillBuilder#setDeathless
+   */
+  private final boolean deathless;
+  
+  /**
    * @see SkillBuilder#addEffect
    */
   private final List<Status> effects;
@@ -113,15 +123,17 @@ public class Skill implements TurnItem {
    * @param target {@see SkillBuilder#setTarget}
    * @param cooldown {@see SkillBuilder#setCooldown}
    * @param useCase {@see SkillBuilder#setUseCase}
+   * @param stunBreak {@see SkillBuilder#setStunBreak}
+   * @param deathless {@see SkillBuilder#setDeathless}
    * @param requirements {@see SkillBuilder#addRequirement}
    * @param effects {@see SkillBuilder#addEffect}
    * @param subSkills {@see SkillBuilder#addSubSkill}
    * @param listeners {@see SkillBuilder#addListener}
    */
   protected Skill(String name, String description, Target target,
-      Duration cooldown, Predicate<Skill> useCase, List<Status> effects,
-      List<String> requirements, List<Skill> subSkills, List<SkillHandler>
-      listeners) {
+      Duration cooldown, Predicate<Skill> useCase, boolean stunBreak,
+      boolean deathless, List<Status> effects, List<String> requirements,
+      List<Skill> subSkills, List<SkillHandler> listeners) {
     if (name == null) {
       throw new IllegalArgumentException("name cannot be null");
     }
@@ -149,6 +161,8 @@ public class Skill implements TurnItem {
     if (effects != null & effects.contains(null)) {
       throw new IllegalArgumentException("effects list cannot contain null");
     }
+    this.stunBreak = stunBreak;
+    this.deathless = deathless;
     this.effects = new ArrayList<>(effects);
     if (requirements != null & requirements.contains(null)) {
       throw new IllegalArgumentException("requirements list cannot contain "
@@ -177,6 +191,8 @@ public class Skill implements TurnItem {
     this.name = copyOf.name;
     this.description = copyOf.description;
     this.useCase = copyOf.useCase;
+    this.stunBreak = copyOf.stunBreak;
+    this.deathless = copyOf.deathless;
     this.target = copyOf.target;
     this.cooldown = copyOf.cooldown;
     this.timeRemaining = copyOf.timeRemaining;
@@ -283,6 +299,14 @@ public class Skill implements TurnItem {
   }
 
   /**
+   * @return useCase of the skill.
+   * @see SkillBuilder@setUseCase
+   */
+  protected Predicate<Skill> getUseCase() {
+    return useCase;
+  }
+  
+  /**
    * @return the list of effects.
    * @see SkillBuilder#addEffect
    */
@@ -307,6 +331,14 @@ public class Skill implements TurnItem {
   }
 
   /**
+   * @return the list of listeners.
+   * @see SkillBuilder#addListener
+   */
+  protected final List<SkillHandler> getListeners() {
+    return new ArrayList<>(listeners);
+  }
+ 
+  /**
    * Returns the Fighter object that the skill belongs to.
    * @return the owner of the skill.
    */
@@ -322,10 +354,27 @@ public class Skill implements TurnItem {
    * @return {@code true} if the skill is usable by its owner.
    */
   public boolean isUsable() {
-    if (owner == null) return false;
-    return useCase.test(this);
+    return owner != null && useCase.test(this) &&
+        (deathless ? true : !owner.isDefeated()) &&
+        (stunBreak ? true : !owner.isStunned());
   }
 
+  /**
+   * @return {@code true} if the skill is usable while the owner is stunned.
+   * @see SkillBuilder#setStunBreak(boolean)
+   */
+  public boolean isStunBreak() {
+    return stunBreak;
+  }
+  
+  /**
+   * @return {@code true} if the skill is usable while the owner is defeated.
+   * @see SkillBuilder#setDeathless(boolean)
+   */
+  public boolean isDeathless() {
+    return deathless;
+  }
+  
   /**
    * Returns {@code true} if the skill is consistent with the requirements to be
    * a pre-battle skill, a skill executed before combat begins and is not
