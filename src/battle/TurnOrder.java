@@ -24,15 +24,24 @@
 
 package battle;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- * Encapsulates and sorts items that produce events as time advances.
+ * Tracks time within a battle and advances items that produce events as time
+ * continues forward.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class TurnOrder {
 
+  /**
+   * Limits the number of passes performed on a single instant of time where the
+   * interactions of skills ready to execute and statuses applied might interact
+   * indefinitely.
+   */
+  public final int PASS_LIMIT = 10;
+  
   /**
    * The date and time at the start of the battle. 
    */
@@ -89,7 +98,7 @@ public class TurnOrder {
    * @return {@code true} if the item was removed.
    */
   public boolean removeTurnItem(TurnItem item) {
-    return false;
+    return turnList.remove(item);
   }
   
   /**
@@ -99,24 +108,55 @@ public class TurnOrder {
    * @return true if a match to the given fighter was found and removed. 
    */
   public boolean removeActor(Actor actor) {
-    return false;
+    return turnList.removeIf(t -> t.getActor() == actor);
   }
  
   /**
-   * Advances to and returns the next point in the advancement of the turn order
-   * where a turn item reports that an event has successfully occurred.
-   * @return the item to report a successful event. Returns {@code null} when
-   *         successful events can no longer occur.
+   * Advances to the next point in time where at least one successful event
+   * occurs. After time is incrementally advanced to the point where one or more
+   * turn item report an event, such as the expiration of a status or the
+   * execution of a skill, all turns are given an additional pass to report if
+   * new events result from the changes to the state of the battle. These passes
+   * will continue until either all interactions have played themselves out or
+   * until the passes exceed {@link #PASS_LIMIT PASS_LIMIT}. If the pass limit
+   * is exceeded or if there are no turn items beyond the current time, the
+   * method returns {@code false}, which indicates that the battle should be
+   * concluded, likely with no one being the victor.
+   * @return {@code true} if time has advanced to a successful event. A {@code
+   *         false} value indicates that the battle should be concluded.
    */
-  public TurnItem advanceToNext() {
-    return null;
+  public boolean advanceToNext() {
+    boolean successfulEvent = false;
+    while (successfulEvent == false) {
+      sortTurnItems();
+      LocalDateTime nextTime = currentTime;
+      for (int i = turnList.size(); i > 0;) {
+        nextTime = turnList.get(--i).getTurnTime(currentTime);
+        if (nextTime.isAfter(currentTime)) break;
+      }
+      if (!nextTime.isAfter(currentTime)) return false;
+      Duration timeChange = Duration.between(currentTime, nextTime);
+      boolean successfulPass = false;
+      int passCount = 0;
+      do {
+        for (TurnItem t : turnList) {
+          successfulPass = successfulPass || t.advanceTime(timeChange);
+        }
+        successfulEvent = successfulEvent || successfulPass;
+        timeChange = Duration.ZERO;
+        if (++passCount > PASS_LIMIT) return false;
+      } while (successfulPass = true);
+    }
+    return true;
   }
   
   /**
    * Advances the turn order until it has determined that successful events can 
    * no longer occur.
    */
+  @SuppressWarnings("empty-statement")
   public void advanceAll() {
+    while (advanceToNext() != false);
   }
 
   /**
@@ -139,7 +179,9 @@ public class TurnOrder {
    * Sorts the turn order in descending order based on the time that events are
    * due.
    */
-  private void turnOrderSort() {
+  private void sortTurnItems() {
+    turnList.sort((t1, t2) ->
+        t2.getTurnTime(currentTime).compareTo(t1.getTurnTime(currentTime)));
   }
 
 }
