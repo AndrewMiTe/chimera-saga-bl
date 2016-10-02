@@ -234,7 +234,7 @@ public class Status implements TurnItem {
         (status.defeating == this.defeating) &&
         (status.stunning == this.stunning) &&
         (status.hidden == this.hidden) &&
-        ((status.isInstant() == status.isInstant()) ||
+        ((status.isInstant() == this.isInstant()) ||
         (status.isFinite() == this.isFinite()) ||
         (status.isInfinite() == this.isInfinite()));
   }
@@ -280,17 +280,18 @@ public class Status implements TurnItem {
    * remove the status. If the status has multiple stacks of varying duration,
    * all stacks decrement equally and any stacks with no remaining time are
    * removed. Status objects that are infinite in duration are unchanged by
-   * calls to this method. Passing a negative duration value throws an {@link
-   * IllegalArgumentException}.
-   * @param amount the amount of time to remove.
+   * calls to this method.
+   * @param amount the amount of time to remove. Cannot be negative.
+   * @return {@code true} if the method caused a successful event, such as the
+   *         successful removal of this status from its owner.
    */
-  public final void removeDuration(Duration amount) {
+  public final boolean removeDuration(Duration amount) {
     if (amount.isNegative()) throw new IllegalArgumentException(" Cannot "
         + "remove negative time from a status.");
     if (!isInfinite()) {
       if (getDuration().compareTo(amount) <= 0) {
         stackList.clear();
-        if (owner != null) owner.removeStatus(this);
+        if (owner != null) return owner.removeStatus(this);
       }
       else {
         for (Stack s : stackList) {
@@ -303,15 +304,15 @@ public class Status implements TurnItem {
         }
       }
     }
+    return false;
   }
   
   /**
    * Decrements the stack size by the amount given. If the result decreases the
    * stack size to zero, the status informs the owner to remove the status. If
    * the status has multiple stacks of varying duration, the stacks with the
-   * longest duration are removed first. Passing a negative value throws an 
-   * {@link IllegalArgumentException}.
-   * @param amount the amount of stacks to remove.
+   * longest duration are removed first.
+   * @param amount the amount of stacks to remove. Cannot be negative.
    */
   public final void removeStacks(int amount) {
     if (amount < 0)  throw new IllegalArgumentException("Cannnot remove "
@@ -516,8 +517,8 @@ public class Status implements TurnItem {
   }
   
   @Override // from TurnItem
-  public final void advanceTime(Duration timeChange) {
-    removeDuration(timeChange);
+  public final boolean advanceTime(Duration timeChange) {
+    return removeDuration(timeChange);
   }
   
   @Override // from TurnItem
