@@ -44,8 +44,9 @@ public interface TurnItem {
   /**
    * Advances the time dependent values of the turn item.
    * @param timeChange 
+   * @return {@code true} if the advancement ended in a successful event.  
    */
-  public void advanceTime(Duration timeChange);
+  public boolean advanceTime(Duration timeChange);
   
   /**
    * Returns the actor responsible for the turn item so that it can mark the
@@ -53,4 +54,5 @@ public interface TurnItem {
    * @return the actor of the turn. 
    */
   public Actor getActor();
+  
 }
