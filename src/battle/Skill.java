@@ -343,12 +343,13 @@ public class Skill implements TurnItem {
   }
   
   @Override // from TurnItem
-  public void advanceTime(Duration timeChange) {
+  public boolean advanceTime(Duration timeChange) {
     if (!isPreBattleSkill() && isUsable()) {
       timeRemaining = timeRemaining.minus(timeChange);
       if (timeRemaining.isNegative()) timeRemaining.isZero();
-      if (timeRemaining.isZero()) owner.executeSkill(this);
+      if (timeRemaining.isZero()) return owner.executeSkill(this);
     }
+    return false;
   }
   
   @Override // from TurnItem
@@ -356,7 +357,6 @@ public class Skill implements TurnItem {
     return owner;
   }
 
-  
   @Override // from Object
   public String toString() {
     return this.name;
