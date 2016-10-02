@@ -116,14 +116,28 @@ public class SkillBuilder {
     this.target = Target.SELF;
     this.cooldown = Duration.ofSeconds(1);
     this.useCase = s -> true;
+    this.stunBreak = false;
+    this.deathless = false;
     this.effects = new ArrayList<>();
     this.requirements = new ArrayList<>();
     this.subSkills = new ArrayList<>();
     this.listeners = new ArrayList<>();
-    this.stunBreak = false;
-    this.deathless = false;
   }
 
+  public SkillBuilder(Skill skill) {
+    this.name = skill.getName();
+    this.description = skill.getDescription();
+    this.target = skill.getTarget();
+    this.cooldown = skill.getCooldown();
+    this.useCase = skill.getUseCase();
+    this.stunBreak = skill.isStunBreak();
+    this.deathless = skill.isDeathless();
+    this.effects = skill.getEffects();
+    this.requirements = skill.getRequires();
+    this.subSkills = skill.getSubSkills();
+    this.listeners = skill.getListeners();
+  }
+  
   /**
    * Creates a new {@link Skill} object built with the values set by this
    * builder object. Default values for all parameters, if not explicitely set,
@@ -132,11 +146,8 @@ public class SkillBuilder {
    * @return new Skill object built with properties set to this builder object.
    */
   public Skill build() {
-    Predicate<Skill> finalizedUseCase = s -> useCase.test(s) &&
-        (deathless ? true : !s.getOwner().isDefeated()) &&
-        (stunBreak ? true : !s.getOwner().isStunned());
-    return new Skill(name, description, target, cooldown, finalizedUseCase,
-        effects, requirements, subSkills, listeners);
+    return new Skill(name, description, target, cooldown, useCase, stunBreak,
+        deathless, effects, requirements, subSkills, listeners);
   }
   
   /**
