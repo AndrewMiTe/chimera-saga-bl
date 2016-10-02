@@ -34,16 +34,17 @@ public class Fighter implements Actor {
    * Attempts to remove the given Status object from the fighter. Returns {@code
    * true} if the object was both found and if the predicate for its removal
    * returned {@code true}. This method will only remove the Status object
-   * given. To remove a status with a particular name, see {@link
-   * #removeStatus(String name) removeStatus(String name)}. If the given status
-   * is {@code null}, this method will throw an {@link
-   * IllegalArgumentException}.
+   * given.
    * @param status the status to be removed.
-   * @return {@code true} if the Status object was found and successfully
-   *         removed.
+   * @return {@code true} if the object was removed.
+   * @see #removeStatus(String name)
    * @stub
    */
   public boolean removeStatus(Status status) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  public boolean removeStatus(String name) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -55,7 +56,7 @@ public class Fighter implements Actor {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  public void executeSkill(Skill skill) {
+  public boolean executeSkill(Skill skill) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
