@@ -62,6 +62,11 @@ public class Skill implements TurnItem {
   private Target target;
   
   /**
+   * @see SkillBuilder#setMaxTargets
+   */
+  private int maxTargets;
+  
+  /**
    * @see SkillBuilder#setCooldown
    */
   private Duration cooldown;
@@ -121,6 +126,7 @@ public class Skill implements TurnItem {
    * @param name {@see SkillBuilder#setName}
    * @param description {@see SkillBuilder#setDescription}
    * @param target {@see SkillBuilder#setTarget}
+   * @param maxTargets {@see SkillBuilder#setMaxTargets}
    * @param cooldown {@see SkillBuilder#setCooldown}
    * @param useCase {@see SkillBuilder#setUseCase}
    * @param stunBreak {@see SkillBuilder#setStunBreak}
@@ -131,50 +137,57 @@ public class Skill implements TurnItem {
    * @param listeners {@see SkillBuilder#addListener}
    */
   protected Skill(String name, String description, Target target,
-      Duration cooldown, Predicate<Skill> useCase, boolean stunBreak,
-      boolean deathless, List<Status> effects, List<String> requirements,
-      List<Skill> subSkills, List<SkillHandler> listeners) {
+      int maxTargets, Duration cooldown, Predicate<Skill> useCase,
+      boolean stunBreak, boolean deathless, List<Status> effects,
+      List<String> requirements, List<Skill> subSkills,
+      List<SkillHandler> listeners) {
     if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
+      throw new NullPointerException("name: null");
     }
     this.name = name;
     if (description == null) {
-      throw new IllegalArgumentException("description cannot be null");
+      throw new NullPointerException("description: null");
     }
     this.description = description;
     if (target == null) {
-      throw new IllegalArgumentException("target cannot be null");
+      throw new NullPointerException("target: null");
     }
     this.target = target;
+    if (maxTargets < 1) {
+      throw new IllegalArgumentException("maxTargets: < 1");
+    }
+    this.maxTargets = maxTargets;
     if (cooldown.isZero()) {
-      throw new IllegalArgumentException("maxCooldown cannot be ZERO");
+      throw new IllegalArgumentException("maxCooldown: ZERO");
     }
     if (cooldown == null) {
-      throw new IllegalArgumentException("maxCooldown cannot be null");
+      throw new NullPointerException("maxCooldown: null");
     }
     this.cooldown = cooldown;
     this.timeRemaining = cooldown;
     if (useCase == null) {
-      throw new IllegalArgumentException("usablity Predicate cannot be null");
+      throw new NullPointerException("usablity: null");
     }
     this.useCase = useCase;
     if (effects != null & effects.contains(null)) {
-      throw new IllegalArgumentException("effects list cannot contain null");
+      throw new NullPointerException("effects: null");
     }
     this.stunBreak = stunBreak;
     this.deathless = deathless;
+    if (effects != null && effects.contains(null)) {
+      throw new NullPointerException("effects: contains null");
+    }
     this.effects = new ArrayList<>(effects);
-    if (requirements != null & requirements.contains(null)) {
-      throw new IllegalArgumentException("requirements list cannot contain "
-          + "null");
+    if (requirements != null && requirements.contains(null)) {
+      throw new NullPointerException("requirements: contains null");
     }
     this.requirements = new ArrayList<>(requirements);
-    if (subSkills != null & subSkills.contains(null)) {
-      throw new IllegalArgumentException("subSkills list cannot contain null");
+    if (subSkills != null && subSkills.contains(null)) {
+      throw new NullPointerException("subSkills: contains null");
     }
     this.subSkills = new ArrayList<>(subSkills);
-    if (listeners != null & listeners.contains(null)) {
-      throw new IllegalArgumentException("listeners list cannot contain null");
+    if (listeners != null && listeners.contains(null)) {
+      throw new NullPointerException("listeners: contains null");
     }
     this.listeners = new ArrayList<>(listeners);
     this.owner = null;
@@ -208,9 +221,7 @@ public class Skill implements TurnItem {
    * @see SkillBuilder#addListener
    */
   public void addListener(SkillHandler listener) {
-    if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
-    }
+    if (listener == null) throw new NullPointerException("listeners: null");
     listeners.add(listener);
   }
   
@@ -280,6 +291,14 @@ public class Skill implements TurnItem {
    */
   public Target getTarget() {
     return target;
+  }
+  
+  /**
+   * @return maximum targets of the skill.
+   * @see SkillBuilder#setMaxTargets
+   */
+  public int getMaxTargets() {
+    return maxTargets;
   }
   
   /**
