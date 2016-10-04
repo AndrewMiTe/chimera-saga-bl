@@ -58,6 +58,11 @@ public class SkillBuilder {
   private Target target;
   
   /**
+   * Stores the maximum targets value for producing a Skill object.
+   */
+  private int maxTargets;
+  
+  /**
    * Stores the maxCooldown value for producing a Skill object.
    * @see #setCooldown
    */
@@ -114,6 +119,7 @@ public class SkillBuilder {
     this.name = name;
     this.description = "";
     this.target = Target.SELF;
+    this.maxTargets = 1;
     this.cooldown = Duration.ofSeconds(1);
     this.useCase = s -> true;
     this.stunBreak = false;
@@ -128,6 +134,7 @@ public class SkillBuilder {
     this.name = skill.getName();
     this.description = skill.getDescription();
     this.target = skill.getTarget();
+    this.maxTargets = skill.getMaxTargets();
     this.cooldown = skill.getCooldown();
     this.useCase = skill.getUseCase();
     this.stunBreak = skill.isStunBreak();
@@ -146,8 +153,8 @@ public class SkillBuilder {
    * @return new Skill object built with properties set to this builder object.
    */
   public Skill build() {
-    return new Skill(name, description, target, cooldown, useCase, stunBreak,
-        deathless, effects, requirements, subSkills, listeners);
+    return new Skill(name, description, target, maxTargets, cooldown, useCase,
+        stunBreak, deathless, effects, requirements, subSkills, listeners);
   }
   
   /**
@@ -188,6 +195,19 @@ public class SkillBuilder {
   public SkillBuilder setTarget(Target target) {
     if (target == null) throw new NullPointerException("target: null");
     this.target = target;
+    return this;
+  }
+  
+  /**
+   * Sets the maximum number of targeted Fighter objects that can be affected by
+   * this skills effects. The default maximum targets is {@code 1}.
+   * @param maxTargets maximum targets parameter for producing a Skill object.
+   *        Cannot be {@code <1}.
+   * @return this object.
+   */
+  public SkillBuilder setMaxTargets(int maxTargets) {
+    if (maxTargets < 1) throw new IllegalArgumentException("max targets: null");
+    this.maxTargets = maxTargets;
     return this;
   }
 
