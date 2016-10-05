@@ -42,21 +42,48 @@ public class Target {
   /**
    * The fighter with the targeting skill.
    */
-  public static final Target SELF = new Target();
+  public static final Target SELF = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      if (!battlefield.hasFighter(fighter)) return null;
+      return Collections.singletonList(fighter);
+    }
+  };
 
   /**
    * Allied fighters close to the fighter with the targeting skill that includes
    * the fighter with the targeting skill. The range of close is determined by a
    * property of the targeting unit.
    */
-  public static final Target CLOSE_ALLY = new Target();
+  public static final Target CLOSE_ALLY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> 
+          (!fighter.isAlly(f) ||
+          (battlefield.getDistance(f, fighter) > fighter.getCloseRange()))
+      );
+      return targets;
+    }
+  };
 
   /**
    * Allied fighters close to the fighter with the targeting skill that excludes
    * the fighter with the targeting skill. The range of close is determined by a
    * property of the targeting unit.
    */
-  public static final Target OTHER_CLOSE_ALLY = new Target();
+  public static final Target OTHER_CLOSE_ALLY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> 
+          (f == fighter) ||
+          (!fighter.isAlly(f) ||
+          (battlefield.getDistance(f, fighter) > fighter.getCloseRange()))
+      );
+      return targets;
+    }
+  };
 
   /**
    * Allied fighters on the battlefield, including the fighter with the
@@ -126,7 +153,7 @@ public class Target {
    * @return list of Fighter objects that can be targeted.
    */
   public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
-    return Collections.singletonList(fighter);
+    return null;
   }
   
   /**
