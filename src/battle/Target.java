@@ -24,90 +24,119 @@
 
 package battle;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+
 /**
- * Enumerates the finite ways in which a skill can Target Unit objects on a
- * BattleField. Returns a Iterator object of valid targets when given a list of
- * Unit objects mapped upon a BattleField.
+ * Used to store the logic to generate a list of Fighter object that can be
+ * legal targets for a skill. Various prescribed strategies for determining
+ * valid targets are enumerated as constant Target object field values. The
+ * class also has a method for generating a costume Target object for
+ * determining valid targets. 
+ * @see #getCostumTarget getCostumeTarget
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public enum Target {
+public class Target {
   
   /**
-   * The Unit with the targeting skill.
+   * The fighter with the targeting skill.
    */
-  SELF,
+  public static final Target SELF = new Target();
 
   /**
-   * One Unit from the set of Unit objects on the same team that are within a
-   * range, excluding the Unit with the targeting Skill. This range is adjusted
-   * based on the distance from the closest ally to the Unit with the targeting
-   * Skill.
+   * Allied fighters close to the fighter with the targeting skill that includes
+   * the fighter with the targeting skill. The range of close is determined by a
+   * property of the targeting unit.
    */
-  CLOSE_ALLY,
+  public static final Target CLOSE_ALLY = new Target();
 
   /**
-   * One Unit from the set of all Unit objects on the same team as the Unit with
-   * the targeting Skill, including the Unit with the targeting Skill.
+   * Allied fighters close to the fighter with the targeting skill that excludes
+   * the fighter with the targeting skill. The range of close is determined by a
+   * property of the targeting unit.
    */
-  ANY_ALLY,
+  public static final Target OTHER_CLOSE_ALLY = new Target();
+
+  /**
+   * Allied fighters on the battlefield, including the fighter with the
+   * targeting skill.
+   */
+  public static final Target ANY_ALLY = new Target();
   
   /**
-   * One Unit from the set of all Unit objects on the same team as the Unit with
-   * the targeting Skill, excluding the Unit with the targeting Skill.
+   * Allied fighters on the battlefield, excluding the fighter with the
+   * targeting skill.
    */
-  ANY_OTHER_ALLY,
+  public static final Target ANY_OTHER_ALLY = new Target();
 
   /**
-   * The set of all Unit objects on the same team as the Unit with the targeting
-   * Skill.
+   * Enemy fighters close to the fighter with the targeting skill. The range of
+   * close is determined by a property of the targeting unit.
    */
-  ALL_ALLIES,
+  public static final Target CLOSE_ENEMY = new Target();
+
+  /**
+   * Enemy fighters on the battlefield.
+   */
+  public static final Target ANY_ENEMY = new Target();
+
+  /**
+   * Any fighter on the battlefield.
+   */
+  public static final Target ANYONE = new Target();
   
   /**
-   * The set of all Unit objects on the same team as the Unit with the targeting
-   * Skill, with exception to the Unit with the targeting Skill.
+   * Any fighter on the battlefield, except for the fighter with the targeting
+   * skill.
    */
-  All_OTHER_ALLIES,
+  public static final Target ANYONE_ELSE = new Target();
 
   /**
-   * One Unit from the set of opposing Unit objects that are within a range.
-   * This range is adjusted based on the distance to the closest enemy of the
-   * Unit with the targeting Skill.
+   * Instantiates the Target object.
    */
-  CLOSE_ENEMY,
-
-  /**
-   * One Unit from the set of Unit objects on the opposing side of the Unit with
-   * the targeting Skill.
-   */
-  ANY_ENEMY,
-
-  /**
-   * The set of all Unit objects on the opposing team to the Unit with the
-   * targeting Skill.
-   */
-  ALL_ENEMIES,
-
-  /**
-   * One Unit from the set of Unit objects involved in the Battle.
-   */
-  ANYONE,
+  private Target() {
+  }
   
   /**
-   * One Unit from the set of Unit objects involved in the Battle, except the
-   * Unit with the targeting Skill.
+   * Instantiates and returns a Target object using the given function for
+   * returning a list of targets from the fighters on a battlefield.
+   * @param function function for solving the list of fighters that can be
+   *        targeted on the battlefield from the targeting fighter's
+   *        perspective.
+   * @return Target object using the given function in instantiation.
    */
-  ANYONE_ELSE,
-
-  /**
-   * The set of Unit objects that includes all members of the Battle.
-   */
-  EVERYONE,
+  public static final Target getCostumTarget(BiFunction<Battlefield, Fighter,
+      List<Fighter>> function) {
+    if (function != null) throw new NullPointerException("function: null");
+    return new Target() {
+      @Override // from Target
+      public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+        return function.apply(battlefield, fighter);
+      }
+    };
+  }
   
   /**
-   * The set of Unit objects that includes all members of the Battle, except the
-   * Unit with the targeting Skill.
+   * Returns a list of Fighter objects chosen from fighters contained in the
+   * given battlefield. The fighter with the skill that is assumed to be
+   * targeting is taken by the method to provide a perspective.
+   * @param battlefield battlefield containing all possible targets
+   * @param fighter fighter with the targeting skill.
+   * @return list of Fighter objects that can be targeted.
    */
-  EVERYONE_ELSE;
+  public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+    return Collections.singletonList(fighter);
+  }
+  
+  /**
+   * Returns a {@link BiFunction} equvilant to the {@link getTargets} method of
+   * this object.
+   * @return function for solving the list of fighters that can be targeted on
+   *         the battlefield from the targeting fighter's perspective.
+   */
+  public BiFunction<Battlefield, Fighter, List<Fighter>> getFunction() {
+    return this::getTargets;
+  }
   
 }
