@@ -60,4 +60,12 @@ public class Fighter implements Actor {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  public int getCloseRange() {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  boolean isAlly(Fighter f) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
 }
