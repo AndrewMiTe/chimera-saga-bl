@@ -37,7 +37,7 @@ import java.util.function.BiFunction;
  * @see #getCostumTarget getCostumeTarget
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Target {
+public abstract class Target {
   
   /**
    * The fighter with the targeting skill.
@@ -78,8 +78,8 @@ public class Target {
       List<Fighter> targets = battlefield.getFighters();
       targets.removeIf(f -> 
           (f == fighter) ||
-          (!fighter.isAlly(f) ||
-          (battlefield.getDistance(f, fighter) > fighter.getCloseRange()))
+          !fighter.isAlly(f) ||
+          (battlefield.getDistance(f, fighter) > fighter.getCloseRange())
       );
       return targets;
     }
@@ -89,35 +89,78 @@ public class Target {
    * Allied fighters on the battlefield, including the fighter with the
    * targeting skill.
    */
-  public static final Target ANY_ALLY = new Target();
+  public static final Target ANY_ALLY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> !fighter.isAlly(f));
+      return targets;
+    }
+  };
   
   /**
    * Allied fighters on the battlefield, excluding the fighter with the
    * targeting skill.
    */
-  public static final Target ANY_OTHER_ALLY = new Target();
+  public static final Target ANY_OTHER_ALLY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> (f == fighter) || !fighter.isAlly(f));
+      return targets;
+    }
+  };
 
   /**
    * Enemy fighters close to the fighter with the targeting skill. The range of
    * close is determined by a property of the targeting unit.
    */
-  public static final Target CLOSE_ENEMY = new Target();
+  public static final Target CLOSE_ENEMY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> 
+          (!fighter.isEnemy(f) ||
+          (battlefield.getDistance(f, fighter) > fighter.getCloseRange()))
+      );
+      return targets;
+    }
+  };
 
   /**
    * Enemy fighters on the battlefield.
    */
-  public static final Target ANY_ENEMY = new Target();
+  public static final Target ANY_ENEMY = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> !fighter.isEnemy(f));
+      return targets;
+    }
+  };
 
   /**
    * Any fighter on the battlefield.
    */
-  public static final Target ANYONE = new Target();
+  public static final Target ANYONE = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      return battlefield.getFighters();
+    }
+  };
   
   /**
    * Any fighter on the battlefield, except for the fighter with the targeting
    * skill.
    */
-  public static final Target ANYONE_ELSE = new Target();
+  public static final Target ANYONE_ELSE = new Target() {
+    @Override // from Target
+    public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
+      List<Fighter> targets = battlefield.getFighters();
+      targets.removeIf(f -> f == fighter);
+      return targets;
+    }
+  };
 
   /**
    * Instantiates the Target object.
@@ -152,9 +195,8 @@ public class Target {
    * @param fighter fighter with the targeting skill.
    * @return list of Fighter objects that can be targeted.
    */
-  public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
-    return null;
-  }
+  public abstract List<Fighter> getTargets(Battlefield battlefield,
+      Fighter fighter);
   
   /**
    * Returns a {@link BiFunction} equvilant to the {@link getTargets} method of
