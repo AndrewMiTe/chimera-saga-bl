@@ -68,4 +68,8 @@ public class Fighter implements Actor {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  boolean isEnemy(Fighter f) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
 }
