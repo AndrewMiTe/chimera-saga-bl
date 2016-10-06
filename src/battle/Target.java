@@ -178,7 +178,7 @@ public abstract class Target {
    */
   public static final Target getCostumTarget(BiFunction<Battlefield, Fighter,
       List<Fighter>> function) {
-    if (function != null) throw new NullPointerException("function: null");
+    if (function == null) throw new NullPointerException("function: null");
     return new Target() {
       @Override // from Target
       public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
