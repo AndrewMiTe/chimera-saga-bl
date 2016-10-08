@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Participates in battles as a member of a squad. Can apply statuses to other
+ * Fighter objects, or itself, by executing skills with the objective to defeat
+ * all enemy fighters.
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Fighter implements Actor {
