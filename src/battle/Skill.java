@@ -121,8 +121,8 @@ public class Skill implements TurnItem {
   /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
-   * SkillBuilder} class which allows you to create Skill object using a builder
-   * pattern.
+   * SkillBuilder} class which allows you to create Skill objects using a
+   * builder pattern.
    * @param name {@see SkillBuilder#setName}
    * @param description {@see SkillBuilder#setDescription}
    * @param target {@see SkillBuilder#setTarget}
@@ -270,7 +270,7 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * @return name of the skill.
+   * @return name property of the skill.
    * @see SkillBuilder#setName
    */
   public String getName() {
@@ -278,7 +278,7 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * @return description of the skill.
+   * @return description property of the skill.
    * @see SkillBuilder#setDescription
    */
   public String getDescription() {
@@ -286,7 +286,7 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @return target of the skill.
+   * @return target property of the skill.
    * @see SkillBuilder#setTarget
    */
   public Target getTarget() {
@@ -294,7 +294,7 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * @return maximum targets of the skill.
+   * @return maximum targets property of the skill.
    * @see SkillBuilder#setMaxTargets
    */
   public int getMaxTargets() {
@@ -302,7 +302,7 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * @return cooldown of the skill.
+   * @return cooldown property of the skill.
    * @see SkillBuilder#setCooldown
    */
   public Duration getCooldown() {
@@ -318,7 +318,7 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @return useCase of the skill.
+   * @return useCase property of the skill.
    * @see SkillBuilder@setUseCase
    */
   protected Predicate<Skill> getUseCase() {
@@ -326,7 +326,7 @@ public class Skill implements TurnItem {
   }
   
   /**
-   * @return the list of effects.
+   * @return list of effects.
    * @see SkillBuilder#addEffect
    */
   public List<Status> getEffects() {
@@ -334,7 +334,7 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @return the list of requirements.
+   * @return list of requirements.
    * @see SkillBuilder#addRequirement
    */
   public List<String> getRequires() {
@@ -342,7 +342,7 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @return the list of sub-skills.
+   * @return list of sub-skills.
    * @see SkillBuilder#addSubSkill
    */
   public List<Skill> getSubSkills() {
@@ -350,7 +350,7 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @return the list of listeners.
+   * @return list of listeners.
    * @see SkillBuilder#addListener
    */
   protected final List<SkillHandler> getListeners() {
