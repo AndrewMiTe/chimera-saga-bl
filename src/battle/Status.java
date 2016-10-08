@@ -128,7 +128,7 @@ public class Status implements TurnItem {
   /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
-   * StatusBuilder} class which allows you to create Status object using a
+   * StatusBuilder} class which allows you to create Status objects using a
    * builder pattern.
    * @param name {@see StatusBuilder#setName}
    * @param description {@see StatusBuilder#setDescription}
@@ -378,7 +378,7 @@ public class Status implements TurnItem {
   }
 
   /**
-   * @return name of the status.
+   * @return name property of the status.
    * @see StatusBuilder#setName
    */
   public final String getName() {
@@ -386,7 +386,7 @@ public class Status implements TurnItem {
   }
 
   /**
-   * @return description of the status.
+   * @return description property of the status.
    * @see StatusBuilder#setDescription
    */
   public final String getDescription() {
@@ -437,7 +437,7 @@ public class Status implements TurnItem {
   }
   
   /**
-   * @return the list of listeners.
+   * @return list of listeners.
    * @see StatusBuilder#addListener
    */
   protected final List<StatusHandler> getListeners() {
