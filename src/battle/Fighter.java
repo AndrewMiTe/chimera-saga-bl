@@ -41,19 +41,24 @@ public class Fighter implements Actor {
   private final String name;
   
   /**
-   * @see FighterBuilder#setCloseRange
+   * @see Fighter#applyStatus
    */
-  private final int closeRange;
-
+  private final List<Status> statusList;
+  
   /**
    * @see FighterBuilder#addSkill
    */
   private final List<Skill> skillList;
   
   /**
-   * @see Fighter#applyStatus
+   * @see FighterBuilder#setCloseRange
    */
-  private final List<Status> statusList;
+  private final int closeRange;
+
+  /**
+   * @see FighterBuilder#addListener
+   */
+  private final List<FighterHandler> listeners;
   
   /**
    * Initializes the object so that all internal field variables that can be
@@ -63,12 +68,34 @@ public class Fighter implements Actor {
    * @param name {@see FighterBuilder#setName}
    * @param closeRange {@see FighterBuilder#setCloseRange}
    * @param skillList {@see FighterBuilder#addSkill}
+   * @param listeners {@see FighterBuilder#addListener}
    */
-  public Fighter(String name, int closeRange, List<Skill> skillList) {
+  public Fighter(String name, List<Skill> skillList, int closeRange,
+      List<FighterHandler> listeners) {
     this.name = name;
-    this.closeRange = closeRange;
-    this.skillList = skillList;
     this.statusList = new ArrayList<>();
+    this.skillList = new ArrayList<>(skillList);
+    this.closeRange = closeRange;
+    this.listeners = new ArrayList<>(listeners);
+  }
+  
+  /**
+   * @param listener object to handle events.
+   * @see FighterBuilder#addListener
+   */
+  public void addListener(FighterHandler listener) {
+    if (listener == null) throw new NullPointerException("listeners: null");
+    listeners.add(listener);
+  }
+  
+  /**
+   * Removes a listener from the list of listeners.
+   * @param listener the object to be removed.
+   * @return {@code true} if the object was successfully removed.
+   * @see FighterBuilder#addListener
+   */
+  public boolean removeListener(FighterHandler listener) {
+    return this.listeners.remove(listener);
   }
   
   /**
@@ -128,7 +155,7 @@ public class Fighter implements Actor {
    *    then return true. </li></ol>
    * Note that valid targets that meet the requirements are checked both before
    * and after sub-skills are executed. It is possible to create a skill that
-   * can never apply its actions. This will be so if your sub-skills applis a
+   * can never apply its actions. This will be so if your sub-skills applies a
    * status that in turn removes a status that the primary skill requires, or if
    * it applies a status that defeats would-be targets.
    * @param skill the skill attempting to be executed.
@@ -151,7 +178,7 @@ public class Fighter implements Actor {
    * @param fighter fighter to test allied relationship with.
    * @return {@code true} if given fighter is an ally.
    */
-  boolean isAlly(Fighter fighter) {
+  public boolean isAlly(Fighter fighter) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
@@ -160,7 +187,7 @@ public class Fighter implements Actor {
    * @param fighter fighter to test enemy relationship with.
    * @return {@code true} if given fighter is an enemy.
    */
-  boolean isEnemy(Fighter fighter) {
+  public boolean isEnemy(Fighter fighter) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
