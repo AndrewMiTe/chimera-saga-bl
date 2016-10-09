@@ -24,8 +24,11 @@
 
 package battle;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiPredicate;
 
 /**
@@ -49,7 +52,7 @@ public class Fighter implements Actor {
   /**
    * @see Fighter#applyStatus
    */
-  private final List<Status> statusList;
+  private final Set<Status> statusSet;
   
   /**
    * @see FighterBuilder#addSkill
@@ -95,7 +98,7 @@ public class Fighter implements Actor {
       List<FighterHandler> listeners) {
     this.name = name;
     this.squad = squad;
-    this.statusList = new ArrayList<>();
+    this.statusSet = new HashSet<>();
     this.skillList = new ArrayList<>(skillList);
     this.closeRange = closeRange;
     this.isAllyCase = isAllyCase;
@@ -142,18 +145,47 @@ public class Fighter implements Actor {
    * @see #removeStatus(String name)
    */
   public boolean removeStatus(Status status) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    if (statusSet.contains(status) && status.onRemove()) {
+      return statusSet.remove(status);
+    }
+    return false;
   }
 
   /**
-   * Attempts to remove any Status object matching the given name from the
-   * fighter. Returns {@code true} if a match was both found and if the
-   * predicate for its removal returned {@code true}.
+   * Attempts to remove from the fighter any Status object with a name property
+   * matching the given String. Returns {@code true} if a match was both found
+   * and if the predicate for its removal returned {@code true}.
    * @param name name of the status to be removed.
    * @return {@code true} if the status was removed.
    */
   public boolean removeStatus(String name) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return removeStatus(getStatus(name));
+  }
+  
+  /**
+   * Returns a Status object with a matching name to the given String if one has
+   * been applied to the the fighter.
+   * @param name name of the status to be found.
+   * @return matching status object. Null if no match was found.
+   */
+  public Status getStatus(String name) {
+    for (Status s : statusSet) {
+      if (s.getName().equals(name)) return s;
+    }
+    return null;
+  }
+
+  /**
+   * Returns {@code true} if the given name of a status matches the name of a
+   * status owned by the fighter.
+   * @param name name of the status to be found.
+   * @return {@code true} if a matching status is found.
+   */
+  public boolean hasStatus(String name) {
+    for (Status s : statusSet) {
+      if (s.getName().equals(name)) return true;
+    }
+    return false;
   }
 
   /**
@@ -237,7 +269,7 @@ public class Fighter implements Actor {
    * @return {@code true} if stunned.
    */
   public boolean isStunned() {
-    for (Status nextStatus : statusList) {
+    for (Status nextStatus : statusSet) {
       if (nextStatus.isStunning()) {
         return true;
       }
@@ -246,12 +278,29 @@ public class Fighter implements Actor {
   }
 
   /**
+   * Iterates through the list of Status object's and returns the duration of
+   * the longest status that stuns.
+   * @return duration the Unit is stunned.
+   */
+  private Duration getStunDuration() {
+    Duration stunTime = Duration.ZERO;
+    for (Status nextStatus : statusSet) {
+      if (nextStatus.isStunning()) {
+        if (stunTime.compareTo(nextStatus.getDuration()) < 0) {
+          stunTime = nextStatus.getDuration();
+        }
+      }
+    }
+    return stunTime;
+  }
+
+  /**
    * Returns {@code true} if the fighter has a status applied to it that defeats
    * it.
    * @return {@code true} if defeated.
    */
   public boolean isDefeated() {
-    for (Status nextStatus : statusList) {
+    for (Status nextStatus : statusSet) {
       if (nextStatus.isDefeating()) {
         return true;
       }
