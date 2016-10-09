@@ -61,6 +61,11 @@ public class Fighter implements Actor {
   private final List<FighterHandler> listeners;
   
   /**
+   * @see FighterBuilder#setSquad
+   */
+  private final Squad squad;
+  
+  /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
    * FighterBuilder} class which allows you to create Fighter objects using a
@@ -69,14 +74,16 @@ public class Fighter implements Actor {
    * @param closeRange {@see FighterBuilder#setCloseRange}
    * @param skillList {@see FighterBuilder#addSkill}
    * @param listeners {@see FighterBuilder#addListener}
+   * @param squad {@see FighterBuilder#setSquad}
    */
   public Fighter(String name, List<Skill> skillList, int closeRange,
-      List<FighterHandler> listeners) {
+      List<FighterHandler> listeners, Squad squad) {
     this.name = name;
     this.statusList = new ArrayList<>();
     this.skillList = new ArrayList<>(skillList);
     this.closeRange = closeRange;
     this.listeners = new ArrayList<>(listeners);
+    this.squad = squad;
   }
   
   /**
@@ -166,11 +173,19 @@ public class Fighter implements Actor {
   }
 
   /**
+   * @return name property of the fighter.
+   * @see FighterBuilder#setName
+   */
+  public String getName() {
+    return name;
+  }
+  
+  /**
    * @return close range property of the fighter.
    * @see FighterBuilder#setCloseRange
    */
   public int getCloseRange() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return closeRange;
   }
 
   /**
@@ -197,7 +212,12 @@ public class Fighter implements Actor {
    * @return {@code true} if stunned.
    */
   public boolean isStunned() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    for (Status nextStatus : statusList) {
+      if (nextStatus.isStunning()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -206,7 +226,12 @@ public class Fighter implements Actor {
    * @return {@code true} if defeated.
    */
   public boolean isDefeated() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    for (Status nextStatus : statusList) {
+      if (nextStatus.isDefeating()) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
