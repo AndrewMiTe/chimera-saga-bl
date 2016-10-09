@@ -26,6 +26,7 @@ package battle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * Participates in battles as a member of a squad. Can apply statuses to other
@@ -39,6 +40,11 @@ public class Fighter implements Actor {
    * @see FighterBuilder#setName
    */
   private final String name;
+  
+  /**
+   * @see FighterBuilder#setSquad
+   */
+  private final Squad squad;
   
   /**
    * @see Fighter#applyStatus
@@ -56,14 +62,19 @@ public class Fighter implements Actor {
   private final int closeRange;
 
   /**
+   * @see FighterBuilder#setIsAllyCase
+   */
+  private final BiPredicate<Fighter, Fighter> isAllyCase;
+  
+  /**
+   * @see FighterBuilder#setIsEnemyCase
+   */
+  private final BiPredicate<Fighter, Fighter> isEnemyCase;
+  
+  /**
    * @see FighterBuilder#addListener
    */
   private final List<FighterHandler> listeners;
-  
-  /**
-   * @see FighterBuilder#setSquad
-   */
-  private final Squad squad;
   
   /**
    * Initializes the object so that all internal field variables that can be
@@ -71,19 +82,25 @@ public class Fighter implements Actor {
    * FighterBuilder} class which allows you to create Fighter objects using a
    * builder pattern.
    * @param name {@see FighterBuilder#setName}
-   * @param closeRange {@see FighterBuilder#setCloseRange}
-   * @param skillList {@see FighterBuilder#addSkill}
-   * @param listeners {@see FighterBuilder#addListener}
    * @param squad {@see FighterBuilder#setSquad}
+   * @param skillList {@see FighterBuilder#addSkill}
+   * @param closeRange {@see FighterBuilder#setCloseRange}
+   * @param isAllyCase {@see FighterBuilder#setIsAllyCase}
+   * @param isEnemyCase {@see FighterBuilder#setIsEnemyCase}
+   * @param listeners {@see FighterBuilder#addListener}
    */
-  public Fighter(String name, List<Skill> skillList, int closeRange,
-      List<FighterHandler> listeners, Squad squad) {
+  public Fighter(String name, Squad squad, List<Skill> skillList,
+      int closeRange, BiPredicate<Fighter, Fighter> isAllyCase,
+      BiPredicate<Fighter, Fighter> isEnemyCase,
+      List<FighterHandler> listeners) {
     this.name = name;
+    this.squad = squad;
     this.statusList = new ArrayList<>();
     this.skillList = new ArrayList<>(skillList);
     this.closeRange = closeRange;
+    this.isAllyCase = isAllyCase;
+    this.isEnemyCase = isEnemyCase;
     this.listeners = new ArrayList<>(listeners);
-    this.squad = squad;
   }
   
   /**
@@ -187,6 +204,14 @@ public class Fighter implements Actor {
   public int getCloseRange() {
     return closeRange;
   }
+  
+  /**
+   * @return squad property of the fighter.
+   * @see FighterBuilder#setSquad
+   */
+  public Squad getSquad() {
+    return squad;
+  }
 
   /**
    * Returns {@code true} if this fighter is an ally of the given fighter.
@@ -194,7 +219,7 @@ public class Fighter implements Actor {
    * @return {@code true} if given fighter is an ally.
    */
   public boolean isAlly(Fighter fighter) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return isAllyCase.test(this, fighter);
   }
 
   /**
@@ -203,7 +228,7 @@ public class Fighter implements Actor {
    * @return {@code true} if given fighter is an enemy.
    */
   public boolean isEnemy(Fighter fighter) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return isEnemyCase.test(this, fighter);
   }
 
   /**
