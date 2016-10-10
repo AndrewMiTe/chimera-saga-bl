@@ -96,13 +96,24 @@ public class Fighter implements Actor {
       int closeRange, BiPredicate<Fighter, Fighter> isAllyCase,
       BiPredicate<Fighter, Fighter> isEnemyCase,
       List<FighterHandler> listeners) {
+    if (name == null) throw new NullPointerException("name: null");
     this.name = name;
+    if (squad == null) throw new NullPointerException("squad: null");
     this.squad = squad;
     this.statusSet = new HashSet<>();
+    if (skillList != null && skillList.contains(null)) {
+      throw new NullPointerException("skill list: conatins null");
+    }
     this.skillList = new ArrayList<>(skillList);
+    if (closeRange < 0) throw new NullPointerException("close range: < 0");
     this.closeRange = closeRange;
+    if (isAllyCase == null) throw new NullPointerException("Ally Case: null");
     this.isAllyCase = isAllyCase;
+    if (isEnemyCase == null) throw new NullPointerException("Enemy Case: null");
     this.isEnemyCase = isEnemyCase;
+    if (listeners != null && listeners.contains(null)) {
+      throw new NullPointerException("listeners: conatins null");
+    }
     this.listeners = new ArrayList<>(listeners);
   }
   
@@ -111,7 +122,7 @@ public class Fighter implements Actor {
    * @see FighterBuilder#addListener
    */
   public void addListener(FighterHandler listener) {
-    if (listener == null) throw new NullPointerException("listeners: null");
+    if (listener == null) throw new NullPointerException("listener: null");
     listeners.add(listener);
   }
   
