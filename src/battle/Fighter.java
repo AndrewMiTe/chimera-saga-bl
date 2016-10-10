@@ -118,7 +118,7 @@ public class Fighter implements Actor {
   }
   
   /**
-   * @param listener object to handle events.
+   * @param listener listener to be added.
    * @see FighterBuilder#addListener
    */
   public void addListener(FighterHandler listener) {
@@ -128,12 +128,31 @@ public class Fighter implements Actor {
   
   /**
    * Removes a listener from the list of listeners.
-   * @param listener the object to be removed.
-   * @return {@code true} if the object was successfully removed.
+   * @param listener the listener to be removed.
+   * @return {@code true} if the listener was successfully removed.
    * @see FighterBuilder#addListener
    */
   public boolean removeListener(FighterHandler listener) {
-    return this.listeners.remove(listener);
+    return listeners.remove(listener);
+  }
+  
+  /**
+   * @param skill skill to be added.
+   * @see FighterBuilder#addSkill
+   */
+  public void addSkill(Skill skill) {
+    if (skill == null) throw new NullPointerException("skill: null");
+    skillList.add(skill);
+  }
+  
+  /**
+   * Removes a skill from the list of skills.
+   * @param skill the skill to be removed.
+   * @return {@code true} if the skill was successfully removed.
+   * @see FighterBuilber#addSkill
+   */
+  public boolean removeSkill(Skill skill) {
+    return skillList.remove(skill);
   }
   
   /**
