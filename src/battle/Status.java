@@ -147,19 +147,19 @@ public class Status implements TurnItem {
       boolean hidden, Predicate<Fighter> applyCondition, Predicate<Fighter>
       removeCondition, List<StatusHandler> listeners) {
     if (name == null) {
-      throw new IllegalArgumentException("name cannot be null");
+      throw new IllegalArgumentException("name: null");
     }
     this.name = name;
     if (description == null) {
-      throw new IllegalArgumentException("description cannot be null");
+      throw new IllegalArgumentException("description: null");
     }
     this.description = description;
     if (duration == null) {
-      throw new IllegalArgumentException("duration cannot be null");
+      throw new IllegalArgumentException("duration: null");
     }
     this.duration = duration;
     if (stackSize < 0) {
-      throw new IllegalArgumentException("stacks cannot be negative");
+      throw new IllegalArgumentException("stacks size: < 0");
     }
     this.stackSize = stackSize;
     this.stackable = stackable;
@@ -167,17 +167,15 @@ public class Status implements TurnItem {
     this.defeating = defeating;
     this.hidden = hidden;
     if (applyCondition == null) {
-      throw new IllegalArgumentException("Condition for application cannot be"
-          + " null");
+      throw new IllegalArgumentException("apply condition: null");
     }
     this.applyCondition = applyCondition;
     if (removeCondition == null) {
-      throw new IllegalArgumentException("Condition for removal cannot be"
-          + " null");
+      throw new IllegalArgumentException("remove condition: null");
     }
     this.removeCondition = removeCondition;
     if (listeners != null && listeners.contains(null)) {
-      throw new IllegalArgumentException("listeners list cannot contain null");
+      throw new IllegalArgumentException("listeners: contains null");
     }
     this.listeners = new HashSet<>(listeners);
     this.owner = null;
@@ -257,7 +255,7 @@ public class Status implements TurnItem {
    */
   public final void combineWith(Status status) {
     if (!canCombine(status)) {
-      throw new IllegalArgumentException("Status cannot be combined.");
+      throw new IllegalArgumentException("Statuses cannot be combined.");
     }
     if (isStackable()) {
       if (isFinite()) {
@@ -286,8 +284,9 @@ public class Status implements TurnItem {
    *         successful removal of this status from its owner.
    */
   public final boolean removeDuration(Duration amount) {
-    if (amount.isNegative()) throw new IllegalArgumentException(" Cannot "
-        + "remove negative time from a status.");
+    if (amount.isNegative()) {
+      throw new IllegalArgumentException("amount removed: < 0");
+    }
     if (!isInfinite()) {
       if (getDuration().compareTo(amount) <= 0) {
         stackList.clear();
@@ -315,8 +314,9 @@ public class Status implements TurnItem {
    * @param amount the amount of stacks to remove. Cannot be negative.
    */
   public final void removeStacks(int amount) {
-    if (amount < 0)  throw new IllegalArgumentException("Cannnot remove "
-        + "negative stacks from a status.");
+    if (amount < 0) {
+      throw new IllegalArgumentException("amount removed: < 0");
+    }
     if (amount >= getStackSize()) {
       stackList.clear();
       if (owner != null) owner.removeStatus(this);
@@ -335,7 +335,7 @@ public class Status implements TurnItem {
    */
   public final void addListener(StatusHandler listener) {
     if (listener == null) {
-      throw new IllegalArgumentException("Listeners cannot be null");
+      throw new IllegalArgumentException("listener: null");
     }
     listeners.add(listener);
   }
