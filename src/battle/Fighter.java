@@ -47,7 +47,7 @@ public class Fighter implements Actor {
   /**
    * @see FighterBuilder#setSquad
    */
-  private final Squad squad;
+  private Squad squad;
   
   /**
    * @see Fighter#applyStatus
@@ -118,41 +118,27 @@ public class Fighter implements Actor {
   }
   
   /**
-   * @param listener listener to be added.
-   * @see FighterBuilder#addListener
+   * @return name property of the fighter.
+   * @see FighterBuilder#setName
    */
-  public void addListener(FighterHandler listener) {
-    if (listener == null) throw new NullPointerException("listener: null");
-    listeners.add(listener);
+  public String getName() {
+    return name;
   }
   
   /**
-   * Removes a listener from the list of listeners.
-   * @param listener the listener to be removed.
-   * @return {@code true} if the listener was successfully removed.
-   * @see FighterBuilder#addListener
+   * @return squad property of the fighter.
+   * @see FighterBuilder#setSquad
    */
-  public boolean removeListener(FighterHandler listener) {
-    return listeners.remove(listener);
+  public Squad getSquad() {
+    return squad;
   }
-  
+
   /**
-   * @param skill skill to be added.
-   * @see FighterBuilder#addSkill
+   * Assigns the given squad to the squad property.
+   * @param squad 
    */
-  public void addSkill(Skill skill) {
-    if (skill == null) throw new NullPointerException("skill: null");
-    skillList.add(skill);
-  }
-  
-  /**
-   * Removes a skill from the list of skills.
-   * @param skill the skill to be removed.
-   * @return {@code true} if the skill was successfully removed.
-   * @see FighterBuilber#addSkill
-   */
-  public boolean removeSkill(Skill skill) {
-    return skillList.remove(skill);
+  public void setSquad(Squad squad) {
+    this.squad = squad;
   }
   
   /**
@@ -245,81 +231,6 @@ public class Fighter implements Actor {
   }
 
   /**
-   * Tells the fighter to attempt to execute the given skill. Returns true if
-   * the skill or any sub-skill was successfully executed. The order in which
-   * the given skill is executed is as such:<br><ol>
-   * <li>The battlefield is checked for any valid targets that meet the skill's
-   *    requirements. Valid targets must match the target criteria of the skill.
-   *    The targets must also have all of the matching Status objects found in
-   *    the Skill object's list of requirements. If no valid targets are found,
-   *    then execution fails and this method returns false.</li>
-   * <li>All Skill objects found in the list of sub-skills is executed
-   *    recursively using this method. If all calls return false, then the Skill
-   *    fails and this method returns false. If there are no sub-skills, the
-   *    passed skill succeeds and applies its actions to valid targets. Up to
-   *    the skill's maximum targets property can be affected by the skill,
-   *    starting with those closest to the fighter.</li>
-   * <li>If any but not all sub-skill executions return true, this Skill fails
-   *    to apply its actions but returns true. If all sub-skill executions
-   *    return true, this Skill succeeds and applies its actions to valid
-   *    targets. Up to the skill's maximum targets property can be affected by
-   *    the skill, starting with those closest to the fighter. This method would
-   *    then return true. </li></ol>
-   * Note that valid targets that meet the requirements are checked both before
-   * and after sub-skills are executed. It is possible to create a skill that
-   * can never apply its actions. This will be so if your sub-skills applies a
-   * status that in turn removes a status that the primary skill requires, or if
-   * it applies a status that defeats would-be targets.
-   * @param skill the skill attempting to be executed.
-   * @return {@code true} if the skill or any sub-Skill successfully executed.
-   */
-  public boolean executeSkill(Skill skill) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   * @return name property of the fighter.
-   * @see FighterBuilder#setName
-   */
-  public String getName() {
-    return name;
-  }
-  
-  /**
-   * @return close range property of the fighter.
-   * @see FighterBuilder#setCloseRange
-   */
-  public int getCloseRange() {
-    return closeRange;
-  }
-  
-  /**
-   * @return squad property of the fighter.
-   * @see FighterBuilder#setSquad
-   */
-  public Squad getSquad() {
-    return squad;
-  }
-
-  /**
-   * Returns {@code true} if this fighter is an ally of the given fighter.
-   * @param fighter fighter to test allied relationship with.
-   * @return {@code true} if given fighter is an ally.
-   */
-  public boolean isAlly(Fighter fighter) {
-    return isAllyCase.test(this, fighter);
-  }
-
-  /**
-   * Returns {@code true} if this fighter is an enemy of the given fighter.
-   * @param fighter fighter to test enemy relationship with.
-   * @return {@code true} if given fighter is an enemy.
-   */
-  public boolean isEnemy(Fighter fighter) {
-    return isEnemyCase.test(this, fighter);
-  }
-
-  /**
    * Returns {@code true} if the fighter has a status applied to it that stuns
    * it.
    * @return {@code true} if stunned.
@@ -364,4 +275,101 @@ public class Fighter implements Actor {
     return false;
   }
 
+  /**
+   * @param skill skill to be added.
+   * @see FighterBuilder#addSkill
+   */
+  public void addSkill(Skill skill) {
+    if (skill == null) throw new NullPointerException("skill: null");
+    skillList.add(skill);
+  }
+  
+  /**
+   * Removes a skill from the list of skills.
+   * @param skill the skill to be removed.
+   * @return {@code true} if the skill was successfully removed.
+   * @see FighterBuilber#addSkill
+   */
+  public boolean removeSkill(Skill skill) {
+    return skillList.remove(skill);
+  }
+  
+  /**
+   * Tells the fighter to attempt to execute the given skill. Returns true if
+   * the skill or any sub-skill was successfully executed. The order in which
+   * the given skill is executed is as such:<br><ol>
+   * <li>The battlefield is checked for any valid targets that meet the skill's
+   *    requirements. Valid targets must match the target criteria of the skill.
+   *    The targets must also have all of the matching Status objects found in
+   *    the Skill object's list of requirements. If no valid targets are found,
+   *    then execution fails and this method returns false.</li>
+   * <li>All Skill objects found in the list of sub-skills is executed
+   *    recursively using this method. If all calls return false, then the Skill
+   *    fails and this method returns false. If there are no sub-skills, the
+   *    passed skill succeeds and applies its actions to valid targets. Up to
+   *    the skill's maximum targets property can be affected by the skill,
+   *    starting with those closest to the fighter.</li>
+   * <li>If any but not all sub-skill executions return true, this Skill fails
+   *    to apply its actions but returns true. If all sub-skill executions
+   *    return true, this Skill succeeds and applies its actions to valid
+   *    targets. Up to the skill's maximum targets property can be affected by
+   *    the skill, starting with those closest to the fighter. This method would
+   *    then return true. </li></ol>
+   * Note that valid targets that meet the requirements are checked both before
+   * and after sub-skills are executed. It is possible to create a skill that
+   * can never apply its actions. This will be so if your sub-skills applies a
+   * status that in turn removes a status that the primary skill requires, or if
+   * it applies a status that defeats would-be targets.
+   * @param skill the skill attempting to be executed.
+   * @return {@code true} if the skill or any sub-Skill successfully executed.
+   */
+  public boolean executeSkill(Skill skill) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  /**
+   * @return close range property of the fighter.
+   * @see FighterBuilder#setCloseRange
+   */
+  public int getCloseRange() {
+    return closeRange;
+  }
+  
+  /**
+   * Returns {@code true} if this fighter is an ally of the given fighter.
+   * @param fighter fighter to test allied relationship with.
+   * @return {@code true} if given fighter is an ally.
+   */
+  public boolean isAlly(Fighter fighter) {
+    return isAllyCase.test(this, fighter);
+  }
+
+  /**
+   * Returns {@code true} if this fighter is an enemy of the given fighter.
+   * @param fighter fighter to test enemy relationship with.
+   * @return {@code true} if given fighter is an enemy.
+   */
+  public boolean isEnemy(Fighter fighter) {
+    return isEnemyCase.test(this, fighter);
+  }
+
+  /**
+   * @param listener listener to be added.
+   * @see FighterBuilder#addListener
+   */
+  public void addListener(FighterHandler listener) {
+    if (listener == null) throw new NullPointerException("listener: null");
+    listeners.add(listener);
+  }
+  
+  /**
+   * Removes a listener from the list of listeners.
+   * @param listener the listener to be removed.
+   * @return {@code true} if the listener was successfully removed.
+   * @see FighterBuilder#addListener
+   */
+  public boolean removeListener(FighterHandler listener) {
+    return listeners.remove(listener);
+  }
+  
 }
