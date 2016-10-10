@@ -163,6 +163,19 @@ public class Fighter implements Actor {
   }
   
   /**
+   * Returns a Status object applied to the fighter with a matching name
+   * property to the given Status.
+   * @param status status with matching name of the status to be found.
+   * @return matching status object. Null if no match was found.
+   */
+  public Status getStatus(Status status) {
+    for (Status s: statusSet) {
+      if (s.equals(status)) return s;
+    }
+    return null;
+  }
+
+  /**
    * Returns a Status object with a matching name to the given String if one has
    * been applied to the the fighter.
    * @param name name of the status to be found.
@@ -173,6 +186,19 @@ public class Fighter implements Actor {
       if (s.getName().equals(name)) return s;
     }
     return null;
+  }
+
+  /**
+   * Returns {@code true} if the name property of the given status matches the
+   * name of a status applied to the fighter.
+   * @param status status with matching name of the status to be found.
+   * @return {@code true} if a matching status is found.
+   */
+  public boolean hasStatus(Status status) {
+    for (Status s : statusSet) {
+      if (s.equals(status)) return true;
+    }
+    return false;
   }
 
   /**
