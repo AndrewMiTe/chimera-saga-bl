@@ -176,7 +176,7 @@ public class Status implements TurnItem {
           + " null");
     }
     this.removeCondition = removeCondition;
-    if (listeners != null & listeners.contains(null)) {
+    if (listeners != null && listeners.contains(null)) {
       throw new IllegalArgumentException("listeners list cannot contain null");
     }
     this.listeners = new HashSet<>(listeners);
