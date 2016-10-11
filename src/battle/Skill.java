@@ -377,6 +377,16 @@ public class Skill implements TurnItem {
         (deathless ? true : !owner.isDefeated()) &&
         (stunBreak ? true : !owner.isStunned());
   }
+  
+  /**
+   * Returns {@code true} if the skill can be executed by being usable while the
+   * remaining duration is {@link Duration.ZERO ZERO}.
+   * @return {@code true} is the skill is executable.
+   * @see #isUsable
+   */
+  public boolean isExecutable() {
+    return !isPreBattleSkill() && isUsable() && timeRemaining.isZero();
+  }
 
   /**
    * @return {@code true} if the skill is usable while the owner is stunned.
