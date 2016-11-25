@@ -338,5 +338,9 @@ public class Fighter implements Actor {
   public boolean removeListener(FighterHandler listener) {
     return listeners.remove(listener);
   }
+
+  public boolean executeSkill(Skill skill) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
   
 }
