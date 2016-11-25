@@ -119,6 +119,17 @@ public class Skill implements TurnItem {
   private Fighter owner;
 
   /**
+   * Returns a new {@link SkillBuilder} object using the name property of the
+   * given {@link String}. 
+   * @param name name property of skill to be built. See {@see
+   *        SkillBuilder#setName}
+   * @return new instance of a skill builder.
+   */
+  public static SkillBuilder builder(String name) {
+    return new SkillBuilder(name);
+  }
+  
+  /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
    * SkillBuilder} class which allows you to create Skill objects using a

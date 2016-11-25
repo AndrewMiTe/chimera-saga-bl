@@ -126,6 +126,17 @@ public class Status implements TurnItem {
   private final List<Stack> stackList;
   
   /**
+   * Returns a new {@link StatusBuilder} object using the name property of the
+   * given {@link String}. 
+   * @param name name property of status to be built. See {@see
+   *        StatusBuilder#setName}
+   * @return new instance of a status builder.
+   */
+  public static StatusBuilder builder(String name) {
+    return new StatusBuilder(name);
+  }
+  
+  /**
    * Initializes the object so that all internal field variables that can be
    * explicitly set are done so through the given parameters. See the {@link 
    * StatusBuilder} class which allows you to create Status objects using a
