@@ -169,24 +169,21 @@ public class Skill implements TurnItem {
       throw new NullPointerException("usablity: null");
     }
     this.useCase = useCase;
-    if (effects != null & effects.contains(null)) {
-      throw new NullPointerException("effects: null");
-    }
     this.stunBreak = stunBreak;
     this.deathless = deathless;
-    if (effects != null && effects.contains(null)) {
+    if (effects == null || effects.contains(null)) {
       throw new NullPointerException("effects: contains null");
     }
     this.effects = new ArrayList<>(effects);
-    if (requirements != null && requirements.contains(null)) {
+    if (requirements == null || requirements.contains(null)) {
       throw new NullPointerException("requirements: contains null");
     }
     this.requirements = new ArrayList<>(requirements);
-    if (subSkills != null && subSkills.contains(null)) {
+    if (subSkills == null || subSkills.contains(null)) {
       throw new NullPointerException("subSkills: contains null");
     }
     this.subSkills = new ArrayList<>(subSkills);
-    if (listeners != null && listeners.contains(null)) {
+    if (listeners == null || listeners.contains(null)) {
       throw new NullPointerException("listeners: contains null");
     }
     this.listeners = new ArrayList<>(listeners);
