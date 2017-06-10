@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * Participates in battles as a member of a squad. Can apply statuses to other
@@ -117,6 +118,28 @@ public class Fighter implements Actor {
     this.listeners = new ArrayList<>(listeners);
   }
   
+  /**
+   * Initializes a copy of the given Fighter object such that direct changes to
+   * the state of either the original or the copy has no affect on the other.
+   * Some copied parameters are purposefully not deep. It is assumed that all
+   * {@link FighterHandler} objects passed to handle events should be copied by
+   * reference so as not to duplicate potentially large listeners. {@link
+   * Predicate} objects passed to test various conditions are also copied by
+   * reference and therefore must be immutable in regards to its {@code test}
+   * method.
+   * @param copyOf object which the copy is made from.
+   */
+  public Fighter(Fighter copyOf) {
+    this.name = copyOf.name;
+    this.squad = copyOf.squad;
+    this.statusSet = new HashSet<>(copyOf.statusSet);
+    this.skillList = new ArrayList<>(copyOf.skillList);
+    this.closeRange = copyOf.closeRange;
+    this.isAllyCase = copyOf.isAllyCase;
+    this.isEnemyCase = copyOf.isEnemyCase;
+    this.listeners = new ArrayList<>(copyOf.listeners);
+  }
+
   /**
    * @return name property of the fighter.
    * @see FighterBuilder#setName
