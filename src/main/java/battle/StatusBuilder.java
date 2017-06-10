@@ -63,7 +63,7 @@ public class StatusBuilder {
   private int stackSize;
   
   /**
-   * Stores the stacks value for producing a Status object.
+   * Stores the stackable value for producing a Status object.
    * @see #setStackable
    */
   private boolean stackable;
