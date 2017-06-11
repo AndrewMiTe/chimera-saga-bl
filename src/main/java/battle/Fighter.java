@@ -350,8 +350,10 @@ public class Fighter implements Actor {
   }
 
   /**
+   * Adds a skill to the fighter's list of skills.
+   * 
    * @param skill
-   *          skill to be added.
+   *          skill to be added. Cannot be {@code null}.
    * @see FighterBuilder#addSkill
    */
   public void addSkill(Skill skill) {
