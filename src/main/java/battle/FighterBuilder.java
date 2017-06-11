@@ -100,7 +100,7 @@ public class FighterBuilder {
       throw new NullPointerException("name: null");
     }
     this.name = name;
-    this.squad = new Squad();
+    this.squad = new Squad() {};
     this.skillList = new ArrayList<>();
     this.closeRange = 0;
     this.isAllyCase = (a, b) -> a.getSquad() == b.getSquad();

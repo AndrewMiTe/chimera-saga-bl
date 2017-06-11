@@ -25,9 +25,13 @@
 package battle;
 
 /**
+ * Objects implementing this interface can be assigned as a parameter to Fighter
+ * objects. By default the parameter is used to determine who the allies and
+ * enemies of the fighter is.
+ *
  *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Squad {
-  
+public interface Squad {
+
 }
