@@ -31,6 +31,7 @@ import java.util.ArrayList;
 /**
  * Tracks time within a battle and advances items that produce events as time
  * continues forward.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class TurnOrder {
@@ -41,9 +42,9 @@ public class TurnOrder {
    * indefinitely.
    */
   public final int PASS_LIMIT = 10;
-  
+
   /**
-   * The date and time at the start of the battle. 
+   * The date and time at the start of the battle.
    */
   private final LocalDateTime startTime;
 
@@ -56,7 +57,7 @@ public class TurnOrder {
    * An list of objects that can be sorted as items in the turn order.
    */
   private final ArrayList<TurnItem> turnList;
-  
+
   /**
    * Initializes the turn order using the current date and time as the start of
    * the battle.
@@ -69,7 +70,9 @@ public class TurnOrder {
    * Initializes the turn order using a given parameter as the starting date and
    * time of the battle. Attempting to initiate the start time value as {@code
    * null} will throw an {@link IllegalArgumentException}.
-   * @param startTime starting date and time.
+   * 
+   * @param startTime
+   *          starting date and time.
    */
   public TurnOrder(LocalDateTime startTime) {
     if (startTime == null) {
@@ -83,7 +86,9 @@ public class TurnOrder {
   /**
    * Adds an item to the turn order. Attempting to set the item as {@code null}
    * will throw an {@link IllegalArgumentException}.
-   * @param item the turn item to add.
+   * 
+   * @param item
+   *          the turn item to add.
    */
   public void addTurnItem(TurnItem item) {
     if (item == null) {
@@ -91,26 +96,30 @@ public class TurnOrder {
     }
     turnList.add(item);
   }
-  
+
   /**
    * Removes an item from the turn order.
-   * @param item the turn item to remove.
+   * 
+   * @param item
+   *          the turn item to remove.
    * @return {@code true} if the item was removed.
    */
   public boolean removeTurnItem(TurnItem item) {
     return turnList.remove(item);
   }
-  
+
   /**
-   * Removes all TurnItem objects from the turn order matching that are owned
-   * by a given Fighter object.
-   * @param actor the actor of the items to be removed.
-   * @return true if a match to the given fighter was found and removed. 
+   * Removes all TurnItem objects from the turn order matching that are owned by
+   * a given Fighter object.
+   * 
+   * @param actor
+   *          the actor of the items to be removed.
+   * @return true if a match to the given fighter was found and removed.
    */
   public boolean removeActor(Actor actor) {
     return turnList.removeIf(t -> t.getActor() == actor);
   }
- 
+
   /**
    * Advances to the next point in time where at least one successful event
    * occurs. After time is incrementally advanced to the point where one or more
@@ -122,6 +131,7 @@ public class TurnOrder {
    * is exceeded or if there are no turn items beyond the current time, the
    * method returns {@code false}, which indicates that the battle should be
    * concluded, likely with no one being the victor.
+   * 
    * @return {@code true} if time has advanced to a successful event. A {@code
    *         false} value indicates that the battle should be concluded.
    */
@@ -132,9 +142,11 @@ public class TurnOrder {
       LocalDateTime nextTime = currentTime;
       for (int i = turnList.size(); i > 0;) {
         nextTime = turnList.get(--i).getTurnTime(currentTime);
-        if (nextTime.isAfter(currentTime)) break;
+        if (nextTime.isAfter(currentTime))
+          break;
       }
-      if (!nextTime.isAfter(currentTime)) return false;
+      if (!nextTime.isAfter(currentTime))
+        return false;
       Duration timeChange = Duration.between(currentTime, nextTime);
       boolean successfulPass = false;
       int passCount = 0;
@@ -144,23 +156,25 @@ public class TurnOrder {
         }
         successfulEvent = successfulEvent || successfulPass;
         timeChange = Duration.ZERO;
-        if (++passCount > PASS_LIMIT) return false;
+        if (++passCount > PASS_LIMIT)
+          return false;
       } while (successfulPass = true);
     }
     return true;
   }
-  
+
   /**
-   * Advances the turn order until it has determined that successful events can 
+   * Advances the turn order until it has determined that successful events can
    * no longer occur.
    */
-  @SuppressWarnings("empty-statement")
   public void advanceAll() {
-    while (advanceToNext() != false);
+    while (advanceToNext() != false)
+      ;
   }
 
   /**
    * Getter for the current time of the battle.
+   * 
    * @return date and time value.
    */
   public LocalDateTime getCurrentTime() {
@@ -169,19 +183,19 @@ public class TurnOrder {
 
   /**
    * Getter for the start time of the battle.
+   * 
    * @return date and time value.
    */
   public LocalDateTime getStartTime() {
     return startTime;
   }
-  
+
   /**
    * Sorts the turn order in descending order based on the time that events are
    * due.
    */
   private void sortTurnItems() {
-    turnList.sort((t1, t2) ->
-        t2.getTurnTime(currentTime).compareTo(t1.getTurnTime(currentTime)));
+    turnList.sort((t1, t2) -> t2.getTurnTime(currentTime).compareTo(t1.getTurnTime(currentTime)));
   }
 
 }
