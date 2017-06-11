@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
+ * Constructs {@link Fighter} objects using a builder pattern. All setter
+ * methods return the instance of the object it called upon. The build method
+ * returns a new Fighter object using the information obtained through defaults
+ * and set methods.
  *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
