@@ -168,11 +168,11 @@ public class Skill implements TurnItem {
       throw new IllegalArgumentException("maxTargets: < 1");
     }
     this.maxTargets = maxTargets;
-    if (cooldown.isZero()) {
-      throw new IllegalArgumentException("maxCooldown: ZERO");
-    }
     if (cooldown == null) {
       throw new NullPointerException("maxCooldown: null");
+    }
+    if (cooldown.isZero()) {
+      throw new IllegalArgumentException("maxCooldown: ZERO");
     }
     this.cooldown = cooldown;
     this.timeRemaining = cooldown;

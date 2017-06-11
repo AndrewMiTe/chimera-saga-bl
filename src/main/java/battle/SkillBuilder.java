@@ -219,11 +219,11 @@ public class SkillBuilder {
    * @return this object.
    */
   public SkillBuilder setCooldown(Duration cooldown) {
-    if (cooldown.isZero()) {
-      throw new IllegalArgumentException("cooldown: ZERO");
-    }
     if (cooldown == null) {
       throw new IllegalArgumentException("cooldown: null");
+    }
+    if (cooldown.isZero()) {
+      throw new IllegalArgumentException("cooldown: ZERO");
     }
     this.cooldown = cooldown;
     return this;
