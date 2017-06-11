@@ -299,6 +299,18 @@ public class Fighter implements Actor {
   }
 
   /**
+	 * Returns the list of skills owned by the fighter. Changes to the given list
+	 * and its encapsulated skills will have no effect on objects possessed by the
+	 * fighter. 
+	 * @return list of skill objects.
+	 */
+	public List<Skill> getSkills() {
+	List<Skill> returnValue = new ArrayList<>(); 
+	for (Skill s : skillList) returnValue.add(new Skill(s));
+	return returnValue;
+	}
+
+	/**
    * @param skill skill to be added.
    * @see FighterBuilder#addSkill
    */
@@ -326,6 +338,14 @@ public class Fighter implements Actor {
   }
   
   /**
+   * Returns the BiPredicate used to test if two fighters are allies.
+   * @return case for this fighter to know its allies.
+   */
+  public BiPredicate<Fighter, Fighter> getIsAllyCase() {
+		return isAllyCase;
+	}
+
+	/**
    * Returns {@code true} if this fighter is an ally of the given fighter.
    * @param fighter fighter to test allied relationship with.
    * @return {@code true} if given fighter is an ally.
@@ -335,6 +355,14 @@ public class Fighter implements Actor {
   }
 
   /**
+   * Returns the BiPredicate used to test if two fighters are enemies.
+   * @return case for this fighter to know its enemies.
+   */
+  public BiPredicate<Fighter, Fighter> getIsEnemyCase() {
+		return isEnemyCase;
+	}
+
+	/**
    * Returns {@code true} if this fighter is an enemy of the given fighter.
    * @param fighter fighter to test enemy relationship with.
    * @return {@code true} if given fighter is an enemy.
@@ -344,6 +372,14 @@ public class Fighter implements Actor {
   }
 
   /**
+	 * Returns the list of listeners assigned to this fighter.
+	 * @return list of listeners for this fighter.
+	 */
+	public List<FighterHandler> getListeners() { 
+		return new ArrayList<>(listeners);
+	}
+
+	/**
    * @param listener listener to be added.
    * @see FighterBuilder#addListener
    */
