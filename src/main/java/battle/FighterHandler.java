@@ -25,9 +25,22 @@
 package battle;
 
 /**
- *
+ * Objects implementing this interface can become listeners to various Fighter
+ * object events and state changes. All methods have a do-nothing default
+ * implementation that can be overridden.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface FighterHandler {
-  
+
+  /**
+   * Event method that handles the successful defeat of the fighter it is
+   * listening to.
+   * 
+   * @param fighter
+   *          the fighter that was defeated.
+   */
+  public default void onDefeated(Fighter fighter) {
+  }
+
 }
