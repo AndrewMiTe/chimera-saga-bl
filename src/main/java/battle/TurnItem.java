@@ -30,29 +30,34 @@ import java.time.LocalDateTime;
 /**
  * A point in time within a turn order can be called in order to perform an
  * action.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface TurnItem {
 
   /**
    * Returns the time when the turn item will be due.
-   * @param currentTime the current time.
+   * 
+   * @param currentTime
+   *          the current time.
    * @return time of the turn.
    */
   public LocalDateTime getTurnTime(LocalDateTime currentTime);
-  
+
   /**
    * Advances the time dependent values of the turn item.
-   * @param timeChange 
-   * @return {@code true} if the advancement ended in a successful event.  
+   * 
+   * @param timeChange
+   * @return {@code true} if the advancement ended in a successful event.
    */
   public boolean advanceTime(Duration timeChange);
-  
+
   /**
    * Returns the actor responsible for the turn item so that it can mark the
    * turn for removal when that actor leaves battle.
-   * @return the actor of the turn. 
+   * 
+   * @return the actor of the turn.
    */
   public Actor getActor();
-  
+
 }

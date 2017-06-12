@@ -28,24 +28,29 @@ package battle;
  * Objects implementing this interface can become listeners to various Status
  * object events and state changes. All methods have a do-nothing default
  * implementation that can be overridden.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface StatusHandler {
-  
+
   /**
    * Event method that handles the successful application of the status it is
    * listening to.
-   * @param status the status that was successfully applied.
+   * 
+   * @param status
+   *          the status that was successfully applied.
    */
   public default void onStatusApplication(Status status) {
   }
-  
+
   /**
    * Event method that handles the successful removal of the status it is
    * listening to.
-   * @param status the status that was successfully removed.
+   * 
+   * @param status
+   *          the status that was successfully removed.
    */
   public default void onStatusRemoval(Status status) {
   }
-  
+
 }

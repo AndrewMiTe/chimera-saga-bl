@@ -28,6 +28,7 @@ package battle;
  * A participant in a battle that can have turns and perform actions when those
  * turns are due. This class is used to facilitate the removal of an actor when
  * it has left the battle.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface Actor {

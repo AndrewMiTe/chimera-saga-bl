@@ -42,45 +42,46 @@ import java.util.function.Predicate;
  * Status objects required by this skill, will have all of this skill's effects
  * applied to them. The effects of this skill are a separate list of Status
  * objects listed within.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Skill implements TurnItem {
-  
+
   /**
    * @see SkillBuilder#setName
    */
   private String name;
-  
+
   /**
    * @see SkillBuilder#setDescription
    */
   private String description;
-  
+
   /**
    * @see SkillBuilder#setTarget
    */
   private Target target;
-  
+
   /**
    * @see SkillBuilder#setMaxTargets
    */
   private int maxTargets;
-  
+
   /**
    * @see SkillBuilder#setCooldown
    */
   private Duration cooldown;
-  
+
   /**
    * The current amount of time remaining until the skill can be used.
    */
   private Duration timeRemaining;
-  
+
   /**
    * @see SkillBuilder#setUseCase
    */
   private final Predicate<Skill> useCase;
-  
+
   /**
    * @see SkillBuilder#setStunBreak
    */
@@ -90,27 +91,27 @@ public class Skill implements TurnItem {
    * @see SkillBuilder#setDeathless
    */
   private final boolean deathless;
-  
+
   /**
    * @see SkillBuilder#addEffect
    */
   private final List<Status> effects;
-  
+
   /**
    * @see SkillBuilder#addRequirement
    */
   private final List<String> requirements;
-  
+
   /**
    * @see SkillBuilder#addSubskill
    */
   private final List<Skill> subSkills;
-  
+
   /**
    * @see SkillBuilder#addListener
    */
   private final List<SkillHandler> listeners;
-  
+
   /**
    * The Fighter object that the skill belongs to. Value should remain null
    * until the skill has been applied using the {@link #onApply(battle.Fighter)
@@ -120,38 +121,51 @@ public class Skill implements TurnItem {
 
   /**
    * Returns a new {@link SkillBuilder} object using the name property of the
-   * given {@link String}. 
-   * @param name name property of skill to be built. See {@see
-   *        SkillBuilder#setName}
+   * given {@link String}.
+   * 
+   * @param name
+   *          name property of skill to be built. See
+   *          {@see SkillBuilder#setName}
    * @return new instance of a skill builder.
    */
   public static SkillBuilder builder(String name) {
     return new SkillBuilder(name);
   }
-  
+
   /**
    * Initializes the object so that all internal field variables that can be
-   * explicitly set are done so through the given parameters. See the {@link 
-   * SkillBuilder} class which allows you to create Skill objects using a
+   * explicitly set are done so through the given parameters. See the
+   * {@link SkillBuilder} class which allows you to create Skill objects using a
    * builder pattern.
-   * @param name {@see SkillBuilder#setName}
-   * @param description {@see SkillBuilder#setDescription}
-   * @param target {@see SkillBuilder#setTarget}
-   * @param maxTargets {@see SkillBuilder#setMaxTargets}
-   * @param cooldown {@see SkillBuilder#setCooldown}
-   * @param useCase {@see SkillBuilder#setUseCase}
-   * @param stunBreak {@see SkillBuilder#setStunBreak}
-   * @param deathless {@see SkillBuilder#setDeathless}
-   * @param requirements {@see SkillBuilder#addRequirement}
-   * @param effects {@see SkillBuilder#addEffect}
-   * @param subSkills {@see SkillBuilder#addSubSkill}
-   * @param listeners {@see SkillBuilder#addListener}
+   * 
+   * @param name
+   *          {@see SkillBuilder#setName}
+   * @param description
+   *          {@see SkillBuilder#setDescription}
+   * @param target
+   *          {@see SkillBuilder#setTarget}
+   * @param maxTargets
+   *          {@see SkillBuilder#setMaxTargets}
+   * @param cooldown
+   *          {@see SkillBuilder#setCooldown}
+   * @param useCase
+   *          {@see SkillBuilder#setUseCase}
+   * @param stunBreak
+   *          {@see SkillBuilder#setStunBreak}
+   * @param deathless
+   *          {@see SkillBuilder#setDeathless}
+   * @param requirements
+   *          {@see SkillBuilder#addRequirement}
+   * @param effects
+   *          {@see SkillBuilder#addEffect}
+   * @param subSkills
+   *          {@see SkillBuilder#addSubSkill}
+   * @param listeners
+   *          {@see SkillBuilder#addListener}
    */
-  protected Skill(String name, String description, Target target,
-      int maxTargets, Duration cooldown, Predicate<Skill> useCase,
-      boolean stunBreak, boolean deathless, List<Status> effects,
-      List<String> requirements, List<Skill> subSkills,
-      List<SkillHandler> listeners) {
+  protected Skill(String name, String description, Target target, int maxTargets, Duration cooldown,
+      Predicate<Skill> useCase, boolean stunBreak, boolean deathless, List<Status> effects, List<String> requirements,
+      List<Skill> subSkills, List<SkillHandler> listeners) {
     if (name == null) {
       throw new NullPointerException("name: null");
     }
@@ -206,7 +220,9 @@ public class Skill implements TurnItem {
    * the state of either the original or the copy have no affect on the other.
    * Copies are always without an owner, even if the original has one, thus
    * making the value always {@code null}.
-   * @param copyOf object which the copy is made from.
+   * 
+   * @param copyOf
+   *          object which the copy is made from.
    */
   public Skill(Skill copyOf) {
     this.name = copyOf.name;
@@ -225,27 +241,33 @@ public class Skill implements TurnItem {
   }
 
   /**
-   * @param listener object to handle events.
+   * @param listener
+   *          object to handle events.
    * @see SkillBuilder#addListener
    */
   public void addListener(SkillHandler listener) {
-    if (listener == null) throw new NullPointerException("listeners: null");
+    if (listener == null)
+      throw new NullPointerException("listeners: null");
     listeners.add(listener);
   }
-  
+
   /**
    * Removes a listener from the list of listeners.
-   * @param listener the object to be removed.
+   * 
+   * @param listener
+   *          the object to be removed.
    * @return {@code true} if the object was successfully removed.
    * @see SkillBuilder#addListener
    */
   public boolean removeListener(SkillHandler listener) {
     return this.listeners.remove(listener);
   }
-  
+
   /**
    * Event method for when this skill is applied.
-   * @param  newOwner the fighter the skill is being applied to.
+   * 
+   * @param newOwner
+   *          the fighter the skill is being applied to.
    * @return {@code true} if skill can be applied to the target owner.
    */
   protected final boolean onApply(Fighter newOwner) {
@@ -258,6 +280,7 @@ public class Skill implements TurnItem {
 
   /**
    * Event method for when this skill is removed.
+   * 
    * @return {@code true} if the skill can be removed from its owner.
    */
   protected final boolean onRemove() {
@@ -276,7 +299,7 @@ public class Skill implements TurnItem {
       handler.onSkillExecution(this);
     }
   }
-  
+
   /**
    * @return name property of the skill.
    * @see SkillBuilder#setName
@@ -284,7 +307,7 @@ public class Skill implements TurnItem {
   public String getName() {
     return name;
   }
-  
+
   /**
    * @return description property of the skill.
    * @see SkillBuilder#setDescription
@@ -300,7 +323,7 @@ public class Skill implements TurnItem {
   public Target getTarget() {
     return target;
   }
-  
+
   /**
    * @return maximum targets property of the skill.
    * @see SkillBuilder#setMaxTargets
@@ -308,7 +331,7 @@ public class Skill implements TurnItem {
   public int getMaxTargets() {
     return maxTargets;
   }
-  
+
   /**
    * @return cooldown property of the skill.
    * @see SkillBuilder#setCooldown
@@ -319,6 +342,7 @@ public class Skill implements TurnItem {
 
   /**
    * Returns the current amount of time remaining until the skill can be used.
+   * 
    * @return time remaining of the skill.
    */
   public Duration getTimeRemaining() {
@@ -332,7 +356,7 @@ public class Skill implements TurnItem {
   protected Predicate<Skill> getUseCase() {
     return useCase;
   }
-  
+
   /**
    * @return list of effects.
    * @see SkillBuilder#addEffect
@@ -364,31 +388,33 @@ public class Skill implements TurnItem {
   protected final List<SkillHandler> getListeners() {
     return new ArrayList<>(listeners);
   }
- 
+
   /**
    * Returns the Fighter object that the skill belongs to.
+   * 
    * @return the owner of the skill.
    */
   public Fighter getOwner() {
     return owner;
   }
-  
+
   /**
    * Returns {@code true} if the skill is in a usable state. By default, a skill
    * cannot be used if it lacks an owner. In addition, a {@link Predicate}
    * object passed to this skill during initiation can place additional
    * conditions.
+   * 
    * @return {@code true} if the skill is usable by its owner.
    */
   public boolean isUsable() {
-    return owner != null && useCase.test(this) &&
-        (deathless ? true : !owner.isDefeated()) &&
-        (stunBreak ? true : !owner.isStunned());
+    return owner != null && useCase.test(this) && (deathless ? true : !owner.isDefeated())
+        && (stunBreak ? true : !owner.isStunned());
   }
-  
+
   /**
    * Returns {@code true} if the skill can be executed by being usable while the
    * remaining duration is {@link Duration.ZERO ZERO}.
+   * 
    * @return {@code true} is the skill is executable.
    * @see #isUsable
    */
@@ -403,7 +429,7 @@ public class Skill implements TurnItem {
   public boolean isStunBreak() {
     return stunBreak;
   }
-  
+
   /**
    * @return {@code true} if the skill is usable while the owner is defeated.
    * @see SkillBuilder#setDeathless(boolean)
@@ -411,33 +437,36 @@ public class Skill implements TurnItem {
   public boolean isDeathless() {
     return deathless;
   }
-  
+
   /**
    * Returns {@code true} if the skill is consistent with the requirements to be
    * a pre-battle skill, a skill executed before combat begins and is not
    * executed again that battle. Pre-battle skills are required to have a
    * negative cooldown value and a target value of SELF only.
+   * 
    * @return {@code true} if this is a pre-battle skill.
    */
   public boolean isPreBattleSkill() {
     return cooldown.isNegative() && (target == Target.SELF);
   }
-  
+
   @Override // from TurnItem
   public LocalDateTime getTurnTime(LocalDateTime currentTime) {
     return currentTime.plus(timeRemaining);
   }
-  
+
   @Override // from TurnItem
   public boolean advanceTime(Duration timeChange) {
     if (!isPreBattleSkill() && isUsable()) {
       timeRemaining = timeRemaining.minus(timeChange);
-      if (timeRemaining.isNegative()) timeRemaining.isZero();
-      if (timeRemaining.isZero()) return owner.executeSkill(this);
+      if (timeRemaining.isNegative())
+        timeRemaining.isZero();
+      if (timeRemaining.isZero())
+        return owner.executeSkill(this);
     }
     return false;
   }
-  
+
   @Override // from TurnItem
   public Actor getActor() {
     return owner;
@@ -447,5 +476,5 @@ public class Skill implements TurnItem {
   public String toString() {
     return this.name;
   }
-  
+
 }

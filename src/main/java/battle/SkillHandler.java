@@ -28,32 +28,39 @@ package battle;
  * Objects implementing this interface can become listeners to various Skill
  * object events and state changes. All methods have a do-nothing default
  * implementation that can be overridden.
+ * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public interface SkillHandler {
-  
+
   /**
    * Event method that handles the successful execution of the skill it is
    * listening to.
-   * @param skill the skill that was successfully executed.
+   * 
+   * @param skill
+   *          the skill that was successfully executed.
    */
   public default void onSkillExecution(Skill skill) {
   }
-  
+
   /**
    * Event method that handles the successful application of the skill it is
    * listening to.
-   * @param skill the skill that was successfully applied.
+   * 
+   * @param skill
+   *          the skill that was successfully applied.
    */
   public default void onSkillApplication(Skill skill) {
   }
-  
+
   /**
    * Event method that handles the successful removal of the skill it is
    * listening to.
-   * @param skill the skill that was successfully removed.
+   * 
+   * @param skill
+   *          the skill that was successfully removed.
    */
   public default void onSkillRemoval(Skill skill) {
   }
-  
+
 }
