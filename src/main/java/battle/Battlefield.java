@@ -45,6 +45,29 @@ public class Battlefield {
   }
 
   /**
+   * Returns {@code true} if the given Fighter object can be found on the
+   * battlefield.
+   * 
+   * @param fighter
+   *          the Fighter object being searched for.
+   * @return {@code true} if fighter is found.
+   */
+  public boolean hasFighter(Fighter fighter) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  /**
+   * Attempts to add a squad and all of its fighters to a battlefield and
+   * returns {@code true} is the attempt was successful. 
+   * 
+   * @param squad the squad to be added.
+   * @return {@code true} if the squad was successfully added.
+   */
+  public boolean addSquad(Squad squad) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+  
+  /**
    * Returns the distance between to given Fighter objects assumed to be located
    * on the battlefield. Throws NoSuchFighterException if either fighter cannot
    * be found on the battlefield.
@@ -56,18 +79,6 @@ public class Battlefield {
    * @return the distance between the given fighters.
    */
   public int getDistance(Fighter fighterOne, Fighter fighterTwo) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   * Returns {@code true} if the given Fighter object can be found on the
-   * battlefield.
-   * 
-   * @param fighter
-   *          the Fighter object being searched for.
-   * @return {@code true} if fighter is found.
-   */
-  public boolean hasFighter(Fighter fighter) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
