@@ -308,7 +308,7 @@ public class Fighter implements Actor {
    * 
    * @return duration the Unit is stunned.
    */
-  private Duration getStunDuration() {
+  public Duration getStunDuration() {
     Duration stunTime = Duration.ZERO;
     for (Status nextStatus : statusSet) {
       if (nextStatus.isStunning()) {
