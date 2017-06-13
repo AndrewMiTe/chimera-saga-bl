@@ -181,49 +181,6 @@ public class Fighter implements Actor {
   }
 
   /**
-   * Attempts to apply the given Status object to the fighter. Returns {@code
-   * true} if the predicate for its application returned {@code true}.
-   * 
-   * @param status
-   *          status to be applied.
-   * @return {@code true} if the status was applied.
-   */
-  public boolean applyStatus(Status status) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  /**
-   * Attempts to remove the given Status object from the fighter. Returns {@code
-   * true} if the object was both found and if the predicate for its removal
-   * returned {@code true}. This method will only remove the Status object
-   * given.
-   * 
-   * @param status
-   *          the status to be removed.
-   * @return {@code true} if the status was removed.
-   * @see #removeStatus(String name)
-   */
-  public boolean removeStatus(Status status) {
-    if (statusSet.contains(status) && status.onRemove()) {
-      return statusSet.remove(status);
-    }
-    return false;
-  }
-
-  /**
-   * Attempts to remove from the fighter any Status object with a name property
-   * matching the given String. Returns {@code true} if a match was both found
-   * and if the predicate for its removal returned {@code true}.
-   * 
-   * @param name
-   *          name of the status to be removed.
-   * @return {@code true} if the status was removed.
-   */
-  public boolean removeStatus(String name) {
-    return removeStatus(getStatus(name));
-  }
-
-  /**
    * Returns a Status object applied to the fighter with a matching name
    * property to the given Status.
    * 
@@ -285,6 +242,49 @@ public class Fighter implements Actor {
         return true;
     }
     return false;
+  }
+
+  /**
+   * Attempts to apply the given Status object to the fighter. Returns {@code
+   * true} if the predicate for its application returned {@code true}.
+   * 
+   * @param status
+   *          status to be applied.
+   * @return {@code true} if the status was applied.
+   */
+  public boolean applyStatus(Status status) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  /**
+   * Attempts to remove the given Status object from the fighter. Returns {@code
+   * true} if the object was both found and if the predicate for its removal
+   * returned {@code true}. This method will only remove the Status object
+   * given.
+   * 
+   * @param status
+   *          the status to be removed.
+   * @return {@code true} if the status was removed.
+   * @see #removeStatus(String name)
+   */
+  public boolean removeStatus(Status status) {
+    if (statusSet.contains(status) && status.onRemove()) {
+      return statusSet.remove(status);
+    }
+    return false;
+  }
+
+  /**
+   * Attempts to remove from the fighter any Status object with a name property
+   * matching the given String. Returns {@code true} if a match was both found
+   * and if the predicate for its removal returned {@code true}.
+   * 
+   * @param name
+   *          name of the status to be removed.
+   * @return {@code true} if the status was removed.
+   */
+  public boolean removeStatus(String name) {
+    return removeStatus(getStatus(name));
   }
 
   /**
