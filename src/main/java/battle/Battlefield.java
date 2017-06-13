@@ -27,21 +27,48 @@ package battle;
 import java.util.List;
 
 /**
+ * Location of a battle where squads of fighters compete until the battle's
+ * conclusion. Battlefield objects dictate the relative distance between
+ * fighters for determining the usability of skills.
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Battlefield {
 
+  /**
+   * Returns a list of all fighters currently on the battlefield.
+   * 
+   * @return list of fighters on the field.
+   */
   public List<Fighter> getFighters() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
-  public int getDistance(Fighter f, Fighter fighter) {
+  /**
+   * Returns the distance between to given Fighter objects assumed to be located
+   * on the battlefield. Throws NoSuchFighterException if either fighter cannot
+   * be found on the battlefield.
+   * 
+   * @param fighterOne
+   *          the fighter to begin measuring distance from.
+   * @param fighterTwo
+   *          the fighter to end measuring distance to.
+   * @return the distance between the given fighters.
+   */
+  public int getDistance(Fighter fighterOne, Fighter fighterTwo) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
+  /**
+   * Returns {@code true} if the given Fighter object can be found on the
+   * battlefield.
+   * 
+   * @param fighter
+   *          the Fighter object being searched for.
+   * @return {@code true} if fighter is found.
+   */
   public boolean hasFighter(Fighter fighter) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
-  
+
 }
