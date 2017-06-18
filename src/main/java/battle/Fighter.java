@@ -33,7 +33,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
- * Participates in battles as a member of a squad. Can apply statuses to other
+ * Participates in battles as a member of a team. Can apply statuses to other
  * Fighter objects, or itself, by executing skills with the objective to defeat
  * all enemy fighters.
  * 
@@ -49,7 +49,7 @@ public class Fighter implements Actor {
   /**
    * @see FighterBuilder#setSquad
    */
-  private Squad squad;
+  private Team team;
 
   /**
    * @see Fighter#applyStatus
@@ -89,8 +89,8 @@ public class Fighter implements Actor {
    * 
    * @param name
    *          {@see FighterBuilder#setName}
-   * @param squad
-   *          {@see FighterBuilder#setSquad}
+   * @param team
+   *          {@see FighterBuilder#setTeam}
    * @param skillList
    *          {@see FighterBuilder#addSkill}
    * @param closeRange
@@ -102,15 +102,15 @@ public class Fighter implements Actor {
    * @param listeners
    *          {@see FighterBuilder#addListener}
    */
-  public Fighter(String name, Squad squad, List<Skill> skillList, int closeRange,
+  public Fighter(String name, Team team, List<Skill> skillList, int closeRange,
       BiPredicate<Fighter, Fighter> isAllyCase, BiPredicate<Fighter, Fighter> isEnemyCase,
       List<FighterHandler> listeners) {
     if (name == null)
       throw new NullPointerException("name: null");
     this.name = name;
-    if (squad == null)
-      throw new NullPointerException("squad: null");
-    this.squad = squad;
+    if (team == null)
+      throw new NullPointerException("team: null");
+    this.team = team;
     this.statusSet = new HashSet<>();
     if (skillList != null && skillList.contains(null)) {
       throw new NullPointerException("skill list: conatins null");
@@ -146,7 +146,7 @@ public class Fighter implements Actor {
    */
   public Fighter(Fighter copyOf) {
     this.name = copyOf.name;
-    this.squad = copyOf.squad;
+    this.team = copyOf.team;
     this.statusSet = new HashSet<>(copyOf.statusSet);
     this.skillList = new ArrayList<>(copyOf.skillList);
     this.closeRange = copyOf.closeRange;
@@ -164,20 +164,20 @@ public class Fighter implements Actor {
   }
 
   /**
-   * @return squad property of the fighter.
-   * @see FighterBuilder#setSquad
+   * @return team property of the fighter.
+   * @see FighterBuilder#setTeam
    */
-  public Squad getSquad() {
-    return squad;
+  public Team getTeam() {
+    return team;
   }
 
   /**
-   * Assigns the given squad to the squad property.
+   * Assigns the given team to the team property.
    * 
-   * @param squad
+   * @param team
    */
-  public void setSquad(Squad squad) {
-    this.squad = squad;
+  public void setTeam(Team team) {
+    this.team = team;
   }
 
   /**

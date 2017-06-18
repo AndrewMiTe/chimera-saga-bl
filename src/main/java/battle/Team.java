@@ -31,6 +31,6 @@ package battle;
  *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public interface Squad {
+public interface Team {
 
 }

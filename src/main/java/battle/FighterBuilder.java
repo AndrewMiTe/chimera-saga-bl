@@ -46,11 +46,11 @@ public class FighterBuilder {
   private String name;
 
   /**
-   * Stores the squad value for building a Fighter object.
+   * Stores the team value for building a Fighter object.
    * 
    * @see #setSquad
    */
-  private Squad squad;
+  private Team team;
 
   /**
    * Stores the skillList value for building a Fighter object.
@@ -100,11 +100,11 @@ public class FighterBuilder {
       throw new NullPointerException("name: null");
     }
     this.name = name;
-    this.squad = new Squad() {};
+    this.team = new Team() {};
     this.skillList = new ArrayList<>();
     this.closeRange = 0;
-    this.isAllyCase = (a, b) -> a.getSquad() == b.getSquad();
-    this.isEnemyCase = (a, b) -> a.getSquad() != a.getSquad();
+    this.isAllyCase = (a, b) -> a.getTeam() == b.getTeam();
+    this.isEnemyCase = (a, b) -> a.getTeam() != a.getTeam();
     this.listeners = new ArrayList<>();
   }
 
@@ -118,7 +118,7 @@ public class FighterBuilder {
   public FighterBuilder(Fighter fighter) {
     Fighter copyOf = new Fighter(fighter);
     this.name = copyOf.getName();
-    this.squad = copyOf.getSquad();
+    this.team = copyOf.getTeam();
     this.skillList = copyOf.getSkills();
     this.closeRange = copyOf.getCloseRange();
     this.isAllyCase = copyOf.getIsAllyCase();
@@ -136,7 +136,7 @@ public class FighterBuilder {
    *         object.
    */
   public Fighter build() {
-    return new Fighter(name, squad, skillList, closeRange, isAllyCase, isEnemyCase, listeners);
+    return new Fighter(name, team, skillList, closeRange, isAllyCase, isEnemyCase, listeners);
   }
 
   /**
@@ -156,19 +156,19 @@ public class FighterBuilder {
   }
 
   /**
-   * Sets the squad parameter for which the fighter belongs to. By default,
-   * fighters with the same squad object recognize each other as allies and
-   * fighters with all other squads as enemies. The default squad value is a
-   * unique squad object.
+   * Sets the team parameter for which the fighter belongs to. By default,
+   * fighters with the same team object recognize each other as allies and
+   * fighters with all other teams as enemies. The default team value is a
+   * unique Team object.
    * 
-   * @param squad
-   *          Squad that the unit belongs to. Cannot be {@code null}.
+   * @param team
+   *          Team that the unit belongs to. Cannot be {@code null}.
    * @return this object.
    */
-  public FighterBuilder setSquad(Squad squad) {
-    if (squad == null)
+  public FighterBuilder setTeam(Team team) {
+    if (team == null)
       throw new NullPointerException("name: null");
-    this.squad = squad;
+    this.team = team;
     return this;
   }
 
@@ -223,7 +223,7 @@ public class FighterBuilder {
    * built and another fighter. If the test method for the BiPredicate object
    * returns true, the two fighter's are considered to be allies from the
    * perspective of the fighter to be built. The default is a case that returns
-   * {@code true} if the fighters have identical squad parameters.
+   * {@code true} if the fighters have identical team parameters.
    * 
    * @param isAllyCase
    * @return this object.
@@ -241,7 +241,7 @@ public class FighterBuilder {
    * built and another fighter. If the test method for the BiPredicate object
    * returns true, the two fighter's are considered to be enemies from the
    * perspective of the fighter to be built. The default is a case that returns
-   * {@code true} if the fighters don't have identical squad parameters.
+   * {@code true} if the fighters don't have identical team parameters.
    * 
    * @param isEnemyCase
    * @return this object

@@ -27,7 +27,7 @@ package battle;
 import java.util.List;
 
 /**
- * Location of a battle where squads of fighters compete until the battle's
+ * Location of a battle where teams of fighters compete until the battle's
  * conclusion. Battlefield objects dictate the relative distance between
  * fighters for determining the usability of skills.
  * 
@@ -57,16 +57,17 @@ public class Battlefield {
   }
 
   /**
-   * Attempts to add a squad and all of its fighters to a battlefield and
-   * returns {@code true} is the attempt was successful. 
+   * Attempts to add a fighter to a battlefield and returns {@code true} is the
+   * attempt was successful.
    * 
-   * @param squad the squad to be added.
-   * @return {@code true} if the squad was successfully added.
+   * @param fighter
+   *          the fighter to be added.
+   * @return {@code true} if the fighter was successfully added.
    */
-  public boolean addSquad(Squad squad) {
+  public boolean addFighter(Fighter fighter) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
-  
+
   /**
    * Returns the distance between to given Fighter objects assumed to be located
    * on the battlefield. Throws NoSuchFighterException if either fighter cannot
