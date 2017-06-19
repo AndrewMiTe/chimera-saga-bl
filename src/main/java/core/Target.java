@@ -61,7 +61,10 @@ public abstract class Target {
     @Override // from Target
     public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
       List<Fighter> targets = battlefield.getFighters();
-      targets.removeIf(f -> (!fighter.isAlly(f) || (battlefield.getDistance(f, fighter) > fighter.getCloseRange())));
+      targets.removeIf(f -> 
+        !fighter.isAlly(f) || 
+        (battlefield.getDistance(f, fighter).orElseGet(fighter::getCloseRange) >= fighter.getCloseRange())
+      );
       return targets;
     }
   };
@@ -75,8 +78,11 @@ public abstract class Target {
     @Override // from Target
     public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
       List<Fighter> targets = battlefield.getFighters();
-      targets.removeIf(
-          f -> (f == fighter) || !fighter.isAlly(f) || (battlefield.getDistance(f, fighter) > fighter.getCloseRange()));
+      targets.removeIf(f -> 
+        (f == fighter) || 
+        !fighter.isAlly(f) || 
+        (battlefield.getDistance(f, fighter).orElseGet(fighter::getCloseRange) >= fighter.getCloseRange())
+      );
       return targets;
     }
   };
@@ -115,7 +121,10 @@ public abstract class Target {
     @Override // from Target
     public List<Fighter> getTargets(Battlefield battlefield, Fighter fighter) {
       List<Fighter> targets = battlefield.getFighters();
-      targets.removeIf(f -> (!fighter.isEnemy(f) || (battlefield.getDistance(f, fighter) > fighter.getCloseRange())));
+      targets.removeIf(f ->
+        !fighter.isEnemy(f) ||
+        (battlefield.getDistance(f, fighter).orElseGet(fighter::getCloseRange) >= fighter.getCloseRange())
+      );
       return targets;
     }
   };
