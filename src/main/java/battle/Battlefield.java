@@ -25,6 +25,7 @@
 package battle;
 
 import java.util.List;
+import java.util.OptionalInt;
 
 /**
  * Location of a battle where teams of fighters compete until the battle's
@@ -33,16 +34,14 @@ import java.util.List;
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Battlefield {
+public interface Battlefield {
 
   /**
    * Returns a list of all fighters currently on the battlefield.
    * 
    * @return list of fighters on the field.
    */
-  public List<Fighter> getFighters() {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+  public List<Fighter> getFighters();
 
   /**
    * Returns {@code true} if the given Fighter object can be found on the
@@ -52,9 +51,7 @@ public class Battlefield {
    *          the Fighter object being searched for.
    * @return {@code true} if fighter is found.
    */
-  public boolean hasFighter(Fighter fighter) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+  public boolean hasFighter(Fighter fighter);
 
   /**
    * Attempts to add a fighter to a battlefield and returns {@code true} is the
@@ -64,23 +61,29 @@ public class Battlefield {
    *          the fighter to be added.
    * @return {@code true} if the fighter was successfully added.
    */
-  public boolean addFighter(Fighter fighter) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
-
+  public boolean addFighter(Fighter fighter);
+  
+  /**
+   * Attempts to remove a fighter to a battlefield and returns {@code true} if
+   * the attempt was successful.
+   * 
+   * @param fighter
+   *          the fighter to be removed.
+   * @return {@code true} if the fighter was successfully removed.
+   */
+  public boolean removeFighter(Fighter fighter);
+  
   /**
    * Returns the distance between to given Fighter objects assumed to be located
-   * on the battlefield. Throws NoSuchFighterException if either fighter cannot
-   * be found on the battlefield.
+   * on the battlefield.  The return value is an {@link OptionalInt} that will
+   * return empty if either Fighter object cannot be found on the battlefield.
    * 
    * @param fighterOne
    *          the fighter to begin measuring distance from.
    * @param fighterTwo
    *          the fighter to end measuring distance to.
-   * @return the distance between the given fighters.
+   * @return the distance between the given fighters as an optional.
    */
-  public int getDistance(Fighter fighterOne, Fighter fighterTwo) {
-    throw new UnsupportedOperationException("Not supported yet.");
-  }
+  public OptionalInt getDistance(Fighter fighterOne, Fighter fighterTwo);
 
 }
