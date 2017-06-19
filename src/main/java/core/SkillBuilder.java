@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package battle;
+package core;
 
 import java.time.Duration;
 import java.util.ArrayList;

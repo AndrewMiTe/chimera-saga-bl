@@ -22,25 +22,35 @@
  * SOFTWARE.
  */
 
-package battle;
+package core;
 
 /**
- * Objects implementing this interface can become listeners to various Fighter
+ * Objects implementing this interface can become listeners to various Status
  * object events and state changes. All methods have a do-nothing default
  * implementation that can be overridden.
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public interface FighterHandler {
+public interface StatusHandler {
 
   /**
-   * Event method that handles the successful defeat of the fighter it is
+   * Event method that handles the successful application of the status it is
    * listening to.
    * 
-   * @param fighter
-   *          the fighter that was defeated.
+   * @param status
+   *          the status that was successfully applied.
    */
-  public default void onDefeated(Fighter fighter) {
+  public default void onStatusApplication(Status status) {
+  }
+
+  /**
+   * Event method that handles the successful removal of the status it is
+   * listening to.
+   * 
+   * @param status
+   *          the status that was successfully removed.
+   */
+  public default void onStatusRemoval(Status status) {
   }
 
 }

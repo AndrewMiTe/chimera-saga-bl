@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-package battle;
+package core;
 
 /**
- * A participant in a battle that can have turns and perform actions when those
- * turns are due. This class is used to facilitate the removal of an actor when
- * it has left the battle.
- * 
+ * Objects implementing this interface can be assigned as a parameter to Fighter
+ * objects. By default the parameter is used to determine who the allies and
+ * enemies of the fighter is.
+ *
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public interface Actor {
+public interface Team {
+
 }

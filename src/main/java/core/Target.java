@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package battle;
+package core;
 
 import java.util.Collections;
 import java.util.List;

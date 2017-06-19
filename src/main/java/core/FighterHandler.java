@@ -22,45 +22,25 @@
  * SOFTWARE.
  */
 
-package battle;
+package core;
 
 /**
- * Objects implementing this interface can become listeners to various Skill
+ * Objects implementing this interface can become listeners to various Fighter
  * object events and state changes. All methods have a do-nothing default
  * implementation that can be overridden.
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public interface SkillHandler {
+public interface FighterHandler {
 
   /**
-   * Event method that handles the successful execution of the skill it is
+   * Event method that handles the successful defeat of the fighter it is
    * listening to.
    * 
-   * @param skill
-   *          the skill that was successfully executed.
+   * @param fighter
+   *          the fighter that was defeated.
    */
-  public default void onSkillExecution(Skill skill) {
-  }
-
-  /**
-   * Event method that handles the successful application of the skill it is
-   * listening to.
-   * 
-   * @param skill
-   *          the skill that was successfully applied.
-   */
-  public default void onSkillApplication(Skill skill) {
-  }
-
-  /**
-   * Event method that handles the successful removal of the skill it is
-   * listening to.
-   * 
-   * @param skill
-   *          the skill that was successfully removed.
-   */
-  public default void onSkillRemoval(Skill skill) {
+  public default void onDefeated(Fighter fighter) {
   }
 
 }
