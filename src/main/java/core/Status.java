@@ -97,7 +97,7 @@ public class Status implements TurnItem {
   /**
    * @see StatusBuilder#addListener
    */
-  private final Set<StatusHandler> listeners;
+  private final List<StatusHandler> listeners;
 
   /**
    * The Fighter object that the status belongs to. Value should remain null
@@ -203,7 +203,7 @@ public class Status implements TurnItem {
     if (listeners != null && listeners.contains(null)) {
       throw new IllegalArgumentException("listeners: contains null");
     }
-    this.listeners = new HashSet<>(listeners);
+    this.listeners = new ArrayList<>(listeners);
     this.owner = null;
     this.stackList = new ArrayList<>();
     this.stackList.add(new Stack(stackSize, duration));
@@ -235,7 +235,9 @@ public class Status implements TurnItem {
     this.hidden = copyOf.hidden;
     this.applyCondition = copyOf.applyCondition;
     this.removeCondition = copyOf.removeCondition;
-    this.listeners = new HashSet<>(copyOf.listeners);
+    this.listeners = new ArrayList<>();
+    for (StatusHandler l : copyOf.listeners)
+      this.listeners.add(l.copy());
     this.owner = null;
     this.stackList = new ArrayList<>();
     this.stackList.add(new Stack(stackSize, duration));
@@ -264,19 +266,18 @@ public class Status implements TurnItem {
 
   /**
    * Takes a Status object that can legally combine with this status and
-   * incorporates many properties, including stack size, duration, and listeners
-   * whenever applicable. When the {@link #isStackable() isStackable} method
-   * returns {@code true} for this status, the stack size of the given status is
-   * combined with this. In addition, if this status is finite in duration, the
-   * given status is incorporated so that the stack size may decrement at
-   * varying intervals, based on the durations of the incorporated status and
-   * this. If this status is finite and not stackable, then the duration of the
-   * given status is added to this. In all cases this will inherit any
-   * {@link StatusHandler} objects listening to the given Status object that
-   * this doesn't already have. Passing this method a value that would return
-   * {@code
-   * false} if passed to this object's {@link #canCombine(battle.Status)
-   * canCombine} method will throw an {@link IllegalArgumentException}.
+   * incorporates the stack size and duration whenever applicable. When the
+   * {@link #isStackable() isStackable} method returns {@code true} for this
+   * status, the stack size of the given status is combined with this. In
+   * addition, if this status is finite in duration, the given status is
+   * incorporated so that the stack size may decrement at varying intervals,
+   * based on the durations of the incorporated status and this. If this status
+   * is finite and not stackable, then the duration of the given status is added
+   * to this. In order to avoid duplicating calls to the same listeners, the
+   * listeners from the incorporated status are not added to this status.
+   * Passing this method a value that would return {@code false} if passed to
+   * this object's {@link #canCombine(battle.Status canCombine} method will
+   * throw an {@link IllegalArgumentException}.
    * 
    * @param status
    *          the status to combine with.

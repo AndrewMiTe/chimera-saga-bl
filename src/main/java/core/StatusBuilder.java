@@ -172,8 +172,10 @@ public class StatusBuilder {
    * @return new Status object built with the values set in this builder object.
    */
   public Status build() {
+    List<StatusHandler> copyOfListeners = new ArrayList<>();
+    for (StatusHandler l: listeners) copyOfListeners.add(l.copy());
     return new Status(name, description, duration, stackSize, stackable, stunning, defeating, hidden, applyCondition,
-        removeCondition, listeners);
+        removeCondition, copyOfListeners);
   }
 
   /**
