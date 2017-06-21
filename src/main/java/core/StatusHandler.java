@@ -53,4 +53,15 @@ public interface StatusHandler {
   public default void onStatusRemoval(Status status) {
   }
 
+  /**
+   * Returns a StatusHandler suitable for a duplicate of the status it is
+   * applied to or for a new status to be built from a StatusBuilder. By
+   * default, this method assumes that the current instance of the handler is
+   * suitable for multiple status objects to call upon during status events.
+   * @return a suitable duplicate handler for other status object to have.
+   */
+  public default StatusHandler copy() {
+    return this;
+  }
+  
 }
