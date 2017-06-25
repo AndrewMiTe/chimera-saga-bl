@@ -25,7 +25,6 @@
 package chimera;
 
 import core.Status;
-import core.StatusBuilder;
 
 /**
  * Enumerates the various statuses specific to the Chimera Saga battle system
@@ -41,10 +40,16 @@ public enum Statuses {
    * entirely. Endurance represents the fighters ability to shrug off an attack
    * or deflect it with its armor.
    */
-  Endurance(Status.builder("Endurance")
-      .setDescription("A primary defense allowing you to endure attacks.")
-      .setAsInfinite()
-      .setStackable(true)),
+  Endurance {
+    @Override // from Statuses
+    public Status get() {
+      return Status.builder("Endurance")
+          .setDescription("A primary defense allowing you to endure attacks.")
+          .setAsInfinite()
+          .setStackable(true)
+          .build();
+    }
+  },
 
   /**
    * A primary defense status that often must be removed before the fighter can
@@ -52,10 +57,16 @@ public enum Statuses {
    * entirely. Evasion represents the fighters ability to avoid an incoming
    * attack.
    */
-  Evasion(Status.builder("Evasion")
-      .setDescription("A primary defense allowing you to evade attacks.")
-      .setAsInfinite()
-      .setStackable(true)),
+  Evasion {
+    @Override // from Statuses
+    public Status get() {
+      return Status.builder("Evasion")
+          .setDescription("A primary defense allowing you to evade attacks.")
+          .setAsInfinite()
+          .setStackable(true)
+          .build();
+    }
+  },
 
   /**
    * A primary defense status that often must be removed before the fighter can
@@ -63,32 +74,21 @@ public enum Statuses {
    * entirely. Opposition represents the fighters ability to block, parry, or
    * otherwise counter an attack.
    */
-  Opposition(Status.builder("Opposition")
-      .setDescription("A primary defense allowing you to oppose attacks.")
-      .setAsInfinite()
-      .setStackable(true));
-
-  /**
-   * The {@link StatusBuilder} object used to build new copies of the status
-   * being enumerated.
-   */
-  private StatusBuilder statusBuilder;
-
-  /**
-   * Initializes the object with the required StatusBuilder needed to make new
-   * statuses that the object represents.
-   * @param statusBuilder replicates the status to be built. 
-   */
-  private Statuses(StatusBuilder statusBuilder) {
-    this.statusBuilder = statusBuilder;
-  }
-
+  Opposition {
+    @Override // from Statuses
+    public Status get() {
+      return Status.builder("Opposition")
+          .setDescription("A primary defense allowing you to oppose attacks.")
+          .setAsInfinite()
+          .setStackable(true)
+          .build();
+    }
+  };
+    
   /**
    * Returns a new copy of the status the enumerated object represents.
    * @return the new status.
    */
-  public Status get() {
-    return statusBuilder.build();
-  }
-
+  abstract public Status get();
+  
 }
