@@ -32,7 +32,7 @@ import core.Status;
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public enum Statuses {
+public enum StatusLibrary {
 
   /**
    * A primary defense status that often must be removed before the fighter can
@@ -41,7 +41,7 @@ public enum Statuses {
    * or deflect it with its armor.
    */
   Endurance {
-    @Override // from Statuses
+    @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Endurance")
           .setDescription("A primary defense allowing you to endure attacks.")
@@ -58,7 +58,7 @@ public enum Statuses {
    * attack.
    */
   Evasion {
-    @Override // from Statuses
+    @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Evasion")
           .setDescription("A primary defense allowing you to evade attacks.")
@@ -75,7 +75,7 @@ public enum Statuses {
    * otherwise counter an attack.
    */
   Opposition {
-    @Override // from Statuses
+    @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Opposition")
           .setDescription("A primary defense allowing you to oppose attacks.")
