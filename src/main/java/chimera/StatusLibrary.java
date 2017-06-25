@@ -40,7 +40,7 @@ public enum StatusLibrary {
    * entirely. Endurance represents the fighters ability to shrug off an attack
    * or deflect it with its armor.
    */
-  Endurance {
+  ENDURANCE {
     @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Endurance")
@@ -57,7 +57,7 @@ public enum StatusLibrary {
    * entirely. Evasion represents the fighters ability to avoid an incoming
    * attack.
    */
-  Evasion {
+  EVASION {
     @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Evasion")
@@ -74,7 +74,7 @@ public enum StatusLibrary {
    * entirely. Opposition represents the fighters ability to block, parry, or
    * otherwise counter an attack.
    */
-  Opposition {
+  OPPOSITION {
     @Override // from StatusLibrary
     public Status get() {
       return Status.builder("Opposition")
