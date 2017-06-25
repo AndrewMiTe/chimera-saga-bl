@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -253,7 +254,15 @@ public class Fighter implements Actor {
    * @return {@code true} if the status was applied.
    */
   public boolean applyStatus(Status status) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    Optional<Status> original = statusSet.stream().filter(s -> s.equals(status)).findFirst();
+    if (original.isPresent() && original.get().canCombine(status) && status.onApply(this)) {
+      original.get().combineWith(status);
+      return true;
+    }
+    else {
+      if (status.onApply(this)) return statusSet.add(status);
+    }
+    return false;
   }
 
   /**
