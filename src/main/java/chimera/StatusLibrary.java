@@ -25,20 +25,48 @@
 package chimera;
 
 import core.Status;
+import core.StatusHandler;
 
 /**
  * Enumerates the various statuses specific to the Chimera Saga battle system
- * and provides a method for retrieving a new copy the status.
+ * and provides a method for retrieving a new copy of the status.
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public enum StatusLibrary {
 
   /**
+   * A status that defeats and potentially prevents the fighter from performing
+   * more skills. If all the fighters on a team are defeated, the team loses the
+   * battle, which grants victory to an opposing team. The application of the
+   * Endurance status removes defeated. Removes the fighters evasion and
+   * opposition statuses upon application.
+   */
+  DEFEATED {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Defeated")
+          .setDescription("You are unable to continue the fight.")
+          .setAsInfinite()
+          .setStackable(false)
+          .setDefeating(true)
+          .addListener(new DefeatedHandler())
+          .build();
+    }
+    class DefeatedHandler implements StatusHandler {
+      @Override // from StatusHandler
+      public void onStatusApplication(Status status) {
+        status.getOwner().removeStatus(EVASION.get());
+        status.getOwner().removeStatus(OPPOSITION.get());
+      }
+    }
+  },
+
+  /**
    * A primary defense status that often must be removed before the fighter can
-   * be defeated. Some statuses that defeat fighters may ignore this status
-   * entirely. Endurance represents the fighters ability to shrug off an attack
-   * or deflect it with its armor.
+   * be defeated. Endurance represents the fighters ability to shrug off an
+   * attack or deflect it with its armor after a failure to either evade or
+   * oppose it. The application of this status removes the defeated status.
    */
   ENDURANCE {
     @Override // from StatusLibrary
@@ -47,7 +75,14 @@ public enum StatusLibrary {
           .setDescription("A primary defense allowing you to endure attacks.")
           .setAsInfinite()
           .setStackable(true)
+          .addListener(new EnduranceHandler())
           .build();
+    }
+    class EnduranceHandler implements StatusHandler {
+      @Override // from StatusHandler
+      public void onStatusApplication(Status status) {
+        status.getOwner().removeStatus(DEFEATED.get());
+      }
     }
   },
 
@@ -84,7 +119,7 @@ public enum StatusLibrary {
           .build();
     }
   };
-    
+
   /**
    * Returns a new copy of the status the enumerated object represents.
    * @return the new status.
