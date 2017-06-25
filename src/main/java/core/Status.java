@@ -390,7 +390,7 @@ public class Status implements TurnItem {
    * @return {@code true} if status can be applied to the target owner.
    */
   protected final boolean onApply(Fighter newOwner) {
-    if (!applyCondition.test(owner))
+    if (!applyCondition.test(newOwner))
       return false;
     this.owner = newOwner;
     for (StatusHandler handler : listeners) {
