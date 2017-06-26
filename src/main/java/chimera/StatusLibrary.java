@@ -24,7 +24,9 @@
 
 package chimera;
 
+import core.Fighter;
 import core.Status;
+import core.StatusBuilder;
 import core.StatusHandler;
 
 /**
@@ -55,9 +57,10 @@ public enum StatusLibrary {
     }
     class DefeatedHandler implements StatusHandler {
       @Override // from StatusHandler
-      public void onStatusApplication(Status status) {
-        status.getOwner().removeStatus(EVASION.get());
-        status.getOwner().removeStatus(OPPOSITION.get());
+      public void onStatusApplication(Status defeated) {
+        defeated.getOwner().removeStatus(ENDURANCE.get());
+        defeated.getOwner().removeStatus(EVASION.get());
+        defeated.getOwner().removeStatus(OPPOSITION.get());
       }
     }
   },
@@ -80,8 +83,8 @@ public enum StatusLibrary {
     }
     class EnduranceHandler implements StatusHandler {
       @Override // from StatusHandler
-      public void onStatusApplication(Status status) {
-        status.getOwner().removeStatus(DEFEATED.get());
+      public void onStatusApplication(Status endurance) {
+        endurance.getOwner().removeStatus(DEFEATED.get());
       }
     }
   },
@@ -118,6 +121,91 @@ public enum StatusLibrary {
           .setStackable(true)
           .build();
     }
+  },
+  
+  /**
+   * An infliction status that removes stacks of endurance equal to the stack
+   * size of this infliction. If the target owner has fewer stacks of endurance
+   * then this infliction, this applies the defeated status to the target.
+   */
+  WOUND {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Wound")
+          .setDescription("A lethal wound that either removes endurance or defeats.")
+          .setAsInstant()
+          .setStackable(true)
+          .addListener(new WoundHandler())
+          .build();
+    }
+    class WoundHandler implements StatusHandler {
+      public void onStatusApplication(Status wound) {
+        Fighter target = wound.getOwner();
+        if (target.hasStatus(ENDURANCE.get()) 
+            && target.getStatus(ENDURANCE.get()).getStackSize() >= wound.getStackSize()) {
+          target.getStatus(ENDURANCE.get()).removeStacks(wound.getStackSize());
+        }
+        else {
+          target.applyStatus(DEFEATED.get());
+        }
+      }
+    }
+  },
+  
+  /**
+   * An infliction status that wounds its target owner if the target has fewer
+   * stacks of opposition then the stack size of this infliction. The stack size
+   * of the wound is equal to the unopposed stacks of this infliction.
+   */
+  WOUND_EVADABLE {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Evadable Wound")
+          .setDescription("A lethal wound that might defeat you if it is not evaded.")
+          .setAsInstant()
+          .setStackable(true)
+          .addListener(new WoundHandler())
+          .build();
+    }
+    class WoundHandler implements StatusHandler {
+      public void onStatusApplication(Status wound) {
+        Fighter target = wound.getOwner();
+        if (target.hasStatus(EVASION.get())) {
+          int diff = wound.getStackSize() - target.getStatus(EVASION.get()).getStackSize();
+          if (diff > 0) {
+            target.applyStatus(WOUND.modify().setStackSize(diff).build());
+          }
+        }
+      }
+    }
+  },
+   
+  /**
+   * An infliction status that wounds its target owner if the target has fewer
+   * stacks of opposition then the stack size of this infliction. The stack size
+   * of the wound is equal to the unopposed stacks of this infliction.
+   */
+  WOUND_OPPOSABLE {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Opposable Wound")
+          .setDescription("A lethal wound that might defeat you if it is not opposed.")
+          .setAsInstant()
+          .setStackable(true)
+          .addListener(new WoundHandler())
+          .build();
+    }
+    class WoundHandler implements StatusHandler {
+      public void onStatusApplication(Status wound) {
+        Fighter target = wound.getOwner();
+        if (target.hasStatus(OPPOSITION.get())) {
+          int diff = wound.getStackSize() - target.getStatus(OPPOSITION.get()).getStackSize();
+          if (diff > 0) {
+            target.applyStatus(WOUND.modify().setStackSize(diff).build());
+          }
+        }
+      }
+    }
   };
 
   /**
@@ -125,5 +213,14 @@ public enum StatusLibrary {
    * @return the new status.
    */
   abstract public Status get();
+  
+  /**
+   * Returns a StatusBuilder object for making a status whose defaults match the
+   * status returned from get(). 
+   * @return a builder for modifying this status.
+   */
+  public StatusBuilder modify() {
+    return new StatusBuilder(this.get());
+  }
   
 }
