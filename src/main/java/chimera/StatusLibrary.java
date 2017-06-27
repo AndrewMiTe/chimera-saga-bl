@@ -25,6 +25,8 @@
 package chimera;
 
 import java.time.Duration;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import core.Fighter;
@@ -154,6 +156,25 @@ public enum StatusLibrary {
           .setDescription("A primary defense allowing you to oppose attacks.")
           .setAsInfinite()
           .setStackable(true)
+          .build();
+    }
+  },
+  
+  /**
+   * This status is used to randomize (or stagger) the timing of the fighter's
+   * actions. Typically this status is applied to all fighters in the pre-battle
+   * phase of combat and uses the stunned parameter to keep fighters from
+   * acting or decrementing their skill cooldowns. The stagger duration is a
+   * random number of milliseconds from 0 to 3 second. 
+   */
+  STAGGER {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Stagger")
+          .setDescription("The time it takes for you to act for the first time in battle.")
+          .setDuration(Duration.ofMillis(ThreadLocalRandom.current().nextInt(3000)))
+          .setStackable(true)
+          .setStunning(true)
           .build();
     }
   },

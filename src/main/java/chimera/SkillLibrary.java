@@ -25,7 +25,6 @@
 package chimera;
 
 import java.time.Duration;
-
 import core.Skill;
 import core.SkillBuilder;
 import core.Target;
@@ -33,21 +32,22 @@ import core.Target;
 public enum SkillLibrary {
 
   /**
-   * A preparatory that establishes the fighters primary defenses directly
-   * before the battle begins.
+   * A skill preparatory that establishes the fighters primary defenses, rate of
+   * fatigue, and their staggering time before they can act in battle. This
+   * skill is only executed in the pre-battle phase.
    */
-  PRE_BATTLE_DEFENSES {
+  PRE_BATTLE {
     @Override // from SkillLibrary
     public Skill get() {return get(2, 2, 2);}
 
     /**
-     * {@inheritDoc} In the case of PRE_BATTLE_DEFENSES, the given input sets
-     * the stack size of the ENDURANCE, EVASION, and OPPOSITION statuses applied
-     * by this skill equal to the first three respective given int values. If
-     * any of the first three given values are {@code < 1}, or if fewer then
-     * three int values are given, this method throws a
-     * {@link IllegalArgumentException}. If the given value is {@code null} this
-     * method throws a {@link NullPointerException}.
+     * {@inheritDoc} In the case of PRE_BATTLE, the given input sets the stack
+     * size of the ENDURANCE, EVASION, and OPPOSITION statuses applied by this
+     * skill equal to the first three respective given int values. If any of the
+     * first three given values are {@code < 1}, or if fewer then three int
+     * values are given, this method throws a {@link IllegalArgumentException}.
+     * If the given value is {@code null} this method throws a
+     * {@link NullPointerException}.
      */
     @Override // from SkillLibrary
     public Skill get(int... vars) {
@@ -57,6 +57,8 @@ public enum SkillLibrary {
           .addEffect(StatusLibrary.ENDURANCE.modify().setStackSize(vars[0]).build())
           .addEffect(StatusLibrary.EVASION.modify().setStackSize(vars[1]).build())
           .addEffect(StatusLibrary.OPPOSITION.modify().setStackSize(vars[2]).build())
+          .addEffect(StatusLibrary.FATIGUE.get())
+          .addEffect(StatusLibrary.STAGGER.get())
           .build();
     }
   },
