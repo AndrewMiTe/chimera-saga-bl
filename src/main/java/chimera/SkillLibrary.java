@@ -70,21 +70,25 @@ public enum SkillLibrary {
   
   /**
    * Returns a new copy of the skill the enumerated object represents.
+   * 
    * @return the new skill.
    */
   abstract public Skill get();
   
   /**
    * Returns a new copy of the skill the enumerated object represents with the
-   * given value setting the magnitude of the effect it applies. This method
-   * should throw an {@link IllegalArgumentException} if the given value is < 1. 
+   * given value setting the magnitude of the effect it applies. For some
+   * skills, this method is no different then calling {@link #get()}. This method
+   * should throw an {@link IllegalArgumentException} if the given value is < 1.
+   * 
    * @return the new status.
    */
   abstract public Skill get(int stacks);
   
   /**
    * Returns a SkillBuilder object for making a skill whose defaults match the
-   * skill returned from {@link #get()}. 
+   * skill returned from {@link #get()}.
+   *  
    * @return a builder for modifying this status.
    */
   public SkillBuilder modify() {
@@ -94,6 +98,7 @@ public enum SkillLibrary {
   /**
    * Returns a SkillBuilder object for making a skill whose defaults match the
    * skill returned from {@link #get(int)}.
+   * 
    * @return a builder for modifying this status.
    */
   public SkillBuilder modify(int stacks) {
