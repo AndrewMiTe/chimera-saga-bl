@@ -31,7 +31,36 @@ import core.SkillBuilder;
 import core.Target;
 
 public enum SkillLibrary {
-  
+
+  /**
+   * A preparatory that establishes the fighters primary defenses directly
+   * before the battle begins.
+   */
+  PRE_BATTLE_DEFENSES {
+    @Override // from SkillLibrary
+    public Skill get() {return get(2, 2, 2);}
+
+    /**
+     * {@inheritDoc} In the case of PRE_BATTLE_DEFENSES, the given input sets
+     * the stack size of the ENDURANCE, EVASION, and OPPOSITION statuses applied
+     * by this skill equal to the first three respective given int values. If
+     * any of the first three given values are {@code < 1}, or if fewer then
+     * three int values are given, this method throws a
+     * {@link IllegalArgumentException}. If the given value is {@code null} this
+     * method throws a {@link NullPointerException}.
+     */
+    @Override // from SkillLibrary
+    public Skill get(int... vars) {
+      return Skill.builder("PreBattle Defenses")
+          .setDescription("Establishes your defenses before the battle begins.")
+          .setAsPreBattleSkill()
+          .addEffect(StatusLibrary.ENDURANCE.modify().setStackSize(vars[0]).build())
+          .addEffect(StatusLibrary.EVASION.modify().setStackSize(vars[1]).build())
+          .addEffect(StatusLibrary.OPPOSITION.modify().setStackSize(vars[2]).build())
+          .build();
+    }
+  },
+
   /**
    * An attacking skill that inflicts a wound on the closest enemy if it doesn't
    * have enough stacks of the evasion status.
