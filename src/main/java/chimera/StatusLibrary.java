@@ -24,6 +24,9 @@
 
 package chimera;
 
+import java.time.Duration;
+import java.util.function.Predicate;
+
 import core.Fighter;
 import core.Status;
 import core.StatusBuilder;
@@ -103,6 +106,38 @@ public enum StatusLibrary {
           .setAsInfinite()
           .setStackable(true)
           .build();
+    }
+  },
+
+  /**
+   * A status that decrements the owners evasion and opposition and refreshes 
+   * its duration whenever it is up for removal. This represents the fatigue of
+   * fighting and ensures that fighters will be defeated, and thus the battle
+   * will end. 
+   */
+  FATIGUE {
+    @Override // from StatusLibrary
+    public Status get() {
+      return Status.builder("Fatigue")
+          .setDescription("Removes your evasion and opposition over time.")
+          .setDuration(Duration.ofSeconds(6))
+          .setStackable(false)
+          .setRemoveCondition(new RemoveCondition())
+          .build();
+    }
+    class RemoveCondition implements Predicate<Fighter> {
+      @Override // from Predicate
+      public boolean test(Fighter owner) {
+        if (owner.hasStatus(EVASION.get())) {
+          owner.getStatus(EVASION.get()).removeStacks(1);
+        }
+        if (owner.hasStatus(OPPOSITION.get())) {
+          owner.getStatus(OPPOSITION.get()).removeStacks(1);
+        }
+        Status fatigue = owner.getStatus(FATIGUE.get());
+        fatigue.combineWith(new Status(fatigue));
+        return false;
+      }
     }
   },
 
@@ -210,13 +245,15 @@ public enum StatusLibrary {
 
   /**
    * Returns a new copy of the status the enumerated object represents.
+   * 
    * @return the new status.
    */
   abstract public Status get();
   
   /**
    * Returns a StatusBuilder object for making a status whose defaults match the
-   * status returned from get(). 
+   * status returned from get().
+   *  
    * @return a builder for modifying this status.
    */
   public StatusBuilder modify() {
