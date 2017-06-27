@@ -39,13 +39,22 @@ public enum SkillLibrary {
   STRIKE_EVADABLE {
     @Override // from SkillLibrary
     public Skill get() {return get(1);}
+
+    /**
+     * {@inheritDoc} In the case of STRIKE_EVADABLE, the given input sets the
+     * stack size of the {@link StatusLibrary.WOUND_EVADABLE} status inflicted
+     * by this skill equal to the first given int value. If the first given
+     * value is {@code < 1}, this method throws a
+     * {@link IllegalArgumentException}. If the given value is {@code null} this
+     * method throws a {@link NullPointerException}.
+     */
     @Override // from SkillLibrary
-    public Skill get(int stacks) {
+    public Skill get(int... vars) {
       return Skill.builder("Evadable Strike")
           .setDescription("An attack that can be evaded but not opposed.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
-          .addEffect(StatusLibrary.WOUND_EVADABLE.modify().setStackSize(stacks).build())
+          .addEffect(StatusLibrary.WOUND_EVADABLE.modify().setStackSize(vars[0]).build())
           .build();
     }
   },
@@ -57,13 +66,22 @@ public enum SkillLibrary {
   STRIKE_OPPOSABLE {
     @Override // from SkillLibrary
     public Skill get() {return get(1);}
+
+    /**
+     * {@inheritDoc} In the case of STRIKE_OPPOSABLE, the given input sets the
+     * stack size of the {@link StatusLibrary.WOUND_OPPOSABLE} status inflicted
+     * by this skill equal to the first given int value. If the first given
+     * value is {@code < 1}, this method throws a
+     * {@link IllegalArgumentException}. If the given value is {@code null} this
+     * method throws a {@link NullPointerException}.
+     */
     @Override // from SkillLibrary
-    public Skill get(int stacks) {
+    public Skill get(int... vars) {
       return Skill.builder("Opposable Strike")
           .setDescription("An attack that can be opposed but not evaded.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
-          .addEffect(StatusLibrary.WOUND_OPPOSABLE.modify().setStackSize(stacks).build())
+          .addEffect(StatusLibrary.WOUND_OPPOSABLE.modify().setStackSize(vars[0]).build())
           .build();
     }
   };
@@ -77,13 +95,17 @@ public enum SkillLibrary {
   
   /**
    * Returns a new copy of the skill the enumerated object represents with the
-   * given value setting the magnitude of the effect it applies. For some
-   * skills, this method is no different then calling {@link #get()}. This method
-   * should throw an {@link IllegalArgumentException} if the given value is < 1.
+   * given values setting various parameters of the skill. What parameters are
+   * modifiable with this method is specific to the skill. For some skills, this
+   * method is no different then calling {@link #get()}.
    * 
+   * @param vars
+   *          variables for modifying the default status.
    * @return the new status.
    */
-  abstract public Skill get(int stacks);
+  public Skill get(int... vars) {
+    return get();
+  }
   
   /**
    * Returns a SkillBuilder object for making a skill whose defaults match the
@@ -99,10 +121,11 @@ public enum SkillLibrary {
    * Returns a SkillBuilder object for making a skill whose defaults match the
    * skill returned from {@link #get(int)}.
    * 
+   * @param vars variables for modifying the default status.
    * @return a builder for modifying this status.
    */
-  public SkillBuilder modify(int stacks) {
-    return new SkillBuilder(this.get(stacks));
+  public SkillBuilder modify(int... vars) {
+    return new SkillBuilder(this.get(vars));
   }
 
 }
