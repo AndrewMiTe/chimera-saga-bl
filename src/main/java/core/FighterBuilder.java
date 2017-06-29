@@ -103,8 +103,8 @@ public class FighterBuilder {
     this.team = new Team() {};
     this.skillList = new ArrayList<>();
     this.closeRange = 0;
-    this.isAllyCase = (a, b) -> a.getTeam() == b.getTeam();
-    this.isEnemyCase = (a, b) -> a.getTeam() != a.getTeam();
+    this.isAllyCase = (a, b) -> a.getTeam().equals(b.getTeam());
+    this.isEnemyCase = (a, b) -> !a.getTeam().equals(a.getTeam());
     this.listeners = new ArrayList<>();
   }
 
@@ -225,8 +225,9 @@ public class FighterBuilder {
    * BiPredicate object that compares two fighters, the Fighter object to be
    * built and another fighter. If the test method for the BiPredicate object
    * returns true, the two fighter's are considered to be allies from the
-   * perspective of the fighter to be built. The default is a case that returns
-   * {@code true} if the fighters have identical team parameters.
+   * perspective of the fighter to be built.  The default is a case that returns
+   * {@code true} if the teams of the two fighters are not equal such that
+   * {@code !team1.equals(team2)}.
    * 
    * @param isAllyCase
    * @return this object.
@@ -244,7 +245,8 @@ public class FighterBuilder {
    * built and another fighter. If the test method for the BiPredicate object
    * returns true, the two fighter's are considered to be enemies from the
    * perspective of the fighter to be built. The default is a case that returns
-   * {@code true} if the fighters don't have identical team parameters.
+   * {@code true} if the teams of the two fighters are equal such that
+   * {@code team1.equals(team2)}.
    * 
    * @param isEnemyCase
    * @return this object
