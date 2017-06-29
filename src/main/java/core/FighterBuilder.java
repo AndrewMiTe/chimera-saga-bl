@@ -180,12 +180,14 @@ public class FighterBuilder {
    * 
    * @param skill
    *          skill to be added. Cannot be {@code null}.
+   * @return this object.
    * @see FighterBuilder#addSkill
    */
-  public void addSkill(Skill skill) {
+  public FighterBuilder addSkill(Skill skill) {
     if (skill == null)
       throw new NullPointerException("skill: null");
     skillList.add(skill);
+    return this;
   }
 
   /**
@@ -193,11 +195,12 @@ public class FighterBuilder {
    * 
    * @param skill
    *          the skill to be removed.
-   * @return {@code true} if the skill was successfully removed.
+   * @return this object.
    * @see FighterBuilber#addSkill
    */
-  public boolean removeSkill(Skill skill) {
-    return skillList.remove(skill);
+  public FighterBuilder removeSkill(Skill skill) {
+    skillList.remove(skill);
+    return this;
   }
 
   /**
