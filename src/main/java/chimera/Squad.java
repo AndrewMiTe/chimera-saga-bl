@@ -38,19 +38,19 @@ import core.Team;
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Squad implements Team {
-  
+
   /**
    * The set of fighters in the squad.
    */
   private Set<Fighter> fighters;
-  
+
   /**
-   * The battlefield the squad occupies. When the squad is not in on a 
+   * The battlefield the squad occupies. When the squad is not in on a
    * battlefield the value should be {@code null}. While not {@code null},
-   * fighters are not permitted to join another squad and leave this one.  
+   * fighters are not permitted to join another squad and leave this one.
    */
   Battle battle;
-  
+
   /**
    * Initializes an empty squad.
    */
@@ -58,12 +58,13 @@ public class Squad implements Team {
     this.fighters = new HashSet<>();
     this.battle = null;
   }
-  
+
   /**
-   * Removes the given fighter from its current team and adds it to this one
-   * if the squad is not in a battle.
+   * Removes the given fighter from its current team and adds it to this one if
+   * the squad is not in a battle.
    * 
-   * @param newFighter the fighter to be added. Cannot be {@code null}.
+   * @param newFighter
+   *          the fighter to be added. Cannot be {@code null}.
    * @return {@code true} if the fighter was successfully assigned to the squad.
    */
   public boolean addFighter(Fighter newFighter) {
@@ -91,11 +92,12 @@ public class Squad implements Team {
    *          in the squad.
    */
   private boolean removeFighter(Fighter oldFighter) {
-    if (oldFighter == null) 
+    if (oldFighter == null)
       throw new NullPointerException("Fighter: null");
-    if (!fighters.contains(oldFighter)) 
+    if (!fighters.contains(oldFighter))
       throw new NoSuchElementException("Fighter: not found in squad");
-    if (battle != null) return false;
+    if (battle != null)
+      return false;
     fighters.remove(oldFighter);
     oldFighter.setTeam(null);
     return true;
