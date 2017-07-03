@@ -463,7 +463,36 @@ public class Fighter implements Actor {
     return listeners.remove(listener);
   }
 
-  public boolean executeSkill(Skill skill) {
+  /**
+   * Attempts to execute a skill owned by this fighter. Returns true if the
+   * Skill or any sub-Skill was successfully executed. The order in which the
+   * given skill is executed is as such:<br><ol>
+   * <li>The battlefield is checked for any valid targets for the skill passed to
+   *    the method. Valid targets match the enumerated Target value of the Skill
+   *    object and have all of the matching Status objects found in the Skill
+   *    object's requirements. If no targets are found, then the skill fails and
+   *    this method returns false.</li>
+   * <li>All Skill objects found in the list of sub-skills is executed
+   *    recursively using this method. If all calls return false, then the skill
+   *    fails and this method returns false. If there are no sub-skills, the
+   *    passed skill succeeds and applies its actions to all or one of the valid
+   *    targets, depending on the enumerated target value of the skill. This
+   *    method would then return true.</li>
+   * <li>If any but not all sub-skill executions return true, this skill fails to
+   *    apply its actions but returns true. If all sub-skill executions return
+   *    true, this skill succeeds and applies its actions to all or one of the
+   *    valid targets, depending on the enumerated target value of the skill. 
+   *    This method would then return true. </li></ol>
+   * Note that valid targets that meet the requirements are checked both before
+   * and after sub-skills are executed. It is possible to create a skill that
+   * can never apply its actions. This will be so if your sub-skills apply
+   * Status objects that remove any of the Status objects that the primary skill
+   * requires, or if it applies a status that defeats.
+   * 
+   * @param  skill the Skill object attempting to be executed.
+   * @return true if the skill or any sub-skill successfully executed.
+   */
+  protected boolean executeSkill(Skill skill) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
