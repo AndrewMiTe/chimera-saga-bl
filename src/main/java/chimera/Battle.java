@@ -25,12 +25,7 @@
 package chimera;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.OptionalInt;
 import java.util.Set;
-
-import core.Battlefield;
-import core.Fighter;
 
 /**
  * Location of a battle where teams of fighters compete until the battle's
