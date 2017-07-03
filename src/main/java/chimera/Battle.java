@@ -39,7 +39,7 @@ import core.Fighter;
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
-public class Battleground implements Battlefield {
+public class Battle {
 
   /**
    * The list of fighters 
@@ -49,14 +49,14 @@ public class Battleground implements Battlefield {
   /**
    * Initializes an empty terrain.
    */
-  public Battleground() {
+  public Battle() {
     this.squads = new HashSet<>();
   }
   
   /**
    * Initializes a terrain occupied by squads.
    */
-  public Battleground(Squad... squads) {
+  public Battle(Squad... squads) {
     if (squads != null) for (Squad s : squads) addSquad(s);
   }
   
