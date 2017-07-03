@@ -158,16 +158,17 @@ public class FighterBuilder {
   /**
    * Sets the team parameter for which the fighter belongs to. By default,
    * fighters with the same team object recognize each other as allies and
-   * fighters with all other teams as enemies. The default team value is a
-   * unique Team object.
+   * fighters with all other teams as enemies. Setting the parameter to
+   * {@code null} results in a team value of a  unique Team object such that 
+   * {@code fightersTeam.equals(otherTeam)} should always returns {@code false}
+   * unless if {@code otherTeam} is received from the same fighter.   
    * 
    * @param team
-   *          Team that the unit belongs to. Cannot be {@code null}.
+   *          Team that the unit belongs to.
    * @return this object.
    */
   public FighterBuilder setTeam(Team team) {
-    if (team == null)
-      throw new NullPointerException("name: null");
+    if (team == null) team = new Team() {};
     this.team = team;
     return this;
   }

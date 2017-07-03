@@ -109,8 +109,6 @@ public class Fighter implements Actor {
     if (name == null)
       throw new NullPointerException("name: null");
     this.name = name;
-    if (team == null)
-      throw new NullPointerException("team: null");
     this.team = team;
     this.statusSet = new HashSet<>();
     if (skillList != null && skillList.contains(null)) {
@@ -176,8 +174,11 @@ public class Fighter implements Actor {
    * Assigns the given team to the team property.
    * 
    * @param team
+   *          Team object to set.
+   * @see FighterBuilder#setTeam
    */
   public void setTeam(Team team) {
+    if (team == null) team = new Team() {};
     this.team = team;
   }
 

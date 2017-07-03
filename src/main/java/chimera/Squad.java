@@ -25,6 +25,7 @@
 package chimera;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import core.Fighter;
@@ -44,35 +45,56 @@ public class Squad implements Team {
   private Set<Fighter> fighters;
   
   /**
+   * The battlefield the squad occupies. When the squad is not in on a 
+   * battlefield the value should be {@code null}. While not {@code null},
+   * fighters are not permitted to join another squad and leave this one.  
+   */
+  Battle battle;
+  
+  /**
    * Initializes an empty squad.
    */
   public Squad() {
     this.fighters = new HashSet<>();
+    this.battle = null;
   }
   
   /**
-   * Removes the given fighter from its current squad and adds it to this one.
+   * Removes the given fighter from its current team and adds it to this one
+   * if the squad is not in a battle.
    * 
-   * @param newFighter the fighter to be added.
+   * @param newFighter the fighter to be added. Cannot be {@code null}.
    * @return {@code true} if the fighter was successfully assigned to the squad.
    */
   public boolean addFighter(Fighter newFighter) {
+    if (newFighter == null) throw new NullPointerException("Fighter: null");
+    if (battle != null) return false;
     Team oldTeam = newFighter.getTeam();
-    if ((oldTeam != null) && (oldTeam instanceof Squad))
-      ((Squad)newFighter.getTeam()).removeFighter(newFighter);
+    if (oldTeam instanceof Squad)
+      if (!((Squad)newFighter.getTeam()).removeFighter(newFighter)) return false;
     if (fighters.add(newFighter)) return false;
     newFighter.setTeam(this);
     return true;
   }
 
   /**
-   * Removes the given fighter from this squad and sets its team to {@code null}
-   * if successful.
+   * Returns {@code true} if the fighter can be removed from the squad and added
+   * to another. Removes the given fighter from this squad and sets its team to
+   * {@code null} if successful.
    * 
-   * @param oldFighter the fighter to be removed.
+   * @param oldFighter
+   *          the fighter to be removed. Cannot be {@code null}. Must be found
+   *          in the squad.
    */
-  private void removeFighter(Fighter oldFighter) {
-    if (fighters.remove(oldFighter)) oldFighter.setTeam(null);
+  private boolean removeFighter(Fighter oldFighter) {
+    if (oldFighter == null) 
+      throw new NullPointerException("Fighter: null");
+    if (!fighters.contains(oldFighter)) 
+      throw new NoSuchElementException("Fighter: not found in squad");
+    if (battle != null) return false;
+    fighters.remove(oldFighter);
+    oldFighter.setTeam(null);
+    return true;
   }
-  
+
 }
