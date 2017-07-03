@@ -29,7 +29,7 @@ import java.util.Set;
 
 /**
  * Location of a battle where teams of fighters compete until the battle's
- * conclusion. Battlefield objects dictate the relative distance between
+ * conclusion. Battle objects dictate the relative distance between
  * fighters for determining the usability of skills.
  * 
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
@@ -42,14 +42,14 @@ public class Battle {
   private Set<Squad> squads;
   
   /**
-   * Initializes an empty terrain.
+   * Initializes an empty battle.
    */
   public Battle() {
     this.squads = new HashSet<>();
   }
   
   /**
-   * Initializes a terrain occupied by squads.
+   * Initializes a battle occupied by squads.
    */
   public Battle(Squad... squads) {
     if (squads != null) for (Squad s : squads) addSquad(s);
