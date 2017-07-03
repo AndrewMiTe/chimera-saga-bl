@@ -67,12 +67,16 @@ public class Squad implements Team {
    * @return {@code true} if the fighter was successfully assigned to the squad.
    */
   public boolean addFighter(Fighter newFighter) {
-    if (newFighter == null) throw new NullPointerException("Fighter: null");
-    if (battle != null) return false;
+    if (newFighter == null)
+      throw new NullPointerException("Fighter: null");
+    if (battle != null)
+      return false;
     Team oldTeam = newFighter.getTeam();
     if (oldTeam instanceof Squad)
-      if (!((Squad)newFighter.getTeam()).removeFighter(newFighter)) return false;
-    if (fighters.add(newFighter)) return false;
+      if (!((Squad) newFighter.getTeam()).removeFighter(newFighter))
+        return false;
+    if (fighters.add(newFighter))
+      return false;
     newFighter.setTeam(this);
     return true;
   }
