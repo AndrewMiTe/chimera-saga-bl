@@ -73,23 +73,5 @@ public class Battle {
     }
     return false;
   }
-  
-  @Override // from Battlefield
-  public List<Fighter> getFighters() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override // from Battlefield
-  public boolean hasFighter(Fighter fighter) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override // from Battlefield
-  public OptionalInt getDistance(Fighter fighterOne, Fighter fighterTwo) {
-    // TODO Auto-generated method stub
-    return null;
-  }
 
 }
