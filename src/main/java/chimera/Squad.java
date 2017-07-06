@@ -45,9 +45,9 @@ public class Squad implements Team {
   private Set<Fighter> fighters;
 
   /**
-   * The battlefield the squad occupies. When the squad is not in on a
-   * battlefield the value should be {@code null}. While not {@code null},
-   * fighters are not permitted to join another squad and leave this one.
+   * The battle the squad is engaged in. When the squad is not in a battle the
+   * value should be {@code null}. While not {@code null}, fighters are not 
+   * permitted to join another squad and leave this one.
    */
   Battle battle;
 
@@ -58,7 +58,7 @@ public class Squad implements Team {
     this.fighters = new HashSet<>();
     this.battle = null;
   }
-
+  
   /**
    * Removes the given fighter from its current team and adds it to this one if
    * the squad is not in a battle.
@@ -85,7 +85,8 @@ public class Squad implements Team {
   /**
    * Returns {@code true} if the fighter can be removed from the squad and added
    * to another. Removes the given fighter from this squad and sets its team to
-   * {@code null} if successful.
+   * {@code null} if successful. This operation will fail and return
+   * {@code false} if the squad is assigned to a battle.
    * 
    * @param oldFighter
    *          the fighter to be removed. Cannot be {@code null}. Must be found
@@ -103,4 +104,44 @@ public class Squad implements Team {
     return true;
   }
 
+  /**
+   * Engages this squad in a battle and returns {@code true} if the squad is not
+   * already assigned to a battle. Attempting to assign the squad to 
+   * {@code null} will throw a {@link NullPointerException}. 
+   * 
+   * @param battle
+   *          the battle to engage the squad in.
+   * @return {@code true} if engagement is successful. Cannot be {@code null}.
+   */
+  protected boolean joinBattle(Battle battle) {
+    if (battle == null) 
+      throw new NullPointerException("Battle: null");
+    if (this.battle != null) 
+      return false;
+    this.battle = battle;
+    return true;
+  }
+  
+  /**
+   * Removes itself from its current battle the returns {@code true} if the
+   * squad can successfully leave the battle. Always returns {@code false} if
+   * the squad is not already assigned to a battle.  
+   * 
+   * @return {@code true} if the squad successfully left its battle.
+   */
+  protected boolean leaveBattle() {
+    if (battle == null) return false;
+    battle = null;
+    return true;
+  }
+  
+  /**
+   * Returns {@code true} if the squad is engaged in a battle.
+   * 
+   * @return {@code true} if the squad is engaged in a battle.
+   */
+  public boolean engagedInBattle() {
+    return battle != null;
+  }
+  
 }
