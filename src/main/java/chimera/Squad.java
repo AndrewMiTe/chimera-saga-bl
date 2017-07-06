@@ -92,7 +92,7 @@ public class Squad implements Team {
    *          the fighter to be removed. Cannot be {@code null}. Must be found
    *          in the squad.
    */
-  private boolean removeFighter(Fighter oldFighter) {
+  public boolean removeFighter(Fighter oldFighter) {
     if (oldFighter == null)
       throw new NullPointerException("Fighter: null");
     if (!fighters.contains(oldFighter))
