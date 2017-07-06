@@ -24,7 +24,9 @@
 
 package chimera;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -103,6 +105,15 @@ public class Squad implements Team {
     oldFighter.setTeam(null);
     return true;
   }
+  
+  /**
+   * Returns a list of the fighters in the squad.
+   * 
+   * @return list of fighters.
+   */
+  public List<Fighter> getFighters() {
+    return new ArrayList<>(fighters);
+  }
 
   /**
    * Engages this squad in a battle and returns {@code true} if the squad is not
@@ -134,7 +145,7 @@ public class Squad implements Team {
     battle = null;
     return true;
   }
-  
+
   /**
    * Returns {@code true} if the squad is engaged in a battle.
    * 
