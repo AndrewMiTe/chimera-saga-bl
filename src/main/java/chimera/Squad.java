@@ -145,14 +145,14 @@ public class Squad implements Team {
     battle = null;
     return true;
   }
-
+  
   /**
    * Returns {@code true} if the squad is engaged in a battle.
    * 
    * @return {@code true} if the squad is engaged in a battle.
    */
-  public boolean engagedInBattle() {
+  public boolean isInBattle() {
     return battle != null;
   }
-  
+
 }
