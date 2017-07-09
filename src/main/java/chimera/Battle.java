@@ -52,6 +52,7 @@ public class Battle {
    * Initializes a battle occupied by squads.
    */
   public Battle(Squad... squads) {
+    this();
     if (squads != null) for (Squad s : squads) addSquad(s);
   }
   
