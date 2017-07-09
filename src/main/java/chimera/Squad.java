@@ -62,6 +62,18 @@ public class Squad implements Team {
   }
   
   /**
+   * Initializes a squad with fighters. Throws a {@link NullPointerException} if
+   * the given list is a {@code null}.
+   * 
+   * @param fighters list of fighter to join the new squad. Cannot be a null
+   * list. 
+   */
+  public Squad(Fighter...fighters) {
+    this();
+    for (Fighter f : fighters) addFighter(f);
+  }
+  
+  /**
    * Removes the given fighter from its current team and adds it to this one if
    * the squad is not in a battle.
    * 
