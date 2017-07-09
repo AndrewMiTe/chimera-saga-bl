@@ -37,6 +37,36 @@ public enum FighterLibrary {
           .addSkill(SkillLibrary.STRIKE_EVADABLE.get())
           .build();
     }
+  },
+  
+  JEFFERSON {
+    @Override // from FighterLibrary
+    public Fighter get() {
+      return new FighterBuilder("Jefferson")
+          .addSkill(SkillLibrary.PRE_BATTLE.get(4, 3, 2))
+          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get())
+          .build();
+    }
+  },
+  
+  ADAMS {
+    @Override // from FighterLibrary
+    public Fighter get() {
+      return new FighterBuilder("Adams")
+          .addSkill(SkillLibrary.PRE_BATTLE.get(4, 2, 3))
+          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get())
+          .build();
+    }
+  },
+  
+  HAMILTON {
+    @Override // from FighterLibrary
+    public Fighter get() {
+      return new FighterBuilder("Hamilton")
+          .addSkill(SkillLibrary.PRE_BATTLE.get(2, 4, 3))
+          .addSkill(SkillLibrary.STRIKE_EVADABLE.get())
+          .build();
+    }
   };
   
   public abstract Fighter get();
