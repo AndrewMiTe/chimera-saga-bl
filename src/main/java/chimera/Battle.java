@@ -79,4 +79,13 @@ public class Battle {
     return false;
   }
 
+  /**
+   * Returns a list of squads in the battle.
+   * 
+   * @return list of squads in battle.
+   */
+  public List<Squad> getSquads() {
+    return new ArrayList<>(squads);
+  }
+
 }
