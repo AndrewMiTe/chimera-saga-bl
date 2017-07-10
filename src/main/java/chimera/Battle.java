@@ -25,7 +25,9 @@
 package chimera;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * Location of a battle where teams of fighters compete until the battle's
@@ -36,6 +38,7 @@ import java.util.Set;
  */
 public class Battle {
 
+  private static final Set<Squad> ArrayList = null;
   /**
    * The list of fighters 
    */
@@ -49,18 +52,24 @@ public class Battle {
   }
   
   /**
-   * Initializes a battle occupied by squads.
+   * Initializes a battle occupied by squads. Throws a 
+   * {@link NullPointerException} if any of the given values are {@code null} or
+   * if the given is an array with a {@code null} element. 
+   * 
+   * @param squads
+   *          squad(s) to be added. Cannot be {@code null} or an array with a 
+   *          {@code null} element.
    */
   public Battle(Squad... squads) {
     this();
-    if (squads != null) for (Squad s : squads) addSquad(s);
+    for (Squad s : squads) addSquad(s);
   }
   
   /**
    * Adds a squad to the battleground. Given squads that are {@code null} are
    * ignored.
    * 
-   * @param newSquad the squad to be added.
+   * @param newSquad the squad to be added. Cannot be {@code null}.
    * @return {@code true} if the squad was successfully added.
    */
   public boolean addSquad(Squad newSquad) {
