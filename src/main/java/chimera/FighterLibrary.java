@@ -27,6 +27,11 @@ package chimera;
 import core.Fighter;
 import core.FighterBuilder;
 
+/**
+ * A library of pre-generated fighters used primarily for testing.
+ * 
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ */
 public enum FighterLibrary {
   
   WASHINGTON {
@@ -69,6 +74,11 @@ public enum FighterLibrary {
     }
   };
   
+  /**
+   * Returns the fighter the enumerated value represents.
+   * 
+   * @return the fighter object.
+   */
   public abstract Fighter get();
 
 }

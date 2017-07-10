@@ -26,8 +26,19 @@ package chimera;
 
 import core.Fighter;
 
+/**
+ * A class to test how various components integrate.
+ * 
+ * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ */
 public class test {
 
+  /**
+   * This method begins the test.
+   * 
+   * @param args
+   *          command-line arguments.
+   */
   public static void main(String[] args) {
     Fighter washington = FighterLibrary.WASHINGTON.get();
     System.out.println("Done.");
