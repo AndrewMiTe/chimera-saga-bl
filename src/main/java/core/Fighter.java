@@ -496,5 +496,10 @@ public class Fighter implements Actor {
   protected boolean executeSkill(Skill skill) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
+  
+  @Override // from Object
+  public String toString() {
+    return name;
+  }
 
 }
