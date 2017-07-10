@@ -104,7 +104,7 @@ public class FighterBuilder {
     this.skillList = new ArrayList<>();
     this.closeRange = 0;
     this.isAllyCase = (a, b) -> a.getTeam().equals(b.getTeam());
-    this.isEnemyCase = (a, b) -> !a.getTeam().equals(a.getTeam());
+    this.isEnemyCase = (a, b) -> !a.getTeam().equals(b.getTeam());
     this.listeners = new ArrayList<>();
   }
 
