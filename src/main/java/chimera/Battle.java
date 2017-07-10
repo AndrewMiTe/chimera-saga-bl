@@ -65,14 +65,15 @@ public class Battle {
   }
   
   /**
-   * Adds a squad to the battleground. Given squads that are {@code null} are
-   * ignored.
+   * Adds a squad to the battleground. Throws a {@link NullPointerException}
+   * if squad is {@code null}.
    * 
-   * @param newSquad the squad to be added. Cannot be {@code null}.
+   * @param newSquad 
+   *          the squad to be added. Cannot be {@code null}.
    * @return {@code true} if the squad was successfully added.
    */
   public boolean addSquad(Squad newSquad) {
-    if (newSquad != null) {
+    if (newSquad.joinBattle(this)) {
       return squads.add(newSquad);
     }
     return false;
