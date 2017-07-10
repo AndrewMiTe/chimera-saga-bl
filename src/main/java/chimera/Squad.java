@@ -90,7 +90,7 @@ public class Squad implements Team {
     if (oldTeam instanceof Squad)
       if (!((Squad) newFighter.getTeam()).removeFighter(newFighter))
         return false;
-    if (fighters.add(newFighter))
+    if (!fighters.add(newFighter))
       return false;
     newFighter.setTeam(this);
     return true;
