@@ -37,8 +37,7 @@ import java.util.ArrayList;
  * @author Andrew M. Teller(https://github.com/AndrewMiTe)
  */
 public class Battle {
-
-  private static final Set<Squad> ArrayList = null;
+  
   /**
    * The list of fighters 
    */
