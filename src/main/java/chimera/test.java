@@ -24,7 +24,7 @@
 
 package chimera;
 
-import core.Fighter;
+import static chimera.FighterLibrary.*;
 
 /**
  * A class to test how various components integrate.
@@ -40,7 +40,9 @@ public class test {
    *          command-line arguments.
    */
   public static void main(String[] args) {
-    Fighter washington = FighterLibrary.WASHINGTON.get();
+    Squad squadOne = new Squad(WASHINGTON.get(), JEFFERSON.get());
+    Squad squadTwo = new Squad(ADAMS.get(), HAMILTON.get());
+    Battle theBattle = new Battle(squadOne, squadTwo);
     System.out.println("Done.");
   }
 
