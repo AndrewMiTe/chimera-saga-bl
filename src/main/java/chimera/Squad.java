@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import core.Fighter;
@@ -165,6 +166,10 @@ public class Squad implements Team {
    */
   public boolean isInBattle() {
     return battle != null;
+  }
+
+  public Optional<Battle> getBattle() {
+    return Optional.ofNullable(battle);
   }
 
 }
