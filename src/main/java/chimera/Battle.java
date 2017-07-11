@@ -98,6 +98,24 @@ public class Battle {
   }
   
   /**
+   * Starts the battle. Squads will fight until all but one squad is defeated,
+   * until only one squad is defeated, or until the battle exceeds the duration
+   * of its timeout property. Squads can continue to be added and removed from
+   * the battle. Newly added squads will be prep'ed for battle and placed into
+   * the turn order. Battles without fighters, battles where no fighter can
+   * identify an enemy fighter, or battle that have already been started will
+   * fail to start and return {@code false}.  
+   * 
+   * @return {@code true} if the battle successfully started.
+   */
+  public boolean start() {
+    if (turnOrder != null || squads.isEmpty())
+      return false;
+    turnOrder = new TurnOrder();
+    return true;
+  }
+  
+  /**
    * return {@code true} when the battle has been started and is not finished.
    */
   public boolean isInProgress() {
