@@ -29,7 +29,7 @@ import static chimera.FighterLibrary.*;
 /**
  * A class to test how various components integrate.
  * 
- * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public class test {
 

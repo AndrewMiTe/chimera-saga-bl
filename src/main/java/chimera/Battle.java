@@ -37,7 +37,7 @@ import java.util.ArrayList;
  * conclusion. Battle objects dictate the relative distance between
  * fighters for determining the usability of skills.
  * 
- * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public class Battle {
   

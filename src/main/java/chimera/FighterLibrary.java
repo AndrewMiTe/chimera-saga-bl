@@ -30,7 +30,7 @@ import core.FighterBuilder;
 /**
  * A library of pre-generated fighters used primarily for testing.
  * 
- * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public enum FighterLibrary {
   

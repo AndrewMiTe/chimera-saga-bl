@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * Tracks time within a battle and advances items that produce events as time
  * continues forward.
  * 
- * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public class TurnOrder {
 

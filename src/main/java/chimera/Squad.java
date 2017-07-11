@@ -38,7 +38,7 @@ import core.Team;
  * Groups fighters together and assigns fighters in the same squad as being on
  * the same team.
  * 
- * @author Andrew M. Teller(https://github.com/AndrewMiTe)
+ * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public class Squad implements Team {
 
