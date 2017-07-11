@@ -120,9 +120,7 @@ public class Squad implements Team {
   }
   
   /**
-   * Returns a list of the fighters in the squad.
-   * 
-   * @return list of fighters.
+   * @return list of fighters in the squad.
    */
   public List<Fighter> getFighters() {
     return new ArrayList<>(fighters);
@@ -160,14 +158,18 @@ public class Squad implements Team {
   }
   
   /**
-   * Returns {@code true} if the squad is engaged in a battle.
-   * 
    * @return {@code true} if the squad is engaged in a battle.
    */
   public boolean isInBattle() {
     return battle != null;
   }
 
+  /**
+   * Returns an {@link Optional} of the battle the squad is in. Returns an empty
+   * Optional object if the squad is currently not in a battle.  
+   * 
+   * @return the battle the squad is in.
+   */
   public Optional<Battle> getBattle() {
     return Optional.ofNullable(battle);
   }
