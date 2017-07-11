@@ -127,6 +127,13 @@ public class Squad implements Team {
   }
 
   /**
+   * @return {@code true} if the squad has no fighters.
+   */
+  public boolean isEmpty() {
+    return fighters.isEmpty();
+  }
+  
+  /**
    * Engages this squad in a battle and returns {@code true} if the squad is not
    * already assigned to a battle. Attempting to assign the squad to 
    * {@code null} will throw a {@link NullPointerException}. 
