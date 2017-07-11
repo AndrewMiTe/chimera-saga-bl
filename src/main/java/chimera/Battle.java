@@ -27,6 +27,9 @@ package chimera;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import core.TurnOrder;
+
 import java.util.ArrayList;
 
 /**
@@ -42,6 +45,12 @@ public class Battle {
    * The list of fighters 
    */
   private Set<Squad> squads;
+  
+  /**
+   * Tracks turn items, the current time, and indicates that the battle has been
+   * started when not {@code null}.
+   */
+  private TurnOrder turnOrder;
   
   /**
    * Initializes an empty battle.
@@ -86,6 +95,13 @@ public class Battle {
    */
   public List<Squad> getSquads() {
     return new ArrayList<>(squads);
+  }
+  
+  /**
+   * return {@code true} when the battle has been started and is not finished.
+   */
+  public boolean isInProgress() {
+    return turnOrder != null;
   }
 
 }
