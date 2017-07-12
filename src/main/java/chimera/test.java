@@ -26,6 +26,8 @@ package chimera;
 
 import static chimera.FighterLibrary.*;
 
+import core.Fighter;
+
 /**
  * A class to test how various components integrate.
  * 
@@ -43,7 +45,36 @@ public class test {
     Squad squadOne = new Squad(WASHINGTON.get(), JEFFERSON.get());
     Squad squadTwo = new Squad(ADAMS.get(), HAMILTON.get());
     Battle theBattle = new Battle(squadOne, squadTwo);
+    theBattle.getSquads().forEach(s -> s.getFighters().forEach(test::printRelations));
     System.out.println("Done.");
+  }
+
+  /**
+   * Used to output who in the same battle as the fighter is identified as an
+   * enemy and who is identified as an ally.
+   * 
+   * @param fighter
+   *          fighter who's relations are outputed.
+   */
+  private static void printRelations(Fighter fighter) {
+    System.out.print(fighter + ":");
+    if (fighter.getTeam() instanceof Squad) {
+      Squad fightersSquad = (Squad) fighter.getTeam();
+      if (fightersSquad.isInBattle()) {
+        Battle fightersBattle = fightersSquad.getBattle().get();
+        fightersBattle.getSquads().forEach(s -> s.getFighters().forEach(f -> {
+          System.out
+              .print(" " + f + "(" + (fighter.isAlly(f) ? "Ally" : "") + (fighter.isEnemy(f) ? "Enemy" : "") + ")");
+        }));
+        System.out.println();
+      } else {
+        System.out.println("Squad: ! in Battle");
+        return;
+      }
+    } else {
+      System.out.println("Team: ! Squad");
+      return;
+    }
   }
 
 }
