@@ -50,14 +50,13 @@ public enum StatusLibrary {
    */
   DEFEATED {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Defeated")
           .setDescription("You are unable to continue the fight.")
           .setAsInfinite()
           .setStackable(false)
           .setDefeating(true)
-          .addListener(new DefeatedHandler())
-          .build();
+          .addListener(new DefeatedHandler());
     }
     class DefeatedHandler implements StatusHandler {
       @Override // from StatusHandler
@@ -77,13 +76,12 @@ public enum StatusLibrary {
    */
   ENDURANCE {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Endurance")
           .setDescription("A primary defense allowing you to endure attacks.")
           .setAsInfinite()
           .setStackable(true)
-          .addListener(new EnduranceHandler())
-          .build();
+          .addListener(new EnduranceHandler());
     }
     class EnduranceHandler implements StatusHandler {
       @Override // from StatusHandler
@@ -101,12 +99,11 @@ public enum StatusLibrary {
    */
   EVASION {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Evasion")
           .setDescription("A primary defense allowing you to evade attacks.")
           .setAsInfinite()
-          .setStackable(true)
-          .build();
+          .setStackable(true);
     }
   },
 
@@ -118,13 +115,12 @@ public enum StatusLibrary {
    */
   FATIGUE {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Fatigue")
           .setDescription("Removes your evasion and opposition over time.")
           .setDuration(Duration.ofSeconds(6))
           .setStackable(false)
-          .setRemoveCondition(new RemoveCondition())
-          .build();
+          .setRemoveCondition(new RemoveCondition());
     }
     class RemoveCondition implements Predicate<Fighter> {
       @Override // from Predicate
@@ -150,12 +146,11 @@ public enum StatusLibrary {
    */
   OPPOSITION {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Opposition")
           .setDescription("A primary defense allowing you to oppose attacks.")
           .setAsInfinite()
-          .setStackable(true)
-          .build();
+          .setStackable(true);
     }
   },
   
@@ -168,13 +163,12 @@ public enum StatusLibrary {
    */
   STAGGER {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Stagger")
           .setDescription("The time it takes for you to act for the first time in battle.")
           .setDuration(Duration.ofMillis(ThreadLocalRandom.current().nextInt(3000)))
           .setStackable(true)
-          .setStunning(true)
-          .build();
+          .setStunning(true);
     }
   },
   
@@ -185,14 +179,13 @@ public enum StatusLibrary {
    */
   WOUND {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Wound")
           .setDescription("A lethal wound that either removes endurance or defeats.")
           .setAsInstant()
           .setStackable(true)
-          .addListener(new WoundHandler())
-          .build();
-    }
+          .addListener(new WoundHandler());
+      }
     class WoundHandler implements StatusHandler {
       public void onStatusApplication(Status wound) {
         Fighter target = wound.getOwner();
@@ -214,13 +207,12 @@ public enum StatusLibrary {
    */
   WOUND_EVADABLE {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Evadable Wound")
           .setDescription("A lethal wound that might defeat you if it is not evaded.")
           .setAsInstant()
           .setStackable(true)
-          .addListener(new WoundHandler())
-          .build();
+          .addListener(new WoundHandler());
     }
     class WoundHandler implements StatusHandler {
       public void onStatusApplication(Status wound) {
@@ -242,13 +234,12 @@ public enum StatusLibrary {
    */
   WOUND_OPPOSABLE {
     @Override // from StatusLibrary
-    public Status get() {
+    protected StatusBuilder builder() {
       return Status.builder("Opposable Wound")
           .setDescription("A lethal wound that might defeat you if it is not opposed.")
           .setAsInstant()
           .setStackable(true)
-          .addListener(new WoundHandler())
-          .build();
+          .addListener(new WoundHandler());
     }
     class WoundHandler implements StatusHandler {
       public void onStatusApplication(Status wound) {
@@ -264,20 +255,24 @@ public enum StatusLibrary {
   };
 
   /**
-   * Returns a new copy of the status the enumerated object represents.
-   * 
-   * @return the new status.
+   * @return status this enumerated value represents.
    */
-  abstract public Status get();
+  public Status get() {
+    return modify().build();    
+  }
   
   /**
-   * Returns a StatusBuilder object for making a status whose defaults match the
-   * status returned from get().
-   *  
-   * @return a builder for modifying this status.
+   * @return builder object for modifying the status this enumerated value
+   *           represents.
    */
   public StatusBuilder modify() {
-    return new StatusBuilder(this.get());
+    return builder().addListener(PrintLogger.get().getStatusLogger());
   }
+  
+  /**
+   * @return builder object with altered parameters specific to the status this 
+   *           enumerated value represents.
+   */
+  protected abstract StatusBuilder builder();
   
 }

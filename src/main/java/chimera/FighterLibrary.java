@@ -36,49 +36,51 @@ public enum FighterLibrary {
   
   WASHINGTON {
     @Override // from FighterLibrary
-    public Fighter get() {
+    public FighterBuilder builder() {
       return new FighterBuilder("Washington")
           .addSkill(SkillLibrary.PRE_BATTLE.get(2, 3, 4))
-          .addSkill(SkillLibrary.STRIKE_EVADABLE.get())
-          .build();
+          .addSkill(SkillLibrary.STRIKE_EVADABLE.get());
     }
   },
   
   JEFFERSON {
     @Override // from FighterLibrary
-    public Fighter get() {
+    public FighterBuilder builder() {
       return new FighterBuilder("Jefferson")
           .addSkill(SkillLibrary.PRE_BATTLE.get(4, 3, 2))
-          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get())
-          .build();
+          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get());
     }
   },
   
   ADAMS {
     @Override // from FighterLibrary
-    public Fighter get() {
+    public FighterBuilder builder() {
       return new FighterBuilder("Adams")
           .addSkill(SkillLibrary.PRE_BATTLE.get(4, 2, 3))
-          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get())
-          .build();
+          .addSkill(SkillLibrary.STRIKE_OPPOSABLE.get());
     }
   },
   
   HAMILTON {
     @Override // from FighterLibrary
-    public Fighter get() {
+    protected FighterBuilder builder() {
       return new FighterBuilder("Hamilton")
           .addSkill(SkillLibrary.PRE_BATTLE.get(2, 4, 3))
-          .addSkill(SkillLibrary.STRIKE_EVADABLE.get())
-          .build();
+          .addSkill(SkillLibrary.STRIKE_EVADABLE.get());
     }
   };
   
   /**
-   * Returns the fighter the enumerated value represents.
-   * 
-   * @return the fighter object.
+   * @return fighter this enumerated value represents.
    */
-  public abstract Fighter get();
+  public Fighter get() {
+    return builder().addListener(PrintLogger.get().getFighterLogger()).build();
+  }
+  
+  /**
+   * @return builder object with altered parameters specific to the fighter this 
+   *           enumerated value represents.
+   */
+  protected abstract FighterBuilder builder();
 
 }
