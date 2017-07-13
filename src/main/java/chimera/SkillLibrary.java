@@ -38,7 +38,7 @@ public enum SkillLibrary {
    */
   PRE_BATTLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(2, 2, 2);}
+    public Skill get() {return get(null);}
 
     /**
      * {@inheritDoc} In the case of PRE_BATTLE, the given input sets the stack
@@ -46,19 +46,24 @@ public enum SkillLibrary {
      * skill equal to the first three respective given int values. If any of the
      * first three given values are {@code < 1}, or if fewer then three int
      * values are given, this method throws a {@link IllegalArgumentException}.
-     * If the given value is {@code null} this method throws a
-     * {@link NullPointerException}.
+     * If the given value is {@code null} this method uses the default value of
+     * 2 for all adjustable stack sizes.
      */
     @Override // from SkillLibrary
-    public Skill get(int... vars) {
+    public Skill get(int...vars) {
+      if (vars == null) vars = new int[0];
       return Skill.builder("PreBattle Defenses")
           .setDescription("Establishes your defenses before the battle begins.")
           .setAsPreBattleSkill()
-          .addEffect(StatusLibrary.ENDURANCE.modify().setStackSize(vars[0]).build())
-          .addEffect(StatusLibrary.EVASION.modify().setStackSize(vars[1]).build())
-          .addEffect(StatusLibrary.OPPOSITION.modify().setStackSize(vars[2]).build())
+          .addEffect(StatusLibrary.ENDURANCE.modify()
+              .setStackSize(vars.length > 0 ? vars[0] : 2).build())
+          .addEffect(StatusLibrary.EVASION.modify()
+              .setStackSize(vars.length > 0 ? vars[1] : 2).build())
+          .addEffect(StatusLibrary.OPPOSITION.modify()
+              .setStackSize(vars.length > 0 ? vars[2] : 2).build())
           .addEffect(StatusLibrary.FATIGUE.get())
           .addEffect(StatusLibrary.STAGGER.get())
+          .addListener(PrintLogger.get().getSkillLogger())
           .build();
     }
   },
@@ -69,7 +74,7 @@ public enum SkillLibrary {
    */
   STRIKE_EVADABLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(1);}
+    public Skill get() {return get(null);}
 
     /**
      * {@inheritDoc} In the case of STRIKE_EVADABLE, the given input sets the
@@ -77,15 +82,18 @@ public enum SkillLibrary {
      * by this skill equal to the first given int value. If the first given
      * value is {@code < 1}, this method throws a
      * {@link IllegalArgumentException}. If the given value is {@code null} this
-     * method throws a {@link NullPointerException}.
+     * method uses the default value of 1 stack size.
      */
     @Override // from SkillLibrary
-    public Skill get(int... vars) {
+    public Skill get(int...vars) {
+      if (vars == null) vars = new int[0];
       return Skill.builder("Evadable Strike")
           .setDescription("An attack that can be evaded but not opposed.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
-          .addEffect(StatusLibrary.WOUND_EVADABLE.modify().setStackSize(vars[0]).build())
+          .addEffect(StatusLibrary.WOUND_EVADABLE.modify()
+              .setStackSize(vars.length > 0 ? vars[0] : 1).build())
+          .addListener(PrintLogger.get().getSkillLogger())
           .build();
     }
   },
@@ -96,7 +104,7 @@ public enum SkillLibrary {
    */
   STRIKE_OPPOSABLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(1);}
+    public Skill get() {return get(null);}
 
     /**
      * {@inheritDoc} In the case of STRIKE_OPPOSABLE, the given input sets the
@@ -104,15 +112,18 @@ public enum SkillLibrary {
      * by this skill equal to the first given int value. If the first given
      * value is {@code < 1}, this method throws a
      * {@link IllegalArgumentException}. If the given value is {@code null} this
-     * method throws a {@link NullPointerException}.
+     * method uses the default value of 1 stack size.
      */
     @Override // from SkillLibrary
-    public Skill get(int... vars) {
+    public Skill get(int...vars) {
+      if (vars == null) vars = new int[0];
       return Skill.builder("Opposable Strike")
           .setDescription("An attack that can be opposed but not evaded.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
-          .addEffect(StatusLibrary.WOUND_OPPOSABLE.modify().setStackSize(vars[0]).build())
+          .addEffect(StatusLibrary.WOUND_OPPOSABLE.modify()
+              .setStackSize(vars.length > 0 ? vars[0] : 1).build())
+          .addListener(PrintLogger.get().getSkillLogger())
           .build();
     }
   };
