@@ -35,38 +35,37 @@ import core.StatusHandler;
 
 /**
  * Generates various handler objects that output filtered events to a
- * {@link PrintStream}. The default print stream is {@link System.out}.
+ * {@link PrintStream}. The current stream is set to {@link System.out}.
  * 
  * @author Andrew M. Teller (https://github.com/AndrewMiTe)
  */
 public class PrintLogger {
 
   /**
+   * Singelton instance of a print logger.
+   */
+  private static final PrintLogger instance = new PrintLogger();
+  
+  /**
    * The stream to output to.
    */
   private PrintStream output;
 
   /**
-   * Implements the logger with {@link System.out} as the default output stream.
+   * Implements the logger with {@link System.out} as the output.
    */
-  public PrintLogger() {
-    this(System.out);
+  private PrintLogger() {
+    output = System.out;
   }
 
-  /**
-   * Implements the logger with the given output stream.
-   * 
-   * @param output
-   *          output stream to filter events to.
-   */
-  public PrintLogger(PrintStream output) {
-    this.output = output;
+  public static PrintLogger get() {
+    return instance;
   }
-
+  
   /**
    * @return the output stream the print logger uses.
    */
-  public PrintStream get() {
+  public PrintStream out() {
     return output;
   }
 
@@ -85,12 +84,12 @@ public class PrintLogger {
 
     @Override // from StatusHandler
     public void onStatusApplication(Status status) {
-      get().println(status + " applied to " + status.getOwner());
+      out().println(status + " applied to " + status.getOwner());
     }
 
     @Override // from StatusHandler
     public void onStatusRemoval(Status status) {
-      get().println(status + " removed from " + status.getOwner());
+      out().println(status + " removed from " + status.getOwner());
     }
 
   }
@@ -110,7 +109,7 @@ public class PrintLogger {
 
     @Override // from SkillHandler
     public void onSkillExecution(Skill skill) {
-      get().println(skill + " executed by " + skill.getOwner());
+      out().println(skill + " executed by " + skill.getOwner());
     }
 
   }
@@ -130,7 +129,7 @@ public class PrintLogger {
 
     @Override // from FighterHandler
     public void onDefeated(Fighter fighter) {
-      get().println(fighter + " has been defeated.");
+      out().println(fighter + " has been defeated.");
     }
 
   }
