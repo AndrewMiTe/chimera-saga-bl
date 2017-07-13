@@ -258,12 +258,12 @@ public enum StatusLibrary {
    * @return status this enumerated value represents.
    */
   public Status get() {
-    return modify().build();    
+    return modify().build();
   }
   
   /**
    * @return builder object for modifying the status this enumerated value
-   *           represents.
+   *         represents.
    */
   public StatusBuilder modify() {
     return builder().addListener(PrintLogger.get().getStatusLogger());
@@ -271,7 +271,7 @@ public enum StatusLibrary {
   
   /**
    * @return builder object with altered parameters specific to the status this 
-   *           enumerated value represents.
+   *         enumerated value represents.
    */
   protected abstract StatusBuilder builder();
   

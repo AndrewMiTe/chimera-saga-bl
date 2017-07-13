@@ -79,7 +79,7 @@ public enum FighterLibrary {
   
   /**
    * @return builder object with altered parameters specific to the fighter this 
-   *           enumerated value represents.
+   *         enumerated value represents.
    */
   protected abstract FighterBuilder builder();
 
