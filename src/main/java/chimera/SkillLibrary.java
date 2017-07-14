@@ -34,23 +34,21 @@ public enum SkillLibrary {
   /**
    * A skill preparatory that establishes the fighters primary defenses, rate of
    * fatigue, and their staggering time before they can act in battle. This
-   * skill is only executed in the pre-battle phase.
+   * skill is only executed in the pre-battle phase. When retrieved with
+   * {@link #get(int...)}, the stack size of the {@link StatusLibrary#ENDURANCE
+   * ENDURANCE}, {@link StatusLibrary#EVASION EVASION}, and
+   * {@link StatusLibrary#OPPOSITION OPPOSITION} statuses applied by this skill
+   * equal to the first three respective given {@code int} values. If any of the
+   * first three given values are {@code < 1}, the method throws a
+   * {@link IllegalArgumentException}. The default stack size of each status is
+   * 2.
    */
   PRE_BATTLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(null);}
+    protected SkillBuilder builder() {return builder(null);}
 
-    /**
-     * {@inheritDoc} In the case of PRE_BATTLE, the given input sets the stack
-     * size of the ENDURANCE, EVASION, and OPPOSITION statuses applied by this
-     * skill equal to the first three respective given int values. If any of the
-     * first three given values are {@code < 1}, or if fewer then three int
-     * values are given, this method throws a {@link IllegalArgumentException}.
-     * If the given value is {@code null} this method uses the default value of
-     * 2 for all adjustable stack sizes.
-     */
     @Override // from SkillLibrary
-    public Skill get(int...vars) {
+    protected SkillBuilder builder(int...vars) {
       if (vars == null) vars = new int[0];
       return Skill.builder("PreBattle Defenses")
           .setDescription("Establishes your defenses before the battle begins.")
@@ -62,112 +60,153 @@ public enum SkillLibrary {
           .addEffect(StatusLibrary.OPPOSITION.modify()
               .setStackSize(vars.length > 0 ? vars[2] : 2).build())
           .addEffect(StatusLibrary.FATIGUE.get())
-          .addEffect(StatusLibrary.STAGGER.get())
-          .addListener(PrintLogger.get().getSkillLogger())
-          .build();
+          .addEffect(StatusLibrary.STAGGER.get());
     }
   },
 
   /**
    * An attacking skill that inflicts a wound on the closest enemy if it doesn't
-   * have enough stacks of the evasion status.
+   * have enough stacks of the {@link StatusLibrary#EVASION EVASION} status.
+   * When retrieved with {@link #get(int...)}, the first given {@code int} value
+   * sets the stack size of the inflicted {@link StatusLibrary#WOUND_EVADABLE
+   * WOUND_EVADABLE} status. If this value is {@code< 1}, the method throws a
+   * {@link IllegalArgumentException}. The default stack size is 1.
    */
   STRIKE_EVADABLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(null);}
+    protected SkillBuilder builder() {return builder(null);}
 
-    /**
-     * {@inheritDoc} In the case of STRIKE_EVADABLE, the given input sets the
-     * stack size of the {@link StatusLibrary.WOUND_EVADABLE} status inflicted
-     * by this skill equal to the first given int value. If the first given
-     * value is {@code < 1}, this method throws a
-     * {@link IllegalArgumentException}. If the given value is {@code null} this
-     * method uses the default value of 1 stack size.
-     */
     @Override // from SkillLibrary
-    public Skill get(int...vars) {
+    protected SkillBuilder builder(int...vars) {
       if (vars == null) vars = new int[0];
       return Skill.builder("Evadable Strike")
           .setDescription("An attack that can be evaded but not opposed.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
           .addEffect(StatusLibrary.WOUND_EVADABLE.modify()
-              .setStackSize(vars.length > 0 ? vars[0] : 1).build())
-          .addListener(PrintLogger.get().getSkillLogger())
-          .build();
+              .setStackSize(vars.length > 0 ? vars[0] : 1).build());
     }
   },
   
   /**
    * An attacking skill that inflicts a wound on the closest enemy if it doesn't
-   * have enough stacks of the opposition status.
+   * have enough stacks of the {@link StatusLibrary#OPPOSITION OPPOSITION}
+   * status. When retrieved with {@link #get(int...)}, the first given
+   * {@code int} value sets the stack size of the inflicted
+   * {@link StatusLibrary#WOUND_OPPOSABLE WOUND_OPPOSABLE} status. If this value
+   * is {@code< 1}, this method throws a {@link IllegalArgumentException}. The
+   * default stack size is 1.
    */
   STRIKE_OPPOSABLE {
     @Override // from SkillLibrary
-    public Skill get() {return get(null);}
+    protected SkillBuilder builder() {return builder(null);}
 
-    /**
-     * {@inheritDoc} In the case of STRIKE_OPPOSABLE, the given input sets the
-     * stack size of the {@link StatusLibrary.WOUND_OPPOSABLE} status inflicted
-     * by this skill equal to the first given int value. If the first given
-     * value is {@code < 1}, this method throws a
-     * {@link IllegalArgumentException}. If the given value is {@code null} this
-     * method uses the default value of 1 stack size.
-     */
     @Override // from SkillLibrary
-    public Skill get(int...vars) {
+    protected SkillBuilder builder(int...vars) {
       if (vars == null) vars = new int[0];
       return Skill.builder("Opposable Strike")
           .setDescription("An attack that can be opposed but not evaded.")
           .setTarget(Target.CLOSE_ENEMY)
           .setCooldown(Duration.ofSeconds(4))
           .addEffect(StatusLibrary.WOUND_OPPOSABLE.modify()
-              .setStackSize(vars.length > 0 ? vars[0] : 1).build())
-          .addListener(PrintLogger.get().getSkillLogger())
-          .build();
-    }
+              .setStackSize(vars.length > 0 ? vars[0] : 1).build());
+      }
   };
   
   /**
-   * Returns a new copy of the skill the enumerated object represents.
+   * Returns the {@link Skill} this enumerated value represents. The supplied
+   * builder uses the default parameters for the skill.
    * 
-   * @return the new skill.
+   * @return skill this enumerated value represents.
    */
-  abstract public Skill get();
-  
-  /**
-   * Returns a new copy of the skill the enumerated object represents with the
-   * given values setting various parameters of the skill. What parameters are
-   * modifiable with this method is specific to the skill. For some skills, this
-   * method is no different then calling {@link #get()}.
-   * 
-   * @param vars
-   *          variables for modifying the default status.
-   * @return the new status.
-   */
-  public Skill get(int... vars) {
-    return get();
+  public Skill get() {
+    return modify().build();
   }
   
   /**
-   * Returns a SkillBuilder object for making a skill whose defaults match the
-   * skill returned from {@link #get()}.
-   *  
-   * @return a builder for modifying this status.
+   * Returns the {@link Skill} this enumerated value represents using given int
+   * values to potentially modify its parameters. Which parameters are modified
+   * are specific to the skill. When given a {@code null} value of an empty
+   * array of int values, the returned builder is for a skill with defaults
+   * identical to {@link #get()}.
+   * 
+   * @param vars
+   *          values to be modified.
+   * @return skill this enumerated value represents.
+   */
+  public Skill get(int...vars) {
+    return modify(vars).build();
+  }
+  
+  /**
+   * Returns a {@link SkillBuilder} object for making the skill this enumerated
+   * value represents. The supplied builder uses the default parameters for the
+   * skill.
+   * 
+   * @return fully prepared builder object for the skill this enumerated value
+   *         represents.
    */
   public SkillBuilder modify() {
-    return new SkillBuilder(this.get());
+    return adjust(builder());
   }
 
   /**
-   * Returns a SkillBuilder object for making a skill whose defaults match the
-   * skill returned from {@link #get(int)}.
+   * Returns a {@link SkillBuilder} object for making the skill this enumerated
+   * value represents using given int values to potentially modify its
+   * parameters. Which parameters are modified are specific to the skill. When
+   * given a {@code null} value of an empty array of int values, the returned
+   * builder is for a skill with defaults identical to {@link #modify()}.
    * 
-   * @param vars variables for modifying the default status.
-   * @return a builder for modifying this status.
+   * @param vars 
+   *          values to be modified.
+   * @return fully prepared builder object for the skill this enumerated value
+   *         represents.
    */
-  public SkillBuilder modify(int... vars) {
-    return new SkillBuilder(this.get(vars));
+  public SkillBuilder modify(int...vars) {
+    return adjust(builder(vars));
+  }
+  
+  /**
+   * Returns a {@link SkillBuilder} object for making the skill this enumerated
+   * value represents. The supplied builder uses the default parameters for the
+   * skill. The supplied builder should lack any parameters or listener objects
+   * common to all skills.
+   * 
+   * @return basic builder object for the skill this enumerated value
+   *         represents.
+   * @see #modify()
+   */
+  protected abstract SkillBuilder builder();
+  
+  /**
+   * Returns a {@link SkillBuilder} object for making the skill this enumerated
+   * value represents using given int values to potentially modify its
+   * parameters. Which parameters are modified are specific to the skill. When
+   * given a {@code null} value of an empty array of int values, the returned
+   * builder is for a skill with defaults identical to {@link #builder()}. The
+   * supplied builder should lack any parameters or listener objects common to
+   * all skills.
+   * 
+   * @param vars
+   *          values to be modified.
+   * @return basic builder object for the skill this enumerated value
+   *         represents.
+   * @see #modify(int...)
+   */
+  protected SkillBuilder builder(int...vars) {
+    return builder();
+  }
+  
+  /**
+   * Modifies all outgoing skills and skill builders with configurations common
+   * to all.
+   * 
+   * @param unadjusted
+   *          builder for a skill that is not yet configured.
+   * @return builder configured with changes common to all skills.
+   */
+  private SkillBuilder adjust(SkillBuilder unadjusted) {
+    return unadjusted.addListener(PrintLogger.get().getSkillLogger());
   }
 
 }
