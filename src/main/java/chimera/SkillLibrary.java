@@ -35,15 +35,21 @@ public enum SkillLibrary {
    * A skill preparatory that establishes the fighters primary defenses, rate of
    * fatigue, and their staggering time before they can act in battle. This
    * skill is only executed in the pre-battle phase. When retrieved with
-   * {@link #get(int...)}, the stack size of the {@link StatusLibrary#ENDURANCE
-   * ENDURANCE}, {@link StatusLibrary#EVASION EVASION}, and
-   * {@link StatusLibrary#OPPOSITION OPPOSITION} statuses applied by this skill
-   * equal to the first three respective given {@code int} values. If any of the
-   * first three given values are {@code < 1}, the method throws a
-   * {@link IllegalArgumentException}. The default stack size of each status is
-   * 2.
+   * {@link #get(int...)}, 
    */
   PRE_BATTLE {
+
+    /**
+     * {@inheritDoc} In the case {@link SkillLibrary#PRE_BATTLE PRE_BATTLE}, the
+     * stack size of the {@link StatusLibrary#ENDURANCE ENDURANCE},
+     * {@link StatusLibrary#EVASION EVASION}, and
+     * {@link StatusLibrary#OPPOSITION OPPOSITION} statuses applied by this
+     * skill equal to the first three respective given {@code int} values. The
+     * default stack size of each status is {@code 2}.
+     */
+    @Override // from SkillLibrary
+    public Skill get(int...vars) {return super.get(vars);}
+    
     @Override // from SkillLibrary
     protected SkillBuilder builder() {return builder(null);}
 
@@ -67,12 +73,18 @@ public enum SkillLibrary {
   /**
    * An attacking skill that inflicts a wound on the closest enemy if it doesn't
    * have enough stacks of the {@link StatusLibrary#EVASION EVASION} status.
-   * When retrieved with {@link #get(int...)}, the first given {@code int} value
-   * sets the stack size of the inflicted {@link StatusLibrary#WOUND_EVADABLE
-   * WOUND_EVADABLE} status. If this value is {@code< 1}, the method throws a
-   * {@link IllegalArgumentException}. The default stack size is 1.
    */
   STRIKE_EVADABLE {
+
+    /**
+     * {@inheritDoc} In the case {@link SkillLibrary#STRIKE_EVADABLE
+     * STRIKE_EVADABLE}, the first given {@code int} value sets the stack size
+     * of the {@link StatusLibrary#WOUND_EVADABLE WOUND_EVADABLE} status that
+     * the skill inflicts. The default stack size is {@code 1}.
+     */
+    @Override // from SkillLibrary
+    public Skill get(int...vars) {return super.get(vars);}
+    
     @Override // from SkillLibrary
     protected SkillBuilder builder() {return builder(null);}
 
@@ -91,13 +103,19 @@ public enum SkillLibrary {
   /**
    * An attacking skill that inflicts a wound on the closest enemy if it doesn't
    * have enough stacks of the {@link StatusLibrary#OPPOSITION OPPOSITION}
-   * status. When retrieved with {@link #get(int...)}, the first given
-   * {@code int} value sets the stack size of the inflicted
-   * {@link StatusLibrary#WOUND_OPPOSABLE WOUND_OPPOSABLE} status. If this value
-   * is {@code< 1}, this method throws a {@link IllegalArgumentException}. The
-   * default stack size is 1.
+   * status.
    */
   STRIKE_OPPOSABLE {
+
+    /**
+     * {@inheritDoc} In the case {@link SkillLibrary#STRIKE_OPPOSABLE
+     * STRIKE_OPPOSABLE}, the first given {@code int} value sets the stack size
+     * of the {@link StatusLibrary#WOUND_OPPOSABLE WOUND_OPPOSABLE} status that
+     * the skill inflicts. The default stack size is {@code 1}.
+     */
+    @Override // from SkillLibrary
+    public Skill get(int...vars) {return super.get(vars);}
+    
     @Override // from SkillLibrary
     protected SkillBuilder builder() {return builder(null);}
 
@@ -124,11 +142,11 @@ public enum SkillLibrary {
   }
   
   /**
-   * Returns the {@link Skill} this enumerated value represents using given int
-   * values to potentially modify its parameters. Which parameters are modified
-   * are specific to the skill. When given a {@code null} value of an empty
-   * array of int values, the returned builder is for a skill with defaults
-   * identical to {@link #get()}.
+   * Returns the {@link Skill} this enumerated value represents using given
+   * {@code int} values to potentially modify its parameters. Which parameters
+   * are modified are specific to the skill. When given a {@code null} value of
+   * an empty array of {@code int} values, the returned builder is for a skill
+   * with defaults identical to {@link #get()}.
    * 
    * @param vars
    *          values to be modified.
@@ -152,12 +170,13 @@ public enum SkillLibrary {
 
   /**
    * Returns a {@link SkillBuilder} object for making the skill this enumerated
-   * value represents using given int values to potentially modify its
+   * value represents using given {@code int} values to potentially modify its
    * parameters. Which parameters are modified are specific to the skill. When
-   * given a {@code null} value of an empty array of int values, the returned
-   * builder is for a skill with defaults identical to {@link #modify()}.
+   * given a {@code null} value of an empty array of {@code int} values, the
+   * returned builder is for a skill with defaults identical to
+   * {@link #modify()}.
    * 
-   * @param vars 
+   * @param vars
    *          values to be modified.
    * @return fully prepared builder object for the skill this enumerated value
    *         represents.
@@ -180,12 +199,12 @@ public enum SkillLibrary {
   
   /**
    * Returns a {@link SkillBuilder} object for making the skill this enumerated
-   * value represents using given int values to potentially modify its
+   * value represents using given {@code int} values to potentially modify its
    * parameters. Which parameters are modified are specific to the skill. When
-   * given a {@code null} value of an empty array of int values, the returned
-   * builder is for a skill with defaults identical to {@link #builder()}. The
-   * supplied builder should lack any parameters or listener objects common to
-   * all skills.
+   * given a {@code null} value of an empty array of {@code int} values, the
+   * returned builder is for a skill with defaults identical to
+   * {@link #builder()}. The supplied builder should lack any parameters or
+   * listener objects common to all skills.
    * 
    * @param vars
    *          values to be modified.
